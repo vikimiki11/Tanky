@@ -60,3 +60,4 @@ function createterain(seed){
     return mapa
 }
 init()
+alert("načteno")
