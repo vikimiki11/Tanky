@@ -2,7 +2,7 @@ smoothingindex = 4
 var mapas = []
 var mapax = 800
 var mapay = 400
-tick = 1000 / 60  
+tick = 1000 / 60
 spawnntank = {
   x: 0,
   y: 0,
@@ -30,6 +30,25 @@ function init() {
   canvas.height = mapay;
   document.getElementById('Generace').addEventListener('click', function() { createterain(Math.random() * 99) });
   document.getElementById('Akt').addEventListener('click', function() { aktualizace() });
+  window.addEventListener('keydown', function(event) {
+    console.log(event)
+    console.log(event.keyCode)
+    if (event.keyCode == 37) {
+      pohyb = setInterval(function() { brm(-1)},tick)
+    }
+    if (event.keyCode == 39) {
+      pohyb = setInterval(function() { brm(1)},tick)
+    }
+  })
+  window.addEventListener('keyup', function(event) {
+    if (event.keyCode == 39) {
+      clearInterval(pohyb)
+    }else{
+      if (event.keyCode == 37) {
+        clearInterval(pohyb)
+      }
+    }
+  })
   createterain(Math.random() * 99);
   aktualizace();
 }
@@ -70,7 +89,7 @@ function createterain(seed) {
 
 function spawntank(x, owner) {
   pos = tanky.length
-  tanky[pos]={}
+  tanky[pos] = {}
   tanky[pos].x = x
   tanky[pos].y = 0
   tanky[pos].own = owner
@@ -78,16 +97,18 @@ function spawntank(x, owner) {
   tanky[pos].gravity = gravity(0, tanky[pos])
   tanky[pos].gravity
 }
-function rtd(rad){
+
+function rtd(rad) {
   return rad * (180 / Math.PI)
 }
-function gravity(jump,ob) {
+
+function gravity(jump, ob) {
   if (mapa[Math.round(ob.x)][Math.round(ob.y)] == false) {
     ob.y += jump
     jump += 0.1
     document.querySelector("#" + ob.own).style.top = ob.y + "px"
-    setTimeout(function() { gravity(jump,ob) }, tick)
-  }else{
+    setTimeout(function() { gravity(jump, ob) }, tick)
+  } else {
     p = 1
     while (mapa[Math.round(ob.x)][Math.round(ob.y - p)] == true) {
       p++
@@ -95,10 +116,11 @@ function gravity(jump,ob) {
     ob.y = ob.y - p + 2
     document.querySelector("#" + ob.own).style.top = (ob.y) + "px"
     alert("ahoj")
-    rotation(jump,ob)
+    rotation(ob)
   }
 }
-function rotation(jump,ob){
+
+function rotation(ob) {
   zmena = 0
   forpm = [1, -1]
   for (i = 0; i < 2; i++) {
@@ -118,10 +140,19 @@ function rotation(jump,ob){
     }
     zmena += krok * forpm[i] * (-1)
   }
-  console.log("block zmena"+zmena)
+  console.log("block zmena" + zmena)
   console.log(rtd(Math.atan(50 / zmena)) + "deg")
-  if (zmena != 0) {document.querySelector("#" + ob.own).style.transform = "rotate(" + rtd(Math.atan(50 / zmena)) + "deg)translate(-25px, -25px)"
-  document.querySelector("#" + ob.own).style.transformOrigin = "50% 100%";}
+  if (zmena != 0) {
+    document.querySelector("#" + ob.own).style.transform = "rotate(" + 2 * rtd(Math.atan(50 / zmena)) + "deg)translate(-25px, -25px)"
+  }
 }
-setTimeout(function(){spawntank(200,"ahoj")},1000)
-init()    
+setTimeout(function() { spawntank(200, "ahoj") }, 1000)
+init()
+viki = ""
+
+function testrotation(ob, r) {
+  viki = setTimeout(function() { testrotation(ob, r + 1) }, 50)
+  document.querySelector("#" + ob.own).style.transform = "rotate(" + r + "deg)translate(-25px, -25px)"
+}
+
+function brm(smer) {}
