@@ -1,21 +1,39 @@
 <!DOCTYPE html>
 <html style="image-rendering: pixelated;">
+
 <head>
   <meta charset="utf-8" />
   <script src="perlin.js"></script>
-<style>
+  <style>
+    canvas {
+      height: 400px;
+      width: 800px;
+    }
 
-  canvas {
+    .hracipole{
     border: 1px solid #ccc;
-    height: 500px;
-    width:500px;
-  }
-
-</style>
+    height: 400px;
+    width: 800px;
+    position:relative;
+    }
+    .tank{
+    background-color:red;
+    height: 25px;
+    width: 50px;
+    position:absolute;
+    transform:translate(-50%,-100%);
+    transform-origin:50% 100%;
+    }
+  </style>
 </head>
+
 <body>
-<canvas id="Canvas"></canvas>
-<button id="EffectButton">Generovat</button>
-<script src="js.js"></script>
+  <div class="hracipole">
+    <canvas id="Canvas"></canvas>
+    <div class="tanky"></div>
+  </div>
+  <button id="Generace">Generovat</button>
+  <button id="Akt">Aktualzovat terén</button>
+  <script src="js.js"></script>
 </body>
 </html>
