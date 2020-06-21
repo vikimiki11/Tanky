@@ -6,31 +6,32 @@
   <script src="perlin.js"></script>
   <style>
     canvas {
-      height: 400px;
-      width: 800px;
+      height: 800px;
+      width: 1600px;
     }
 
     .hracipole{
     border: 1px solid #ccc;
-    height: 400px;
-    width: 800px;
+    height: 800px;
+    width: 1600px;
     position:relative;
     }
     .tank{
-    background-color:red;
-    height: 25px;
-    width: 50px;
+    background-image: url("img/tank.png");
+    background-size: cover;
+    height: 37.5px;
+    width: 75px;
     position:absolute;
     transform:translate(-50%,-100%);
     transform-origin: 0% 0%;
     }
     .cannon{
     background-color:black;
-    height: 3px;
-    width: 15px;
+    height: 5px;
+    width: 22px;
     position:absolute;
-    transform:translate(11px,6px);
-    transform-origin: 25px 7.5px;
+    transform:translate(15.5px,6px);
+    transform-origin: 37.5px 8.5px;
     }
   </style>
 </head>

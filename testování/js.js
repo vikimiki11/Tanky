@@ -1,7 +1,7 @@
 smoothingindex = 4
 var mapas = []
-var mapax = 800
-var mapay = 400
+var mapax = 1600
+var mapay = 800
 tick = 1000 / 60
 spawnntank = {
   x: 0,
@@ -33,9 +33,7 @@ function init() {
   document.getElementById('Generace').addEventListener('click', function() { createterain(Math.random() * 99) });
   document.getElementById('Akt').addEventListener('click', function() { aktualizace() });
   pohyb=""
-  /*window.addEventListener('keydown', function(event) {
-    console.log(event)
-    console.log(event.keyCode)
+  window.addEventListener('keydown', function(event) {
     if (pohyb == "") {
     if (event.keyCode == 37) {
       pohyb = setInterval(function() { brm(-1,tanky[0])},tick)
@@ -55,7 +53,7 @@ function init() {
       clearInterval(pohyb)
       pohyb=""
     }
-  })*/
+  })
   createterain(Math.random() * 99);
   aktualizace();
 }
@@ -88,9 +86,8 @@ function createterain(seed) {
     for (i = 0; i < n; i++) {
       mapa[xt][i] = false
     }
-    x = x + 0.003
+    x = x + 0.002
   }
-  console.log("mapa vytvořená")
   return mapa
 }
 
@@ -139,18 +136,21 @@ function rotation(ob) {
         found = true
       } else {
         if (smer) {
-          krok++
+          krok = (krok-1)
         } else {
-          krok += (-1)
+          krok++
         }
       }
     }
     zmena += krok * forpm[i] * (-1)
   }
-  console.log("block zmena" + zmena)
-  console.log(rtd(Math.atan(50 / zmena)) + "deg")
+  if(zmena>0){
+    posun=-90
+  }else{
+    posun=90
+  }
   if (zmena != 0) {
-    document.querySelector("#" + ob.own).style.transform = "rotate(" + 2 * rtd(Math.atan(50 / zmena)) + "deg)translate(-25px, -25px)"
+    document.querySelector("#" + ob.own).style.transform = "rotate(" + (posun+rtd(Math.atan(50 / zmena))) + "deg)translate(-37.5px, -37.5px)"
   }
 }
 setTimeout(function() { spawntank(200, "ahoj") }, 1000)
@@ -183,7 +183,7 @@ function mir(smer, ob) {
     if (ob.aim > 180) {
       ob.aim = 180
     }}
-  document.querySelector("#" + ob.own+" .cannon").style.transform = "rotate(" + ob.aim + "deg)translate(11px,6px)"
+  document.querySelector("#" + ob.own+" .cannon").style.transform = "rotate(" + ob.aim + "deg)translate(15.5px,6px)"
 }
 function fire(ob, typ, speed){
  pos = kulky.length
@@ -211,7 +211,7 @@ function letim(speedx,speedy,ob){
     document.querySelector("#"+ob.typ).remove
   }
 }
-function bum(x,y,ob.typ){
+function bum(x,y,ob){
  imageData = context.getImageData(0, 0, canvas.width, canvas.height);
  imageData.data
  context.putImageData(imageData, 0, 0); 
