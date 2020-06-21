@@ -7,8 +7,10 @@ spawnntank = {
   x: 0,
   y: 0,
   own: "",
+  aim: 0
 }
 tanky = []
+kulky = []
 for (i = 0; i < mapax; i++) {
   mapas[i] = []
   for (y = 0; y < mapay; y++) {
@@ -30,25 +32,30 @@ function init() {
   canvas.height = mapay;
   document.getElementById('Generace').addEventListener('click', function() { createterain(Math.random() * 99) });
   document.getElementById('Akt').addEventListener('click', function() { aktualizace() });
-  window.addEventListener('keydown', function(event) {
+  pohyb=""
+  /*window.addEventListener('keydown', function(event) {
     console.log(event)
     console.log(event.keyCode)
+    if (pohyb == "") {
     if (event.keyCode == 37) {
-      pohyb = setInterval(function() { brm(-1)},tick)
-    }
+      pohyb = setInterval(function() { brm(-1,tanky[0])},tick)
+    }else{
     if (event.keyCode == 39) {
-      pohyb = setInterval(function() { brm(1)},tick)
-    }
+      pohyb = setInterval(function() { brm(1,tanky[0])},tick)
+    }else{
+    if (event.keyCode == 38) {
+      pohyb = setInterval(function() { mir(-1, tanky[0]) }, tick)
+    }else{
+    if (event.keyCode == 40) {
+      pohyb = setInterval(function() { mir(1, tanky[0]) }, tick)
+    }}}}}
   })
   window.addEventListener('keyup', function(event) {
-    if (event.keyCode == 39) {
+    if (event.keyCode == 37 || event.keyCode == 38 || event.keyCode == 39 || event.keyCode == 40) {
       clearInterval(pohyb)
-    }else{
-      if (event.keyCode == 37) {
-        clearInterval(pohyb)
-      }
+      pohyb=""
     }
-  })
+  })*/
   createterain(Math.random() * 99);
   aktualizace();
 }
@@ -92,8 +99,9 @@ function spawntank(x, owner) {
   tanky[pos] = {}
   tanky[pos].x = x
   tanky[pos].y = 0
+  tanky[pos].aim = 0
   tanky[pos].own = owner
-  document.querySelector(".tanky").innerHTML += '<div class="tank" id="' + owner + '" style="left:' + x + 'px;top:0px"></div>'
+  document.querySelector(".tanky").innerHTML += '<div class="tank" id="' + owner + '" style="left:' + x + 'px;top:0px"><div class="cannon"></div></div>'
   tanky[pos].gravity = gravity(0, tanky[pos])
   tanky[pos].gravity
 }
@@ -105,7 +113,7 @@ function rtd(rad) {
 function gravity(jump, ob) {
   if (mapa[Math.round(ob.x)][Math.round(ob.y)] == false) {
     ob.y += jump
-    jump += 0.1
+    jump += 10/(1000/tick)
     document.querySelector("#" + ob.own).style.top = ob.y + "px"
     setTimeout(function() { gravity(jump, ob) }, tick)
   } else {
@@ -115,7 +123,6 @@ function gravity(jump, ob) {
     }
     ob.y = ob.y - p + 2
     document.querySelector("#" + ob.own).style.top = (ob.y) + "px"
-    alert("ahoj")
     rotation(ob)
   }
 }
@@ -155,4 +162,57 @@ function testrotation(ob, r) {
   document.querySelector("#" + ob.own).style.transform = "rotate(" + r + "deg)translate(-25px, -25px)"
 }
 
-function brm(smer) {}
+updown=[-4,-3,-2,-1,0,1,2]
+function brm(smer,ob) {
+  for(i=0;i<updown.length;i++){
+    if(mapa[Math.round(ob.x+smer)][Math.round(ob.y+updown[i])]!=mapa[Math.round(ob.x+smer)][Math.round(ob.y+updown[i]-1)]){
+      ob.x+=smer
+      ob.y+=updown[i]
+      document.querySelector("#" + ob.own).style.top = ob.y + "px"
+      document.querySelector("#" + ob.own).style.left = ob.x + "px"
+    }
+  }
+  rotation(ob)
+}
+
+function mir(smer, ob) {
+  ob.aim+=smer
+  if(ob.aim<0){
+    ob.aim=0
+  }else{
+    if (ob.aim > 180) {
+      ob.aim = 180
+    }}
+  document.querySelector("#" + ob.own+" .cannon").style.transform = "rotate(" + ob.aim + "deg)translate(11px,6px)"
+}
+function fire(ob, typ, speed){
+ pos = kulky.length
+ kulky[pos] = {}
+ kulky[pos].typ = typ
+ kulky[pos].x = x
+ kulky[pos].y = 0 //kokooooooooooooooooooooooooooooooooooooooooooooooooooooooooot
+ document.querySelector(".tanky").innerHTML += '<div class="tank" id="' + typ + '" style="left:' + kulky[pos].x + 'px;top:'+ kulky[pos].y +'px"></div>'
+ letim(0,0,kulky[pos])
+}
+function letim(speedx,speedy,ob){
+  ob.x+=speedx
+  ob.y+=speedy
+  document.querySelector("#"+ob.typ).style.top=ob.y
+  document.querySelector("#"+ob.typ).style.left=ob.x
+  speedx=speedx*0.9
+  speedy=speedy*0.9+10/(1000/tick)
+  if(Math.round(ob.x) > -1 && Math.round(ob.x) < mapax + 1 && Math.round(ob.y) > -1 && Math.round(ob.y) < mapay + 1){
+    if (!mapa[Math.round(ob.x)][Math.round(ob.y)]) {
+      setTimeout(function(){letim(speedx,speedy,ob)},tick)
+    }else {
+      document.querySelector("#" + ob.typ).remove
+    }
+  }else{
+    document.querySelector("#"+ob.typ).remove
+  }
+}
+function bum(x,y,ob.typ){
+ imageData = context.getImageData(0, 0, canvas.width, canvas.height);
+ imageData.data
+ context.putImageData(imageData, 0, 0); 
+}
