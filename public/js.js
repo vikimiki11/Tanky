@@ -116,7 +116,7 @@ function gravity(jump, ob, up) {
     ob.y += jump
     jump += 10/(1000/tick)
     document.querySelector("#" + ob.own).style.top = ob.y + "px"
-    setTimeout(function() { gravity(jump, ob) }, tick)
+    setTimeout(function() { gravity(jump, ob, up) }, tick)
   } else {
     rotation(ob)
     if(up){
