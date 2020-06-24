@@ -1,15 +1,16 @@
 <!DOCTYPE html>
 <html style="image-rendering: pixelated;">
-
 <head>
   <meta charset="utf-8" />
   <script src="perlin.js"></script>
   <style>
+    body{
+      margin: 0
+    }
     canvas {
       height: 800px;
       width: 1600px;
     }
-
     .hracipole{
     border: 1px solid #ccc;
     height: 800px;
@@ -28,14 +29,19 @@
     .cannon{
     background-color:black;
     height: 5px;
-    width: 22px;
+    width: 27px;
     position:absolute;
-    transform:translate(15.5px,6px);
+    transform:translate(10.5px,6px);
     transform-origin: 37.5px 8.5px;
+    }
+    .kulka{
+      width: 3px;
+      height: 3px;
+      background-color: red;
+      position: absolute;
     }
   </style>
 </head>
-
 <body>
   <div class="hracipole">
     <canvas id="Canvas"></canvas>
