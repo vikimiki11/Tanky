@@ -101,7 +101,7 @@ function spawntank(x, owner) {
   tanky[pos].rotate = 0
   tanky[pos].own = owner
   document.querySelector(".tanky").innerHTML += '<div class="tank" id="' + owner + '" style="left:' + x + 'px;top:0px"><div class="cannon"></div></div>'
-  tanky[pos].gravity = gravity(0, tanky[pos])
+  tanky[pos].gravity = gravity(0, tanky[pos],true)
   tanky[pos].gravity
 }
 
@@ -111,15 +111,22 @@ function rtd(rad) {
 function dtr(deg) {
   return Math.PI / 180 * deg
 }
-function gravity(jump, ob) {
+function gravity(jump, ob, up) {
   if (mapa[Math.round(ob.x)][Math.round(ob.y)] == false) {
     ob.y += jump
     jump += 10/(1000/tick)
     document.querySelector("#" + ob.own).style.top = ob.y + "px"
     setTimeout(function() { gravity(jump, ob) }, tick)
   } else {
-    document.querySelector("#" + ob.own).style.top = (ob.y) + "px"
     rotation(ob)
+    if(up){
+      p = 1
+      while (mapa[Math.round(ob.x)][Math.round(ob.y - p)] == true) {
+        p++
+      }
+      ob.y = ob.y - p
+    }
+    document.querySelector("#" + ob.own).style.top = (ob.y) + "px"
   }
 }
 

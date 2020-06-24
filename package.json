@@ -1,0 +1,16 @@
+{
+  "name": "Lode",
+  "version": "2.0.0",
+  "description": "Super vikiho lode",
+  "main": "index.js",
+  "author": "Viktor Fišer",
+  "private": true,
+  "license": "BSD",
+  "dependencies": {
+    "express": "~4.17.1",
+    "socket.io": "~2.3.0"
+  },
+  "scripts": {
+    "start": "node index.js"
+  }
+}
