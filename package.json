@@ -1,11 +1,11 @@
 {
-  "name": "Lode",
-  "version": "2.0.0",
+  "name": "tanky",
+  "version": "0.1.0",
   "description": "Super vikiho lode",
   "main": "index.js",
   "author": "Viktor Fišer",
   "private": true,
-  "license": "BSD",
+  "license": "MIT",
   "dependencies": {
     "express": "~4.17.1",
     "socket.io": "~2.3.0"

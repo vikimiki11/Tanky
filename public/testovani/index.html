@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html style="image-rendering: pixelated;">
+<head>
+  <meta charset="utf-8" />
+  <script src="perlin.js"></script>
+  <style>
+    body{
+      margin: 0
+    }
+    canvas {
+      height: 800px;
+      width: 1600px;
+    }
+    .hracipole{
+    border: 1px solid #ccc;
+    height: 800px;
+    width: 1600px;
+    position:relative;
+    }
+    .tank{
+    background-image: url("img/tank.png");
+    background-size: cover;
+    height: 37.5px;
+    width: 75px;
+    position:absolute;
+    transform:translate(-50%,-100%);
+    transform-origin: 0% 0%;
+    }
+    .cannon{
+    background-color:black;
+    height: 5px;
+    width: 27px;
+    position:absolute;
+    transform:translate(10.5px,6px);
+    transform-origin: 37.5px 8.5px;
+    }
+    .kulka{
+      width: 3px;
+      height: 3px;
+      background-color: red;
+      position: absolute;
+    }
+  </style>
+</head>
+<body>
+  <div class="hracipole">
+    <canvas id="Canvas"></canvas>
+    <div class="tanky"></div>
+  </div>
+  <button id="Generace">Generovat</button>
+  <button id="Akt">Aktualzovat terén</button>
+  <script src="js.js"></script>
+</body>
+</html>
