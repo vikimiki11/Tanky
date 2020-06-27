@@ -131,7 +131,7 @@ function gravity(jump, ob, up) {
       while (mapa[Math.round(ob.x)][Math.round(ob.y - p)] == true) {
         p++
       }
-      ob.y = ob.y - p
+      ob.y = ob.y - p+2
     }
     document.querySelector("#" + ob.own).style.top = (ob.y) + "em"
   }
