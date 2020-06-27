@@ -2,14 +2,9 @@ smoothingindex = 4
 var mapas = []
 var mapax = 1600
 var mapay = 800
+seed=1
 tick = 1000 / 60
-spawnntank = {
-  x: 0,
-  y: 0,
-  own: "",
-  aim: 0
-}
-
+errory=[]
 tanky = []
 kulky = []
 for (i = 0; i < mapax; i++) {
@@ -19,39 +14,38 @@ for (i = 0; i < mapax; i++) {
   }
 }
 
-var effectButton;
-var paintButton;
-var canvas;
-var context;
-
 function init() {
   canvas = document.getElementById('Canvas');
   context = canvas.getContext('2d');
   context.imageSmoothingEnabled = false
   canvas.width = mapax;
   canvas.height = mapay;
-  document.getElementById('Generace').addEventListener('click', function() { createterain(Math.random() * 99) });
-  document.getElementById('Akt').addEventListener('click', function() { aktualizace() });
   pohyb=""
+  pal=""
   window.addEventListener('keydown', function(event) {
     if (pohyb == "") {
-    if (event.keyCode == 37) {
-      pohyb = setInterval(function() { brm(-1,tanky[0])},tick)
-    }else{
-    if (event.keyCode == 39) {
-      pohyb = setInterval(function() { brm(1,tanky[0])},tick)
-    }else{
-    if (event.keyCode == 38) {
-      pohyb = setInterval(function() { mir(-1, tanky[0]) }, tick)
-    }else{
-    if (event.keyCode == 40) {
-      pohyb = setInterval(function() { mir(1, tanky[0]) }, tick)
-    }}}}}
+      if (event.keyCode == 37) {
+        pohyb = setInterval(function() { brm(-1,tanky[0])},tick)
+      }else{
+      if (event.keyCode == 39) {
+        pohyb = setInterval(function() { brm(1,tanky[0])},tick)
+      }}}
+    if (pal == "") {
+      if (event.keyCode == 38) {
+        pal = setInterval(function() { mir(-1, tanky[0]) }, tick)
+      }else{
+      if (event.keyCode == 40) {
+        pal = setInterval(function() { mir(1, tanky[0]) }, tick)
+      }}}
   })
   window.addEventListener('keyup', function(event) {
-    if (event.keyCode == 37 || event.keyCode == 38 || event.keyCode == 39 || event.keyCode == 40) {
+    if (event.keyCode == 37 || event.keyCode == 39) {
       clearInterval(pohyb)
       pohyb=""
+    }
+    if (event.keyCode == 38 || event.keyCode == 40) {
+      clearInterval(pal)
+      pal=""
     }
     if (event.keyCode == 32){
       fire(tanky[0], "viki", 8)
@@ -73,14 +67,20 @@ function terain(data) {
   }
   for (let i = 0; i < data.length; i += 4) {
     z = i / 4
-    if (mapa[Math.floor((z) % mapax)][Math.floor((z) / mapax)]) {
-      data[i+1] = 255
+    if (mapa[z % mapax][Math.floor(z / mapax)]) {
+      let n=noise.simplex2(seed+((z % mapax)/14), seed+(z / mapax/14))
+      if(n<0.5){
+        data[i+1] = 255+100*(n+0.25)
+      }else{
+        data[i+1] = 255
+      }
       data[i + 3] = 255
     }
   }
 }
 
-function createterain(seed) {
+function createterain(iseed) {
+  seed=iseed
   mapa = JSON.parse(JSON.stringify(mapas));
   x = seed
   y = seed * 9
@@ -102,7 +102,7 @@ function spawntank(x, owner) {
   tanky[pos].aim = 0
   tanky[pos].rotate = 0
   tanky[pos].own = owner
-  document.querySelector(".tanky").innerHTML += '<div class="tank" id="' + owner + '" style="left:' + x + 'px;top:0px"><div class="cannon"></div></div>'
+  document.querySelector(".tanky").innerHTML += '<div class="tank" id="' + owner + '" style="left:' + x + 'em;top:0em"><div class="cannon"></div></div>'
   tanky[pos].gravity = gravity(0, tanky[pos],true)
   tanky[pos].gravity
 }
@@ -119,7 +119,7 @@ function gravity(jump, ob, up) {
   if (mapa[Math.round(ob.x)][Math.round(ob.y)] == false) {
     ob.y += jump
     jump += 10/(1000/tick)
-    document.querySelector("#" + ob.own).style.top = ob.y + "px"
+    document.querySelector("#" + ob.own).style.top = ob.y + "em"
     if(jump>2){
       up=true
     }
@@ -133,7 +133,7 @@ function gravity(jump, ob, up) {
       }
       ob.y = ob.y - p
     }
-    document.querySelector("#" + ob.own).style.top = (ob.y) + "px"
+    document.querySelector("#" + ob.own).style.top = (ob.y) + "em"
   }
 }
 
@@ -164,7 +164,7 @@ function rotation(ob) {
   }
   if (zmena != 0) {
     xsus=posun+rtd(Math.atan(50 / zmena))
-    document.querySelector("#" + ob.own).style.transform = "rotate(" + xsus + "deg)translate(-37.5px, -37.5px)"
+    document.querySelector("#" + ob.own).style.transform = "rotate(" + xsus + "deg)translate(-37.5em, -37.5em)"
     ob.rotate = xsus
   }
 }
@@ -180,8 +180,8 @@ function brm(smer,ob) {
         ob.x+=smer
       }
       ob.y+=updown[i]
-      document.querySelector("#" + ob.own).style.top = ob.y + "px"
-      document.querySelector("#" + ob.own).style.left = ob.x + "px"
+      document.querySelector("#" + ob.own).style.top = ob.y + "em"
+      document.querySelector("#" + ob.own).style.left = ob.x + "em"
     }
   }
   if(mem==ob.x && !mapa[Math.round(ob.x+smer)][Math.round(ob.y)]){
@@ -202,7 +202,7 @@ function mir(smer, ob) {
     if (ob.aim > 180) {
       ob.aim = 180
     }}
-  document.querySelector("#" + ob.own+" .cannon").style.transform = "rotate(" + ob.aim + "deg)translate(10.5px,6px)"
+  document.querySelector("#" + ob.own+" .cannon").style.transform = "rotate(" + ob.aim + "deg)translate(10.5em,6em)"
 }
 
 function fire(ob, typ, speed){
@@ -213,10 +213,10 @@ function fire(ob, typ, speed){
  ycan=Math.sin(dtr(ob.rotate+ob.aim-180)*-1)
  kulky[pos].x = ob.x-Math.sin(dtr(ob.rotate)*-1)*30.5+xcan*27
  kulky[pos].y = ob.y-Math.cos(dtr(ob.rotate)*-1)*30.5-ycan*27
- document.querySelector(".tanky").innerHTML += '<div class="kulka" id="' + typ + '" style="left:' + kulky[pos].x + 'px;top:'+ kulky[pos].y +'px"></div>'
+ document.querySelector(".tanky").innerHTML += '<div class="kulka" id="' + typ + '" style="left:' + kulky[pos].x + 'em;top:'+ kulky[pos].y +'em"></div>'
  hore=(xcan*xcan+ycan*ycan)*speed*speed
- ys=Math.sqrt(hore/((xcan*xcan/(ycan*ycan))))
- xs=Math.sqrt(hore/((ycan*ycan/(xcan*xcan))))
+ ys=Math.sqrt(hore/((xcan*xcan/(ycan*ycan))+1))
+ xs=Math.sqrt(hore/((ycan*ycan/(xcan*xcan))+1))
  if(ob.rotate+ob.aim<180&&0<ob.rotate+ob.aim){
    ys=ys*(-1)
  }
@@ -229,8 +229,8 @@ function fire(ob, typ, speed){
 function letim(speedx,speedy,ob){
   ob.x+=speedx
   ob.y+=speedy
-  document.querySelector(".kulka").style.top=ob.y+"px"
-  document.querySelector(".kulka").style.left=ob.x+"px"
+  document.querySelector(".kulka").style.top=ob.y+"em"
+  document.querySelector(".kulka").style.left=ob.x+"em"
   speedx=speedx*0.98851402035289613535686750493829
   speedy=speedy*0.98851402035289613535686750493829+10/(1000/tick)
   if(Math.round(ob.x) > -1 && Math.round(ob.x) < mapax + 1  && Math.round(ob.y) < mapay + 1){
@@ -268,16 +268,18 @@ function removeter(xp,yp,r){
     x++
   }
   qtf=[-1,1]
-  fd=[]
   for(i=0;i<qd.length;i++){
     for(x=0;x<2;x++){
       for(y=0;y<2;y++){
-        fd[fd.length]=[qd[i][0]*qtf[x],qd[i][1]*qtf[y]]
+        try{
+          mapa[xp+qd[i][0]*qtf[x]][yp+qd[i][1]*qtf[y]]=false
+        }catch(err){
+          var d = new Date();
+          var n = d.getUTCMinutes();
+          errory[errory.length]={err,n}
+        }
       }
     }
-  }
-  for(i=0;i<fd.length;i++){
-    mapa[xp+fd[i][0]][yp+fd[i][1]]=false
   }
   aktualizace()
   for(i=0;i<tanky.length;i++){
