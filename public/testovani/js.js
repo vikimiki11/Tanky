@@ -53,6 +53,7 @@ function init() {
   })
   createterain(Math.random() * 99);
   aktualizace();
+  spawntrees();
 }
 
 function aktualizace() {
@@ -97,14 +98,52 @@ function createterain(iseed) {
 function spawntank(x, owner) {
   pos = tanky.length
   tanky[pos] = {}
+  tanky[pos].pos=pos
   tanky[pos].x = x
   tanky[pos].y = 0
-  tanky[pos].aim = 0
+  tanky[pos].aim = 180-x/mapax*180
   tanky[pos].rotate = 0
   tanky[pos].own = owner
   document.querySelector(".tanky").innerHTML += '<div class="tank" id="' + owner + '" style="left:' + x + 'em;top:0em"><div class="cannon"></div></div>'
-  tanky[pos].gravity = gravity(0, tanky[pos],true)
-  tanky[pos].gravity
+  mir(true, tanky[pos])
+  mir(false, tanky[pos])
+  tanky[pos].gravity = function(jump, pos, up){
+    if (mapa[Math.round(this.x)][Math.round(this.y)] == false) {
+      this.y += jump
+      jump += 10/(1000/tick)
+      document.querySelector("#" + this.own).style.top = this.y + "em"
+      if(jump>2){
+        up=true
+      }
+      this.gravityt(jump, pos, true)
+    } else {
+      rotation(this)
+      if(up){
+        p = 1
+        while (mapa[Math.round(this.x)][Math.round(this.y - p)] == true) {
+          p++
+        }
+        this.y = this.y - p+2
+      }
+      document.querySelector("#" + this.own).style.top = (this.y) + "em"
+    }
+  }
+  tanky[pos].gravityt = function(jump, pos, up){
+    setTimeout(function(){tanky[pos].gravity(jump, pos, true)}, tick)
+  }
+  tanky[pos].gravity(0, pos, true)
+}
+
+function spawntrees(){
+  x=Math.random()*250+25
+  while(x<mapax){
+    y=0
+    while(!mapa[Math.round(x)][y]){
+      y++
+    }
+    document.querySelector(".stromy").innerHTML+='<img src="img/tree.gif" class="tree" style="left:'+x+'em;top:'+y+'em">'
+    x+=Math.random()*250+25
+  }
 }
 
 function rtd(rad) {
@@ -113,28 +152,6 @@ function rtd(rad) {
 
 function dtr(deg) {
   return Math.PI / 180 * deg
-}
-
-function gravity(jump, ob, up) {
-  if (mapa[Math.round(ob.x)][Math.round(ob.y)] == false) {
-    ob.y += jump
-    jump += 10/(1000/tick)
-    document.querySelector("#" + ob.own).style.top = ob.y + "em"
-    if(jump>2){
-      up=true
-    }
-    setTimeout(function() { gravity(jump, ob, up) }, tick)
-  } else {
-    rotation(ob)
-    if(up){
-      p = 1
-      while (mapa[Math.round(ob.x)][Math.round(ob.y - p)] == true) {
-        p++
-      }
-      ob.y = ob.y - p+2
-    }
-    document.querySelector("#" + ob.own).style.top = (ob.y) + "em"
-  }
 }
 
 function rotation(ob) {
@@ -188,7 +205,7 @@ function brm(smer,ob) {
     ob.x+=smer
     clearInterval(pohyb)
     pohyb=""
-    gravity(0,ob)
+    ob.gravity(0, ob.pos, false)
   }else{
     rotation(ob)
   }
@@ -282,8 +299,8 @@ function removeter(xp,yp,r){
     }
   }
   aktualizace()
-  for(i=0;i<tanky.length;i++){
-    gravity(0, tanky[i])
+  for(let i=0;i<tanky.length;i++){
+    tanky[i].gravity(0, i, true)
   }
 }
 
@@ -291,5 +308,6 @@ function removeElement(element) {
   element.parentNode.removeChild(element);
 }
 
-setTimeout(function() { spawntank(200, "ahoj") }, 1000)
 init()
+setTimeout(function() { spawntank(200, "ahoj") }, 1000)
+setTimeout(function() { spawntank(500, "aho2") }, 1000)
