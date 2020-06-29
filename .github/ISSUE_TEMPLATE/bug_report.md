@@ -1,6 +1,6 @@
 ---
 name: Bug report
-about: Create a report to help us improve
+about: Napiš jaký problém máš
 title: ''
 labels: bug
 assignees: ''
