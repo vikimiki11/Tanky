@@ -1,4 +1,8 @@
-smoothingindex = 4
+if(window.location.hostname=="localhost"){
+  socket = io("localhost:3000");
+  }else{
+  socket = io(window.location.hostname);
+  }
 var mapas = []
 var mapax = 1600
 var mapay = 800
@@ -135,14 +139,17 @@ function spawntank(x, owner) {
 }
 
 function spawntrees(){
-  x=Math.random()*250+25
+  var z=0
+  x=Math.abs(noise.simplex2(seed+z,0))*250+25
+  z=z+1000
   while(x<mapax){
     y=0
     while(!mapa[Math.round(x)][y]){
       y++
     }
     document.querySelector(".stromy").innerHTML+='<img src="img/tree.gif" class="tree" style="left:'+x+'em;top:'+y+'em">'
-    x+=Math.random()*250+25
+    x+=Math.abs(noise.simplex2(seed+z,0))*250+25
+    z=z+1000
   }
 }
 
@@ -243,7 +250,7 @@ function fire(ob, typ, speed){
  letim(xs ,ys ,kulky[pos])
 }
 
-function letim(speedx,speedy,ob){
+function letim(speedx,speedy,ob,typ){
   ob.x+=speedx
   ob.y+=speedy
   document.querySelector(".kulka").style.top=ob.y+"em"
@@ -255,7 +262,7 @@ function letim(speedx,speedy,ob){
       setTimeout(function(){letim(speedx,speedy,ob)},tick)
     }else {
       removeElement(document.querySelector("#" + ob.typ))
-      removeter(Math.round(ob.x),Math.round(ob.y),15)
+      removeter(Math.round(ob.x),Math.round(ob.y),25)
     }
   }else{
     removeElement(document.querySelector("#" + ob.typ))
@@ -269,6 +276,7 @@ function bum(x,y,ob){
 }
 
 function removeter(xp,yp,r){
+  yp=yp-15
   qd=[]
   x=0
   while(x<=r){
@@ -311,3 +319,95 @@ function removeElement(element) {
 init()
 setTimeout(function() { spawntank(200, "ahoj") }, 1000)
 setTimeout(function() { spawntank(500, "aho2") }, 1000)
+opal=0
+function malert(mes){document.querySelector(".alert").innerHTML=mes;opal=1}
+setInterval(function(){opal=opal*0.97;document.querySelector(".alert").style.opacity=opal},100)
+membersact={}
+socket.on('players',data=>{
+  membersact=data
+  if(inqgame){
+    if(membersact[rival].active==0){
+      socket.emit('leave')
+      malert("Odešel ti sploluhráč")
+    }
+  }
+  document.querySelector("#members").innerHTML=""
+  for(i in membersact){
+    if(i!=username && membersact[i].active === 0){
+      document.querySelector("#members").innerHTML=document.querySelector("#members").innerHTML+"<li value='"+i+"'>"+i+"</li>"
+    }
+  }
+  document.querySelectorAll("#members li").forEach(item => {
+    item.addEventListener('click', event => {
+      malert("Poslal jsi pozvánku do hry pro uživatele "+item.innerText+".")
+      socket.emit('sendinvite',item.innerText)
+
+    })
+  })
+
+
+
+  invites=invites.filter(function (el) {
+    return membersact[el].active===0;
+  });
+  document.querySelector("#invites").innerHTML=""
+  for(i=0; i<invites.length;i++){
+    if(invites[i]!=username && membersact[invites[i]].active === 0){
+      document.querySelector("#invites").innerHTML="<li value='"+invites[i]+"'>"+invites[i]+"</li>"+document.querySelector("#invites").innerHTML
+    }
+  }
+  document.querySelectorAll("#invites li").forEach(item => {
+    item.addEventListener('click', event => {
+      if(onceacc===true){
+      socket.emit('acceptinvite',item.innerText)
+      onceacc=false
+      setTimeout(function(){onceacc=true},1000)
+      }
+    })
+  })
+
+
+
+})
+socket.on('login', (data) => {
+  connected = true;
+  // Display the welcome message
+  var message = "Chat pro hráče lodí:";
+  log(message);
+  addParticipantsMessage(data);
+  $loginPage.fadeOut();
+  $chatPage.show();
+  $main.show();
+  $loginPage.off('click');
+  $currentInput = $inputMessage.focus();
+    //idiooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooot
+ 
+});
+socket.on('denied',() =>{
+  alert("již použité jméno")
+  location.reload();
+})
+
+socket.on('in queue', () => {
+  //idiooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooot
+  malert("Jsi v pořadí počkej.")
+  if(window.location.hostname!="localhost"){
+    $('.priprava').hide()
+  }
+})
+
+socket.on('in room', (coplayername) => {
+  rival=coplayername
+  gameLog("Začal jsi hru s: "+rival)
+  $game.show()
+  $("#leavediv").hide()
+  $("#kontrola").show()
+  $('.priprava').hide()
+  createtable()
+  inqgame=true
+    //idiooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooot
+});
+
+socket.on('jj',(data)=>{
+  socket.emit('jj',(data))
+})
