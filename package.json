@@ -1,7 +1,7 @@
 {
   "name": "tanky",
-  "version": "0.1.0",
-  "description": "Super vikiho Tanky",
+  "version": "0.2.0",
+  "description": "Vytvoření hry tanky, kterou jsem hrál jako malý, v multiplayerové verzi",
   "main": "index.js",
   "author": "Viktor Fišer",
   "private": false,

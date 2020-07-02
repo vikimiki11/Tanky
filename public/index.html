@@ -1,54 +1,324 @@
 <!DOCTYPE html>
 <html style="image-rendering: pixelated;">
-<head>
-  <meta charset="utf-8" />
-  <script src="perlin.js"></script>
-  <style>
-    body{
-      margin: 0
-    }
-    canvas {
-      height: 800px;
-      width: 1600px;
-    }
-    .hracipole{
-    border: 1px solid #ccc;
-    height: 800px;
-    width: 1600px;
-    position:relative;
-    }
-    .tank{
-    background-image: url("img/tank.png");
-    background-size: cover;
-    height: 37.5px;
-    width: 75px;
-    position:absolute;
-    transform:translate(-50%,-100%);
-    transform-origin: 0% 0%;
-    }
-    .cannon{
-    background-color:black;
-    height: 5px;
-    width: 27px;
-    position:absolute;
-    transform:translate(10.5px,6px);
-    transform-origin: 37.5px 8.5px;
-    }
-    .kulka{
-      width: 3px;
-      height: 3px;
-      background-color: red;
-      position: absolute;
-    }
-  </style>
-</head>
-<body>
-  <div class="hracipole">
-    <canvas id="Canvas"></canvas>
-    <div class="tanky"></div>
-  </div>
-  <button id="Generace">Generovat</button>
-  <button id="Akt">Aktualzovat terén</button>
-  <script src="js.js"></script>
-</body>
+  <head>
+    <meta charset="utf-8"/>
+    <link rel="icon" href="img/icon.png">
+    <style>
+      body {
+        margin: 0;
+        display: grid;
+        grid-template-columns: auto 20rem;
+        grid-template-rows: auto;
+        width: 100vw;
+        max-width: 1900px;
+        height: 100vh;
+        position: relative;
+        overflow-x: hidden;
+      }
+
+      main {
+        position: relative;
+      }
+
+      canvas {
+        width: 100%;
+      }
+
+      .hracipole {
+        position: relative;
+        display: none;
+      }
+
+      .tank {
+        background-image: url("img/tankp.png");
+        background-size: cover;
+        height: 37.5em;
+        width: 75em;
+        position: absolute;
+        transform: translate(-50%,-100%);
+        transform-origin: 0% 0%;
+      }
+
+      .tree {
+        position: absolute;
+        transform: translate(-50%,-100%);
+        height: 65em;
+        width: auto;
+      }
+
+      .cannon {
+        background-color: black;
+        height: 5em;
+        width: 27em;
+        position: absolute;
+        transform: translate(10.5em,6em);
+        transform-origin: 37.5em 8.5em;
+      }
+
+      .kulka {
+        width: 3em;
+        height: 3em;
+        background-color: red;
+        position: absolute;
+      }
+
+      aside {
+        width: 20rem;
+        display: grid;
+        grid-template-columns: auto;
+        border: solid 1px black;
+        border-top: 0px;
+        height: 99%;
+        grid-template-rows: 3rem auto 3rem
+      }
+
+      input {
+        border: black solid 0.5rem;
+        padding: 0.25rem;
+      }
+
+      .switchg {
+        padding: 1rem;
+        text-align: center;
+        display: block;
+        border-bottom: 1px solid black;
+        background-image: url("img/globalchat.jpg");
+        background-size: cover;
+        color: white;
+      }
+
+      .switchl {
+        padding: 1rem;
+        text-align: center;
+        display: block;
+        border-bottom: 1px solid black;
+        background-image: url("img/localchat.jpg");
+        background-size: cover;
+        background-position: center;
+        color: white;
+      }
+
+      ul.menu {
+        display: inline-block;
+        width: 20rem;
+        margin: 2.5rem;
+        padding-left: 0;
+      }
+
+      .upgrade {
+        display: table;
+        margin : auto;
+        margin-top: -15rem;
+        padding: 2rem;
+        border: 1px solid grey;
+        border-radius: 2rem;
+        background-color: rgba(255,255,255,0.7);
+        backdrop-filter: blur(8px);
+        transition: margin-top 1s;
+      }
+
+      li {
+        list-style-type: none;
+        border: 1px solid black ;
+        border-bottom: 0px solid black ;
+        background-color: white;
+      }
+
+      ul :last-child {
+        border-bottom: 1px solid black ;
+      }
+
+      @media screen and (max-width: 510px) {
+        body {
+          background-color: lightgreen;
+        }
+      }
+
+      .gamelobby {
+        max-width: 1600px;
+      }
+
+      .centr {
+        display: table;
+        margin-left : auto;
+        margin-right : auto;
+      }
+
+      .seznamhraci {
+        background-color: #EAEFF3;
+        border: 2px solid grey ;
+        margin-top: 2rem;
+      }
+
+      #seznamhracu {
+        display: table;
+        margin: 2rem auto;
+      }
+
+      p.alert:hover {
+        opacity: 1 !important;
+      }
+
+      .login.page {
+        background-color: #000;
+      }
+
+      .login.page .form {
+        height: 100px;
+        margin-top: -100px;
+        position: absolute;
+        text-align: center;
+        top: 50%;
+        width: 100%;
+      }
+
+      .login.page .form .usernameInput {
+        background-color: transparent;
+        border: none;
+        border-bottom: 2px solid #fff;
+        outline: none;
+        padding-bottom: 15px;
+        text-align: center;
+        width: 400px;
+      }
+
+      .login.page .title {
+        font-size: 200%;
+      }
+
+      .login.page .usernameInput {
+        font-size: 200%;
+        letter-spacing: 3px;
+      }
+
+      .login.page .title, .login.page .usernameInput {
+        color: #EAEFF3;
+        font-weight: 100;
+      }
+
+      .log {
+        color: gray;
+        font-size: 70%;
+        margin: 5px;
+        text-align: center;
+      }
+
+      .message {
+        padding: 0 0.75rem;
+        font-weight: bold;
+      }
+
+      .username {
+        margin-right: 0.25rem;
+      }
+      .promo-new-btn:hover {
+        text-decoration: none;
+        cursor: pointer;
+        background-size: 100% 400%;
+      }
+      .promo-new-btn {
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: flex;
+        -webkit-box-pack: center;
+        -ms-flex-pack: center;
+        justify-content: center;
+        -webkit-box-align: center;
+        -ms-flex-align: center;
+        align-items: center;
+        font-family: RobotoCondensed;
+        padding: 12px 0px;
+        font-weight: 700;
+        text-transform: uppercase;
+        background-image: -webkit-gradient(linear,left bottom,left top,from(#de2414),to(#fc611d));
+        background-image: linear-gradient(0deg,#de2414 0,#fc611d);
+        background-size: 100% 100%;
+        color: #fff;
+        -webkit-transition: all .3s;
+        transition: all .3s;
+        font-size: 18px;
+        line-height: 24px;
+        text-align: center;
+        outline: 0;
+        -webkit-box-sizing: inherit;
+        box-sizing: inherit;
+        text-decoration: none;
+        border: 0;
+      }
+      .hiscreen{
+        margin-top: 10vh;
+      }
+      .chat{
+        overflow-y: auto;
+      }
+    </style>
+  </head>
+  <body onresize="resize()" onload="resize()">
+    <main>
+      <div class="hracipole">
+        <canvas id="Canvas"></canvas>
+        <div class="tanky"></div>
+        <div class="stromy"></div>
+      </div>
+      <div class="centr gamelobby" style="display: none;">
+        <div class="centr seznamhraci">
+          <ul class="menu centr" id="seznamhracu">
+            <li>1</li>
+            <li>2</li>
+          </ul>
+          <div class="taemhraci centr">
+            <ul class="menu" id="team1">
+              <li>1</li>
+              <li>2</li>
+            </ul>
+            <ul class="menu" id="team2">
+              <li>1</li>
+              <li>2</li>
+            </ul>
+          </div>
+        </div>
+        <div style="width: 40rem;height: 20rem;padding: 0.5rem;margin: 0.5rem auto;background-color:#EAEFF3;border: 2px solid grey ;">
+          <p style="text-align: center;font-weight: bold;">Můžeš také poslat invite a zahrát si s někím.</p>
+          <input class="centr" style="width: 98%;border-width: 2px;border-style: inset;border-color: -internal-light-dark-color(rgb(118, 118, 118), rgb(195, 195, 195));border-image: initial;" id="inviteinput">
+          <ul id="members" style="height: 12rem;width: 100%;overflow-y: auto;"></ul>
+        </div>
+        <div style="width: 100%;position: absolute;top:0">
+          <div class="upgrade">
+            <ul class="menu" id="nabojemenu">
+              <li>1</li>
+              <li>2</li>
+            </ul>
+            <ul class="menu" id="upgrademenu">
+              <li>1</li>
+              <li>2</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="hiscreen">
+        <input type="button" id="Quckgame" value="Rychlá hra" class="promo-new-btn centr" style="width: 15rem;">
+        <div style="width: 40rem;height: 20rem;padding: 0.5rem;margin: 0.5rem auto;background-color:#EAEFF3;border: 2px solid grey ;">
+          <p style="text-align: center;font-weight: bold;">Sem ti přijdou invity.</p>
+          <ul id="invites" style="height: 14rem;width: 100%;overflow-y: auto;">
+          </ul>
+        </div>
+      </div>
+    </main>
+    <aside>
+      <div id="rs" class="switchg" onclick='switchchat()'>Global chat</div>
+      <div class="chat"></div>
+      <input type="text" id="mes">
+    </aside>
+    <p class="alert" style="position: absolute;left: 0;top: 0em;margin: 3rem;background-color: white;padding: 1rem;" onmouseleave="opal=1" onmousemove="opal=1"></p>
+    <div class="login page" style="height: 100vh;width: 100vw;position: absolute;left: 0;top: 0;">
+      <div class="form">
+        <h3 class="title">Napiš svoji přezdívku?</h3>
+        <input class="usernameInput" type="text" maxlength="32"/>
+      </div>
+    </div>
+    <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="perlin.js"></script>
+    <script src="js.js"></script>
+  </body>
 </html>

@@ -15,6 +15,22 @@ var memnum=0
 var members = []
 var membersact={}
 var lobbyid=0
+queue=[]
+logs=[]
+function rcolor(){
+  r=127+Math.round(127*Math.random())
+  g=127+Math.round(127*Math.random())
+  b=127+Math.round(127*Math.random())
+  color="#"+r.toString(16)+g.toString(16)+b.toString(16);
+  return color
+}
+function logit(mes){
+  var d = new Date();
+  mes=d.getHours()+":"+d.getMinutes()+":"+d.getSeconds()+":"+d.getMilliseconds()+"<br>"+mes
+  io.to('log').emit("nlog",mes)
+  console.log(mes)
+  logs[logs.length]=mes
+}
 io.on('connection', (socket) => {
   socket.on('add user', (username) => {
     if(members.indexOf(username)==-1){
@@ -52,11 +68,12 @@ io.on('connection', (socket) => {
           return el != socket.username;
         });
         memnum=memnum-1
+        tolog="<div style='background-color:"+rcolor()+";padding:1rem;margin:1rem;box-sizing: border-box;'><h2>"+socket.username+" se odpojil</h2>čekárna "+JSON.stringify(queue)+"<br>"+JSON.stringify(members)+"</div>"
+     
       }
       catch(err){
-        tolog=""
+        tolog="<div style='background-color:"+rcolor()+";padding:1rem;margin:1rem;box-sizing: border-box;'><h2>Velkej Debil co není schopen se lognout se odpojil</h2>čekárna "+JSON.stringify(queue)+"<br>"+JSON.stringify(members)+"<br>"+err+"</div>"
       }}
-      tolog+="<div style='background-color:"+rcolor()+";padding:1rem;margin:1rem;box-sizing: border-box;'><h2>"+socket.username+" se odpojil</h2>čekárna "+JSON.stringify(queue)+"<br>"+JSON.stringify(members)+"</div>"
       logit(tolog)
       io.emit('players',membersact)
   });
@@ -89,4 +106,41 @@ io.on('connection', (socket) => {
     socket.join(data[0])
     socket.emit('in room',data[1])
   });
+  socket.on('new message', (data) => {
+    // we tell the client to execute 'new message'
+    logit("OD: "+socket.username+" Do: "+data[1]+" Co: "+data[0]+"<br>");
+    if(data[1]=="g"){
+    socket.broadcast.emit('new message', {
+      username: socket.username,
+      message: data[0],
+      skupina: data[1]
+    },true);}else{
+      socket.broadcast.to(data[1]).emit('new message', {
+        username: socket.username,
+        message: data[0],
+        skupina: data[1]
+      },true);
+    }
+  });
+  socket.on('acceptinvite',data=>{
+    user1=socket.username
+    user2=data
+    if(membersact[user1].room=="" && membersact[user2].room==""){
+      socket.join(lobbyid)
+      socket.emit('in room',user2)
+      socket.to(membersact[user2].id).emit("jj",[lobbyid,user1])
+      membersact[user1].active=true
+      membersact[user1].rival=user2
+      membersact[user1].room=lobbyid
+      membersact[user2].active=true
+      membersact[user2].rival=user1
+      membersact[user2].room=lobbyid
+      io.emit('players',membersact)
+      lobbyid++
+      queue=queue.filter(function (el) {
+        return el != user1;});
+      queue=queue.filter(function (el) {
+        return el != user2;});
+      }
+})
 })
