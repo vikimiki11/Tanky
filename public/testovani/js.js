@@ -8,15 +8,21 @@ function resize(){
   }
 }
 function switchchat() {
-  if(!(document.querySelector("#rs").className=="switchl"||membersact[username].room=="")){
-    document.querySelector("#rs").className="switchl";document.querySelector("#rs").innerHTML="Local chat"
+  sa=document.querySelector("#rs").className
+  if(document.querySelector("#rs").className=="switchg"){
+    if(membersact[username].room!=""){
+      document.querySelector("#rs").className="switchl";document.querySelector("#rs").innerHTML="Local chat"
+    }
   }else{
     document.querySelector("#rs").className="switchg";document.querySelector("#rs").innerHTML="Global chat"
   }
-  document.querySelector(".chat").innerHTML=""
-  rs=document.querySelector("#rs").className.split("switch")[1]
-  for(i=0;i<zpravy[rs].length;i++){
-    addChatMessage(zpravy[rs][i],false)
+  if(document.querySelector("#rs").className!=sa){
+    document.querySelector(".chat").innerHTML=""
+    rs=document.querySelector("#rs").className.split("switch")[1]
+    if(rs!="g"){rs=membersact[username].room;if(typeof zpravy[membersact[username].room]=="undefined"){zpravy[membersact[username].room]=[]}}
+    for(i=0;i<zpravy[rs].length;i++){
+      addChatMessage(zpravy[rs][i],false)
+    }
   }
 }
 if (window.location.hostname == "localhost") {
@@ -441,6 +447,7 @@ socket.on('login', (data)=>{
   //idiooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooot
 }
 );
+
 socket.on('denied', ()=>{
   alert("již použité jméno")
   location.reload();
@@ -614,7 +621,7 @@ socket.on('new message', (data)=>{
 socket.on('disconnect', ()=>{
   log('you have been disconnected');
   alert("Byl jsi odpojen")
-  location.reload
+  location.reload()
 }
 );
 
