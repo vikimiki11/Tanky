@@ -20,7 +20,7 @@ function switchchat() {
     document.querySelector(".chat").innerHTML=""
     rs=document.querySelector("#rs").className.split("switch")[1]
     if(rs!="g"){rs=membersact[username].room;if(typeof zpravy[membersact[username].room]=="undefined"){zpravy[membersact[username].room]=[]}}
-    for(i=0;i<zpravy[rs].length;i++){
+    for(let i=0;i<zpravy[rs].length;i++){
       addChatMessage(zpravy[rs][i],false)
     }
   }
@@ -42,9 +42,9 @@ tick = 1000 / 60
 errory = []
 tanky = []
 kulky = []
-for (i = 0; i < mapax; i++) {
+for (let i = 0; i < mapax; i++) {
   mapas[i] = []
-  for (y = 0; y < mapay; y++) {
+  for (let y = 0; y < mapay; y++) {
       mapas[i][y] = true
   }
 }
@@ -61,12 +61,12 @@ function init() {
       if (pohyb == "") {
           if (event.keyCode == 37) {
               pohyb = setInterval(function() {
-                  brm(-1, tanky[0])
+                  brm(-1, tanky[mujtank])
               }, tick)
           } else {
               if (event.keyCode == 39) {
                   pohyb = setInterval(function() {
-                      brm(1, tanky[0])
+                      brm(1, tanky[mujtank])
                   }, tick)
               }
           }
@@ -74,12 +74,12 @@ function init() {
       if (pal == "") {
           if (event.keyCode == 38) {
               pal = setInterval(function() {
-                  mir(-1, tanky[0])
+                  mir(-1, tanky[mujtank])
               }, tick)
           } else {
               if (event.keyCode == 40) {
                   pal = setInterval(function() {
-                      mir(1, tanky[0])
+                      mir(1, tanky[mujtank])
                   }, tick)
               }
           }
@@ -95,12 +95,9 @@ function init() {
           pal = ""
       }
       if (event.keyCode == 32) {
-          fire(tanky[0], "viki", 8)
+          fire(tanky[mujtank], "viki", 8)
       }
   })
-  createterain(Math.random() * 99);
-  aktualizace();
-  spawntrees();
 }
 
 function aktualizace() {
@@ -132,9 +129,9 @@ function createterain(iseed) {
   mapa = JSON.parse(JSON.stringify(mapas));
   x = seed
   y = seed * 9
-  for (xt = 0; xt < mapa.length; xt++) {
+  for (let xt = 0; xt < mapa.length; xt++) {
       n = mapay - ((noise.simplex2(x, y) + 1) / 10 + 0.2) * mapay
-      for (i = 0; i < n; i++) {
+      for (let i = 0; i < n; i++) {
           mapa[xt][i] = false
       }
       x = x + 0.002
@@ -143,6 +140,9 @@ function createterain(iseed) {
 }
 
 function spawntank(x, owner) {
+  if(owner==username){
+    mujtank=tanky.length
+  }
   pos = tanky.length
   tanky[pos] = {}
   tanky[pos].pos = pos
@@ -152,8 +152,8 @@ function spawntank(x, owner) {
   tanky[pos].rotate = 0
   tanky[pos].own = owner
   document.querySelector(".tanky").innerHTML += '<div class="tank" id="' + owner + '" style="left:' + x + 'em;top:0em"><div class="cannon"></div></div>'
-  mir(true, tanky[pos])
-  mir(false, tanky[pos])
+  mir(1, tanky[pos])
+  mir(-1, tanky[pos])
   tanky[pos].gravity = function(jump, pos, up) {
       if (mapa[Math.round(this.x)][Math.round(this.y)] == false) {
           this.y += jump
@@ -162,7 +162,9 @@ function spawntank(x, owner) {
           if (jump > 2) {
               up = true
           }
-          this.gravityt(jump, pos, true)
+          setTimeout(function() {
+            tanky[pos].gravity(jump, pos, true)
+          }, tick,jump, pos)
       } else {
           rotation(this)
           if (up) {
@@ -174,11 +176,6 @@ function spawntank(x, owner) {
           }
           document.querySelector("#" + this.own).style.top = (this.y) + "em"
       }
-  }
-  tanky[pos].gravityt = function(jump, pos, up) {
-      setTimeout(function() {
-          tanky[pos].gravity(jump, pos, true)
-      }, tick)
   }
   tanky[pos].gravity(0, pos, true)
 }
@@ -209,7 +206,7 @@ function dtr(deg) {
 function rotation(ob) {
   zmena = 0
   forpm = [1, -1]
-  for (i = 0; i < 2; i++) {
+  for (let i = 0; i < 2; i++) {
       found = false
       smer = mapa[Math.round(ob.x + (25 * forpm[i]))][Math.round(ob.y)]
       krok = 0;
@@ -241,7 +238,7 @@ function rotation(ob) {
 updown = [-2, -1, 0, 1, 2, 3, 4]
 function brm(smer, ob) {
   mem = ob.x
-  for (i = 0; i < updown.length; i++) {
+  for (let i = 0; i < updown.length; i++) {
       if (mapa[Math.round(ob.x + smer)][Math.round(ob.y + updown[i])] != mapa[Math.round(ob.x + smer)][Math.round(ob.y + updown[i] - 1)]) {
           if (updown[i] < 0) {
               ob.x += (smer / (2 - updown[i]))
@@ -261,6 +258,7 @@ function brm(smer, ob) {
   } else {
       rotation(ob)
   }
+  send()
 }
 
 function mir(smer, ob) {
@@ -273,6 +271,7 @@ function mir(smer, ob) {
       }
   }
   document.querySelector("#" + ob.own + " .cannon").style.transform = "rotate(" + ob.aim + "deg)translate(10.5em,6em)"
+  send()
 }
 
 function fire(ob, typ, speed) {
@@ -288,10 +287,10 @@ function fire(ob, typ, speed) {
   ys = Math.sqrt(hore / ((xcan * xcan / (ycan * ycan)) + 1))
   xs = Math.sqrt(hore / ((ycan * ycan / (xcan * xcan)) + 1))
   if (ob.rotate + ob.aim < 180 && 0 < ob.rotate + ob.aim) {
-      ys = ys * (-1)
+    ys = ys * (-1)
   }
   if (ob.rotate + ob.aim < 90 && -90 < ob.rotate + ob.aim) {
-      xs = xs * (-1)
+    xs = xs * (-1)
   }
   letim(xs, ys, kulky[pos])
 }
@@ -341,9 +340,9 @@ function removeter(xp, yp, r) {
       x++
   }
   qtf = [-1, 1]
-  for (i = 0; i < qd.length; i++) {
-      for (x = 0; x < 2; x++) {
-          for (y = 0; y < 2; y++) {
+  for (let i = 0; i < qd.length; i++) {
+      for (let x = 0; x < 2; x++) {
+          for (let y = 0; y < 2; y++) {
               try {
                   mapa[xp + qd[i][0] * qtf[x]][yp + qd[i][1] * qtf[y]] = false
               } catch (err) {
@@ -368,12 +367,6 @@ function removeElement(element) {
 }
 
 init()
-setTimeout(function() {
-  spawntank(200, "ahoj")
-}, 1000)
-setTimeout(function() {
-  spawntank(500, "aho2")
-}, 1000)
 opal = 0
 function malert(mes) {
   document.querySelector(".alert").innerHTML = mes;
@@ -396,7 +389,7 @@ socket.on('players', data=>{
       }
   }
   document.querySelector("#members").innerHTML = ""
-  for (i in membersact) {
+  for (let i in membersact) {
       if (i != username && membersact[i].active === 0) {
           document.querySelector("#members").innerHTML = document.querySelector("#members").innerHTML + "<li value='" + i + "'>" + i + "</li>"
       }
@@ -415,7 +408,7 @@ socket.on('players', data=>{
       return membersact[el].active === 0;
   });
   document.querySelector("#members").innerHTML = ""
-  for (i = 0; i < invites.length; i++) {
+  for (let i = 0; i < invites.length; i++) {
       if (invites[i] != username && membersact[invites[i]].active === 0) {
           document.querySelector("#members").innerHTML = "<li value='" + invites[i] + "'>" + invites[i] + "</li>" + document.querySelector("#invites").innerHTML
       }
@@ -463,18 +456,28 @@ socket.on('in queue', ()=>{
 }
 )
 
-socket.on('in room', (coplayername)=>{
-  rival = coplayername
+socket.on('in room', (data)=>{
+  roomdata = data[1]
+  rival = data[0]
   document.querySelector("#rs").className="switchl";document.querySelector("#rs").innerHTML="Local chat"
   document.querySelector(".chat").innerHTML=""
   if(typeof zpravy[membersact[username].room]=="undefined"){zpravy[membersact[username].room]=[]}
-  for(i=0;i<zpravy[membersact[username].room].length;i++){
+  for(let i=0;i<zpravy[membersact[username].room].length;i++){
     addChatMessage(zpravy[rs][i],false)
   }
   log("Začal jsi hru s: " + rival)
+  tanky=[]
+  createterain(roomdata.seed);
+  aktualizace();
+  spawntrees();
+  for(let i=0;i<roomdata.sp.length;i++){
+    spawntank(roomdata.sp[i][0],roomdata.sp[i][1]);
+  }
+  ingame=true
   $(".hiscreen").hide()
   $(".hracipole").show()
   $('.gamelobby').hide()
+  resize()
   inqgame = true
   //idiooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooot
 }
@@ -593,7 +596,7 @@ socket.on('recieveinvite', data=>{
       invites[invites.length] = data[0]
   }
   document.querySelector("#invites").innerHTML = ""
-  for (i = 0; i < invites.length; i++) {
+  for (let i = 0; i < invites.length; i++) {
       if (invites[i] != username && membersact[invites[i]].active === 0) {
           document.querySelector("#invites").innerHTML = "<li value='" + invites[i] + "'>" + invites[i] + "</li>" + document.querySelector("#invites").innerHTML
       }
@@ -642,3 +645,37 @@ socket.on('waiting for accept', ()=>{
   malert("Invite byl poslán")
 }
 )
+sendqueue=[]
+sendinprogress=false
+function send(){
+  if(roomdata.player[roomdata.activeid]==username){
+    if(!sendinprogress){
+      setTimeout(function(){actualsend()},200)
+      sendinprogress=true
+    }
+    sendqueue[sendqueue.length]=[JSON.parse(JSON.stringify(tanky)),new Date().getTime()]
+  }
+}
+function actualsend(){
+  console.log(sendqueue)
+  socket.emit("sendstate",sendqueue)
+  sendinprogress=false
+  sendqueue=[]
+}
+firsttimehe=false
+socket.on("sendstate",(movequeue)=>{
+  for(i=0;i<movequeue.length;i++){
+    if(firsttimehe==false){
+      firsttimemy=new Date().getTime()
+      firsttimehe=movequeue[0][1]
+    }
+    setTimeout(write,movequeue[i][1]-firsttimehe-(new Date().getTime()-firsttimemy)+300,movequeue[i][0])
+  }
+})
+function write(movequeue){
+  tanky=movequeue;
+  settotanks=""
+  for(let y=0;y<tanky.length;y++){
+    settotanks+='<div class="tank" id="'+tanky[y].own+'" style="left: '+tanky[y].x+'em; top: '+tanky[y].y+'em; transform: rotate('+tanky[y].rotate+'deg) translate(-37.5em, -37.5em);"><div class="cannon" style="transform: rotate('+tanky[y].aim+'deg) translate(10.5em, 6em);"></div></div>'
+};document.querySelector(".tanky").innerHTML=settotanks
+}

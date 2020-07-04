@@ -15,8 +15,9 @@ var memnum=0
 var members = []
 var membersact={}
 var lobbyid=0
-queue=[]
-logs=[]
+var queue=[]
+var logs=[]
+var roominf=[]
 function rcolor(){
   r=127+Math.round(127*Math.random())
   g=127+Math.round(127*Math.random())
@@ -85,7 +86,12 @@ io.on('connection', (socket) => {
       user1=socket.username
       user2=queue[0]
       if(membersact[user1].room=="" && membersact[user2].room==""){
-        socket.emit('in room',user2)
+        roominf[lobbyid]={}
+        roominf[lobbyid].seed=Math.random()*9999999
+        roominf[lobbyid].player=[user2,user1]
+        roominf[lobbyid].activeid=0
+        roominf[lobbyid].sp=[[200,user2],[1400,user1]]
+        socket.emit('in room',[user2,roominf[lobbyid]])
         socket.join(lobbyid)
         socket.to(membersact[queue[0]].id).emit("jj",[lobbyid,user1])
         membersact[user1].active=true
@@ -97,14 +103,15 @@ io.on('connection', (socket) => {
         io.emit('players',membersact)
         lobbyid++
         queue=queue.filter(function (el) {
-          return el != queue[0];});
+          return el != queue[0];
+        });
       }
     }
     console.log("čekárna"+queue);
   });
   socket.on('jj', (data) => {
     socket.join(data[0])
-    socket.emit('in room',data[1])
+    socket.emit('in room',[data[1],roominf[data[0]]])
   });
   socket.on('new message', (data) => {
     // we tell the client to execute 'new message'
@@ -143,4 +150,7 @@ io.on('connection', (socket) => {
         return el != user2;});
       }
 })
+  socket.on('sendstate', (data) => {
+    socket.broadcast.to(membersact[socket.username].room).emit('sendstate',data)
+  });
 })

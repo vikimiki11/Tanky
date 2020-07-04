@@ -463,8 +463,9 @@ socket.on('in queue', ()=>{
 }
 )
 
-socket.on('in room', (coplayername)=>{
-  rival = coplayername
+socket.on('in room', (data)=>{
+  roomdata = data[1]
+  rival = data[0]
   document.querySelector("#rs").className="switchl";document.querySelector("#rs").innerHTML="Local chat"
   document.querySelector(".chat").innerHTML=""
   if(typeof zpravy[membersact[username].room]=="undefined"){zpravy[membersact[username].room]=[]}
