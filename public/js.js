@@ -1,5 +1,6 @@
 connected=false
 zpravy={g:[]}
+playing=false
 function resize(){
   document.querySelector("aside").style.height=window.innerHeight-1+"px"
   if(connected){
@@ -56,7 +57,7 @@ canvas.height = mapay;
 pohyb = ""
 pal = ""
 window.addEventListener('keydown', function(event) {
-    if (pohyb == "") {
+    if (pohyb == "" && playing==true) {
         if (event.keyCode == 37) {
             pohyb = setInterval(function() {
                 brm(-1, tanky[mujtank])
@@ -69,7 +70,7 @@ window.addEventListener('keydown', function(event) {
             }
         }
     }
-    if (pal == "") {
+    if (pal == "" && playing==true) {
         if (event.keyCode == 38) {
             pal = setInterval(function() {
                 mir(-1, tanky[mujtank])
@@ -93,7 +94,7 @@ window.addEventListener('keyup', function(event) {
         pal = ""
     }
     if (event.keyCode == 32) {
-        fire(tanky[mujtank], "viki", 8)
+        fire(tanky[mujtank], "viki", 8,true)
     }
 })
 
@@ -234,6 +235,7 @@ function rotation(ob) {
 
 updown = [-2, -1, 0, 1, 2, 3, 4]
 function brm(smer, ob) {
+  if(playing==false){clearInterval(pohyb)}
   mem = ob.x
   for (let i = 0; i < updown.length; i++) {
       if (mapa[Math.round(ob.x + smer)][Math.round(ob.y + updown[i])] != mapa[Math.round(ob.x + smer)][Math.round(ob.y + updown[i] - 1)]) {
@@ -259,6 +261,7 @@ function brm(smer, ob) {
 }
 
 function mir(smer, ob) {
+  if(playing==false){clearInterval(pal)}
   ob.aim += smer
   if (ob.aim < 0) {
       ob.aim = 0
@@ -271,7 +274,7 @@ function mir(smer, ob) {
   send()
 }
 
-function fire(ob, typ, speed) {
+function fire(ob, typ, speed,cansend) {
   pos = kulky.length
   kulky[pos] = {}
   kulky[pos].typ = typ
@@ -289,6 +292,10 @@ function fire(ob, typ, speed) {
   if (ob.rotate + ob.aim < 90 && -90 < ob.rotate + ob.aim) {
     xs = xs * (-1)
   }
+  if(roomdata.player[roomdata.activeid]==username && playing==true && cansend==true){
+    socket.emit("fire",[[mujtank,typ,speed],[JSON.parse(JSON.stringify(tanky)),new Date().getTime()]])
+  }
+  playing=false
   letim(xs, ys, kulky[pos])
 }
 
@@ -455,6 +462,9 @@ socket.on('in queue', ()=>{
 
 socket.on('in room', (data)=>{
   roomdata = data[1]
+  if(roomdata.player[roomdata.activeid]==username){
+    playing=true
+  }
   rival = data[0]
   document.querySelector("#rs").className="switchl";document.querySelector("#rs").innerHTML="Local chat"
   document.querySelector(".chat").innerHTML=""
@@ -655,7 +665,9 @@ function send(){
 }
 function actualsend(){
   console.log(sendqueue)
-  socket.emit("sendstate",sendqueue)
+  if(roomdata.player[roomdata.activeid]==username){
+    socket.emit("sendstate",sendqueue)
+  }
   sendinprogress=false
   sendqueue=[]
 }
@@ -671,8 +683,51 @@ socket.on("sendstate",(movequeue)=>{
 })
 function write(movequeue){
   tanky=movequeue;
+  for(pos=0;pos<tanky.length;pos++){
+    tanky[pos].gravity = function(jump, pos, up) {
+      if (mapa[Math.round(this.x)][Math.round(this.y)] == false) {
+          this.y += jump
+          jump += 10 / (1000 / tick)
+          document.querySelector("#" + this.own).style.top = this.y + "em"
+          if (jump > 2) {
+              up = true
+          }
+          setTimeout(function() {
+            tanky[pos].gravity(jump, pos, true)
+          }, tick,jump, pos)
+      } else {
+          rotation(this)
+          if (up) {
+              p = 1
+              while (mapa[Math.round(this.x)][Math.round(this.y - p)] == true) {
+                  p++
+              }
+              this.y = this.y - p + 2
+          }
+          document.querySelector("#" + this.own).style.top = (this.y) + "em"
+      }
+  }
+  }
   settotanks=""
   for(let y=0;y<tanky.length;y++){
     settotanks+='<div class="tank" id="'+tanky[y].own+'" style="left: '+tanky[y].x+'em; top: '+tanky[y].y+'em; transform: rotate('+tanky[y].rotate+'deg) translate(-37.5em, -37.5em);background-image: url(\'img/'+ getUsernameColor(tanky[y].own)+'.png\');"><div class="cannon" style="transform: rotate('+tanky[y].aim+'deg) translate(10.5em, 6em);"></div></div>'
-};document.querySelector(".tanky").innerHTML=settotanks
+  }
+  document.querySelector(".tanky").innerHTML=settotanks
 }
+socket.on("fire",(data)=>{
+  if(firsttimehe==false){
+    firsttimemy=new Date().getTime()
+    firsttimehe=data[0][1][1]
+  }
+  if(roomdata.player[roomdata.activeid]!=username){
+    setTimeout(function(){
+    fire(tanky[data[0][0][0]],data[0][0][1],data[0][0][2])
+    },data[0][1][1]-firsttimehe-(new Date().getTime()-firsttimemy)+300)
+    write(data[0][1][0])
+  }
+  setTimeout(function(data){
+    roomdata=data[1]
+    if(roomdata.player[roomdata.activeid]==username){
+      playing=true
+    }},data[0][1][1]-firsttimehe-(new Date().getTime()-firsttimemy)+305,data)
+})

@@ -153,4 +153,14 @@ io.on('connection', (socket) => {
   socket.on('sendstate', (data) => {
     socket.broadcast.to(membersact[socket.username].room).emit('sendstate',data)
   });
+  socket.on('fire',(data)=>{
+    roominf[membersact[socket.username].room].activeid++
+    //roominf[lobbyid].player
+    if(roominf[membersact[socket.username].room].activeid==roominf[membersact[socket.username].room].player.length){
+      roominf[membersact[socket.username].room].activeid=0
+    }
+    console.log(membersact[socket.username].room)
+    console.log([data,roominf[membersact[socket.username].room]])
+    io.to(membersact[socket.username].room).emit("fire",[data,roominf[membersact[socket.username].room]])
+  })
 })
