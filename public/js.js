@@ -48,57 +48,54 @@ for (let i = 0; i < mapax; i++) {
       mapas[i][y] = true
   }
 }
-
-function init() {
-  canvas = document.getElementById('Canvas');
-  context = canvas.getContext('2d');
-  context.imageSmoothingEnabled = false
-  canvas.width = mapax;
-  canvas.height = mapay;
-  pohyb = ""
-  pal = ""
-  window.addEventListener('keydown', function(event) {
-      if (pohyb == "") {
-          if (event.keyCode == 37) {
-              pohyb = setInterval(function() {
-                  brm(-1, tanky[mujtank])
-              }, tick)
-          } else {
-              if (event.keyCode == 39) {
-                  pohyb = setInterval(function() {
-                      brm(1, tanky[mujtank])
-                  }, tick)
-              }
-          }
-      }
-      if (pal == "") {
-          if (event.keyCode == 38) {
-              pal = setInterval(function() {
-                  mir(-1, tanky[mujtank])
-              }, tick)
-          } else {
-              if (event.keyCode == 40) {
-                  pal = setInterval(function() {
-                      mir(1, tanky[mujtank])
-                  }, tick)
-              }
-          }
-      }
-  })
-  window.addEventListener('keyup', function(event) {
-      if (event.keyCode == 37 || event.keyCode == 39) {
-          clearInterval(pohyb)
-          pohyb = ""
-      }
-      if (event.keyCode == 38 || event.keyCode == 40) {
-          clearInterval(pal)
-          pal = ""
-      }
-      if (event.keyCode == 32) {
-          fire(tanky[mujtank], "viki", 8)
-      }
-  })
-}
+canvas = document.getElementById('Canvas');
+context = canvas.getContext('2d');
+context.imageSmoothingEnabled = false
+canvas.width = mapax;
+canvas.height = mapay;
+pohyb = ""
+pal = ""
+window.addEventListener('keydown', function(event) {
+    if (pohyb == "") {
+        if (event.keyCode == 37) {
+            pohyb = setInterval(function() {
+                brm(-1, tanky[mujtank])
+            }, tick)
+        } else {
+            if (event.keyCode == 39) {
+                pohyb = setInterval(function() {
+                    brm(1, tanky[mujtank])
+                }, tick)
+            }
+        }
+    }
+    if (pal == "") {
+        if (event.keyCode == 38) {
+            pal = setInterval(function() {
+                mir(-1, tanky[mujtank])
+            }, tick)
+        } else {
+            if (event.keyCode == 40) {
+                pal = setInterval(function() {
+                    mir(1, tanky[mujtank])
+                }, tick)
+            }
+        }
+    }
+})
+window.addEventListener('keyup', function(event) {
+    if (event.keyCode == 37 || event.keyCode == 39) {
+        clearInterval(pohyb)
+        pohyb = ""
+    }
+    if (event.keyCode == 38 || event.keyCode == 40) {
+        clearInterval(pal)
+        pal = ""
+    }
+    if (event.keyCode == 32) {
+        fire(tanky[mujtank], "viki", 8)
+    }
+})
 
 function aktualizace() {
   imageData = context.getImageData(0, 0, canvas.width, canvas.height);
@@ -151,7 +148,7 @@ function spawntank(x, owner) {
   tanky[pos].aim = 180 - x / mapax * 180
   tanky[pos].rotate = 0
   tanky[pos].own = owner
-  document.querySelector(".tanky").innerHTML += '<div class="tank" id="' + owner + '" style="left:' + x + 'em;top:0em"><div class="cannon"></div></div>'
+  document.querySelector(".tanky").innerHTML += '<div class="tank" id="' + owner + '" style="left:' + x + 'em;top:0em;background-image: url(\'img/'+ getUsernameColor(owner)+'.png\');"><div class="cannon"></div></div>'      
   mir(1, tanky[pos])
   mir(-1, tanky[pos])
   tanky[pos].gravity = function(jump, pos, up) {
@@ -366,7 +363,6 @@ function removeElement(element) {
   element.parentNode.removeChild(element);
 }
 
-init()
 opal = 0
 function malert(mes) {
   document.querySelector(".alert").innerHTML = mes;
@@ -377,7 +373,8 @@ setInterval(function() {
   document.querySelector(".alert").style.opacity = opal
 }, 100)
 membersact = {}
-var COLORS = ['#e21400', '#91580f', '#f8a700', '#f78b00', '#58dc00', '#287b00', '#a8f07a', '#4ae8c4', '#3b88eb', '#3824aa', '#a700ff', '#d300e7'];
+//var COLORS = ['#e21400', '#91580f', '#f8a700', '#f78b00', '#58dc00', '#287b00', '#a8f07a', '#4ae8c4', '#3b88eb', '#3824aa', '#a700ff', '#d300e7'];
+var COLORS = ['0F0', '0EE', '22F', 'EE0', 'E00', 'F0F'];
 inqgame = false
 invites = []
 socket.on('players', data=>{
@@ -539,7 +536,7 @@ const log = (message)=>{
 const addChatMessage = (data,save)=>{
   rs=document.querySelector("#rs").className.split("switch")[1]
   if(rs==data.skupina || (rs=="l" && typeof data.skupina=="number")){
-  document.querySelector(".chat").innerHTML += '<p class="message" style="display: block;"><span class="username" style="color: ' + getUsernameColor(data.username) + ';">' + data.username + '</span><span class="messageBody">' + data.message + '</span></p>'}
+  document.querySelector(".chat").innerHTML += '<p class="message" style="display: block;"><span class="username" style="color: #' + getUsernameColor(data.username) + ';">' + data.username + '</span><span class="messageBody">' + data.message + '</span></p>'}
   if(typeof zpravy[data.skupina]=="undefined"){zpravy[data.skupina]=[]}
   if(save==true){zpravy[data.skupina][zpravy[data.skupina].length]=data}
 }
@@ -676,6 +673,6 @@ function write(movequeue){
   tanky=movequeue;
   settotanks=""
   for(let y=0;y<tanky.length;y++){
-    settotanks+='<div class="tank" id="'+tanky[y].own+'" style="left: '+tanky[y].x+'em; top: '+tanky[y].y+'em; transform: rotate('+tanky[y].rotate+'deg) translate(-37.5em, -37.5em);"><div class="cannon" style="transform: rotate('+tanky[y].aim+'deg) translate(10.5em, 6em);"></div></div>'
+    settotanks+='<div class="tank" id="'+tanky[y].own+'" style="left: '+tanky[y].x+'em; top: '+tanky[y].y+'em; transform: rotate('+tanky[y].rotate+'deg) translate(-37.5em, -37.5em);background-image: url(\'img/'+ getUsernameColor(tanky[y].own)+'.png\');"><div class="cannon" style="transform: rotate('+tanky[y].aim+'deg) translate(10.5em, 6em);"></div></div>'
 };document.querySelector(".tanky").innerHTML=settotanks
 }
