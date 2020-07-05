@@ -159,8 +159,6 @@ io.on('connection', (socket) => {
     if(roominf[membersact[socket.username].room].activeid==roominf[membersact[socket.username].room].player.length){
       roominf[membersact[socket.username].room].activeid=0
     }
-    console.log(membersact[socket.username].room)
-    console.log([data,roominf[membersact[socket.username].room]])
     io.to(membersact[socket.username].room).emit("fire",[data,roominf[membersact[socket.username].room]])
   })
 })
