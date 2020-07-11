@@ -1,6 +1,8 @@
 connected=false
 zpravy={g:[]}
 playing=false
+ammo={kulka:[0.98851402035289613535686750493829,0.98851402035289613535686750493829,1,25,12],glider:[]}//sablona:[slowx,slowy,gravitymultiplayer,radius,speed],
+
 function resize(){
   document.querySelector("aside").style.height=window.innerHeight-1+"px"
   if(connected){
@@ -94,7 +96,7 @@ window.addEventListener('keyup', function(event) {
         pal = ""
     }
     if (event.keyCode == 32) {
-        fire(tanky[mujtank], "viki", 8,true)
+        fire(tanky[mujtank], "kulka",true,1)
     }
 })
 
@@ -274,46 +276,50 @@ function mir(smer, ob) {
   send()
 }
 
-function fire(ob, typ, speed,cansend) {
-  pos = kulky.length
-  kulky[pos] = {}
-  kulky[pos].typ = typ
-  xcan = Math.cos(dtr(ob.rotate + ob.aim - 180) * -1)
-  ycan = Math.sin(dtr(ob.rotate + ob.aim - 180) * -1)
-  kulky[pos].x = ob.x - Math.sin(dtr(ob.rotate) * -1) * 30.5 + xcan * 27
-  kulky[pos].y = ob.y - Math.cos(dtr(ob.rotate) * -1) * 30.5 - ycan * 27
-  document.querySelector(".tanky").innerHTML += '<div class="kulka" id="' + typ + '" style="left:' + kulky[pos].x + 'em;top:' + kulky[pos].y + 'em"></div>'
-  hore = (xcan * xcan + ycan * ycan) * speed * speed
-  ys = Math.sqrt(hore / ((xcan * xcan / (ycan * ycan)) + 1))
-  xs = Math.sqrt(hore / ((ycan * ycan / (xcan * xcan)) + 1))
-  if (ob.rotate + ob.aim < 180 && 0 < ob.rotate + ob.aim) {
-    ys = ys * (-1)
+function fire(ob, typ, cansend, damagemulti) {
+  if(playing==true || cansend==false){
+    clearInterval(pal)
+    clearInterval(pohyb)
+    pos = kulky.length
+    kulky[pos] = {}
+    kulky[pos].typ = typ
+    xcan = Math.cos(dtr(ob.rotate + ob.aim - 180) * -1)
+    ycan = Math.sin(dtr(ob.rotate + ob.aim - 180) * -1)
+    kulky[pos].x = ob.x - Math.sin(dtr(ob.rotate) * -1) * 30.5 + xcan * 27
+    kulky[pos].y = ob.y - Math.cos(dtr(ob.rotate) * -1) * 30.5 - ycan * 27
+    document.querySelector(".tanky").innerHTML += '<div class="' + typ + '" id="' + typ + '" style="left:' + kulky[pos].x + 'em;top:' + kulky[pos].y + 'em"></div>'
+    hore = (xcan * xcan + ycan * ycan) * ammo[typ][4] * ammo[typ][4]
+    ys = Math.sqrt(hore / ((xcan * xcan / (ycan * ycan)) + 1))
+    xs = Math.sqrt(hore / ((ycan * ycan / (xcan * xcan)) + 1))
+    if (ob.rotate + ob.aim < 180 && 0 < ob.rotate + ob.aim) {
+      ys = ys * (-1)
+    }
+    if (ob.rotate + ob.aim < 90 && -90 < ob.rotate + ob.aim) {
+      xs = xs * (-1)
+    }
+    if(roomdata.player[roomdata.activeid]==username && playing==true && cansend==true){
+      socket.emit("fire",[[mujtank,typ, damagemulti],[JSON.parse(JSON.stringify(tanky)),new Date().getTime()]])
+    }
+    playing=false
+    letim(xs, ys, kulky[pos],typ, damagemulti)
   }
-  if (ob.rotate + ob.aim < 90 && -90 < ob.rotate + ob.aim) {
-    xs = xs * (-1)
-  }
-  if(roomdata.player[roomdata.activeid]==username && playing==true && cansend==true){
-    socket.emit("fire",[[mujtank,typ,speed],[JSON.parse(JSON.stringify(tanky)),new Date().getTime()]])
-  }
-  playing=false
-  letim(xs, ys, kulky[pos])
 }
 
-function letim(speedx, speedy, ob, typ) {
+function letim(speedx, speedy, ob, typ, damagemulti) {
   ob.x += speedx
   ob.y += speedy
   document.querySelector(".kulka").style.top = ob.y + "em"
   document.querySelector(".kulka").style.left = ob.x + "em"
-  speedx = speedx * 0.98851402035289613535686750493829
-  speedy = speedy * 0.98851402035289613535686750493829 + 10 / (1000 / tick)
+  speedx = speedx * ammo[typ][0]
+  speedy = speedy * ammo[typ][1] + (10 / (1000 / tick) * ammo[typ][2])
   if (Math.round(ob.x) > -1 && Math.round(ob.x) < mapax + 1 && Math.round(ob.y) < mapay + 1) {
       if (!mapa[Math.round(ob.x)][Math.round(ob.y)]) {
           setTimeout(function() {
-              letim(speedx, speedy, ob)
+              letim(speedx, speedy, ob, typ, damagemulti)
           }, tick)
       } else {
           removeElement(document.querySelector("#" + ob.typ))
-          removeter(Math.round(ob.x), Math.round(ob.y), 25)
+          removeter(Math.round(ob.x), Math.round(ob.y), ammo[typ][3])
       }
   } else {
       removeElement(document.querySelector("#" + ob.typ))
@@ -381,7 +387,7 @@ setInterval(function() {
 }, 100)
 membersact = {}
 //var COLORS = ['#e21400', '#91580f', '#f8a700', '#f78b00', '#58dc00', '#287b00', '#a8f07a', '#4ae8c4', '#3b88eb', '#3824aa', '#a700ff', '#d300e7'];
-var COLORS = ['0F0', '0EE', '22F', 'EE0', 'E00', 'F0F'];
+var COLORS = ['0F0', '0EE', '22F', 'EE0', 'E00', 'E0E'];
 inqgame = false
 invites = []
 socket.on('players', data=>{
@@ -721,7 +727,7 @@ socket.on("fire",(data)=>{
   }
   if(roomdata.player[roomdata.activeid]!=username){
     setTimeout(function(){
-    fire(tanky[data[0][0][0]],data[0][0][1],data[0][0][2])
+    fire(tanky[data[0][0][0]],data[0][0][1],false,data[0][0][2])
     },data[0][1][1]-firsttimehe-(new Date().getTime()-firsttimemy)+300)
     write(data[0][1][0])
   }
