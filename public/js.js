@@ -1,8 +1,11 @@
 connected=false
 zpravy={g:[]}
 playing=false
-ammo={kulka:[0.98851402035289613535686750493829,0.98851402035289613535686750493829,1,25,12],glider:[]}//sablona:[slowx,slowy,gravitymultiplayer,radius,speed],
-
+ammo={kulka:[0.98851402035289613535686750493829,0.98851402035289613535686750493829,1,25,12],glider:[0.995,0.995,0,25,12]}//sablona:[slowx,slowy,gravitymultiplayer,radius,speed],
+clearbum=[]
+for(let i=0;i<50*50;i++){
+  clearbum[i]=[0,0,0,0]
+}
 function resize(){
   document.querySelector("aside").style.height=window.innerHeight-1+"px"
   if(connected){
@@ -308,8 +311,8 @@ function fire(ob, typ, cansend, damagemulti) {
 function letim(speedx, speedy, ob, typ, damagemulti) {
   ob.x += speedx
   ob.y += speedy
-  document.querySelector(".kulka").style.top = ob.y + "em"
-  document.querySelector(".kulka").style.left = ob.x + "em"
+  document.querySelector("."+typ).style.top = ob.y + "em"
+  document.querySelector("."+typ).style.left = ob.x + "em"
   speedx = speedx * ammo[typ][0]
   speedy = speedy * ammo[typ][1] + (10 / (1000 / tick) * ammo[typ][2])
   if (Math.round(ob.x) > -1 && Math.round(ob.x) < mapax + 1 && Math.round(ob.y) < mapay + 1) {
@@ -325,11 +328,98 @@ function letim(speedx, speedy, ob, typ, damagemulti) {
       removeElement(document.querySelector("#" + ob.typ))
   }
 }
+bumnum=0
+bumy=[]
+function bum(x, y) {
+  document.querySelector(".tanky").innerHTML+="<canvas id=\"Canvas"+bumnum+"\" style='left:"+x+"em;top:"+y+"em;></canvas>"
+  bumy[bumnum] = {}
+  bumy[bumnum].kroky = 0
+  bumy[bumnum].id = bumnum
+  bumy[bumnum].canvas = document.querySelector("#Canvas"+bumnum)
+  bumy[bumnum].context = bumy[bumnum].canvas.getContext('2d');
+  bumy[bumnum].context.imageSmoothingEnabled = false
+  bumy[bumnum].imgdata=bumy[bumnum].context.getImageData(0, 0, canvas.width, canvas.height);
+  bumy[bumnum].context.width = 50;
+  bumy[bumnum].context.height = 50;
+  bumy[bumnum].flame=[]
+  bumy[bumnum].smoke=[]
+  bumy[bumnum].sharp=[]
+  for(let i=0;i<10;i++){
+    bumy[bumnum].sharp[i]=[25,50,Math.random()*2-1,Math.random()*-1]//bumy[bumnum].sharp[i][2]
+    multipli=Math.sqrt(2.5/(bumy[bumnum].sharp[i][2]*bumy[bumnum].sharp[i][2]+bumy[bumnum].sharp[i][3]*bumy[bumnum].sharp[i][3]))
+    bumy[bumnum].sharp[i][2]=bumy[bumnum].sharp[i][2]*multipli
+    bumy[bumnum].sharp[i][3]=bumy[bumnum].sharp[i][3]*multipli
+  }
+  bumnum++
+  postupbum(bumy[bumnum])
+}
+function postupbum(ob){
+  ob.imgdata.data
+  for(let i=0;i<ob.sharp.length;i++){
+    ob.sharp[i][0]+=ob.sharp[i][2]
+    ob.sharp[i][1]+=ob.sharp[i][3]
+  }
+  for(let i=0;i<ob.flame.length;i++){
+    ob.smoke[ob.flame.length]=[ob.flame[i][0],ob.flame[i][1],Math.random()*0.5+1,Math.random()*0.2,ob.kroky]//x,y,posunx,barva(0-1),kdyspawn
+  }
+  ob.flame=[]
+  if(ob.kroky<60){
+    for(let i=0;i<5;i++){
+      ob.flame[i]=[Math.random()*5+25,+Math.random()*2.5+47.5,Math.random()*0.5+1]//x,y,barva(0-1)
+    }
+  }
 
-function bum(x, y, ob) {
-  imageData = context.getImageData(0, 0, canvas.width, canvas.height);
-  imageData.data
-  context.putImageData(imageData, 0, 0);
+  for(let i=0;i<ob.smoke.length;i++){
+    ob.smoke[i][1]+=1
+    ob.smoke[i][0]+=ob.smoke[i][2]
+    ob.context.beginPath()
+    ob.context.arc(ob.smoke[i][0], ob.smoke[i][1], 2, 0, Math.PI * 2, false)
+    ob.context.strokeStyle = "rgb("+ob.smoke[i][3]*25+","+ob.smoke[i][3]*25+","+ob.smoke[i][3]*25+")"
+    ob.context.stroke()
+    ob.context.fillStyle = "rgb("+ob.smoke[i][3]*25+","+ob.smoke[i][3]*25+","+ob.smoke[i][3]*25+")"
+    ob.context.fill()
+  }
+
+  for(let i=0;i<ob.flame.length;i++){
+    ob.context.beginPath()
+    ob.context.arc(ob.flame[i][0], ob.flame[i][1], 2, 0, Math.PI * 2, false)
+    ob.context.strokeStyle = "rgb("+ob.flame[i][3]*25+","+ob.smoke[i][3]*25+","+ob.smoke[i][3]*25+")"
+    ob.context.stroke()
+    ob.context.fillStyle = this.color
+    ob.context.fill()
+  }
+
+  for(let i=0;i<ob.sharp.length;i++){
+    ob.context.beginPath()
+    ob.context.arc(ob.sharp[i][0], ob.sharp[i][1], 2, 0, Math.PI * 2, false)
+    ob.context.strokeStyle = "#FFAC00"
+    ob.context.stroke()
+    ob.context.fillStyle = "#FFAC00"
+    ob.context.fill()
+  }
+
+  // function terain(data) {
+  //   for (let i = 0; i < data.length; i++) {
+  //       data[i] = 0
+  //   }
+  //   for (let i = 0; i < data.length; i += 4) {
+  //       z = i / 4
+  //       if (mapa[z % mapax][Math.floor(z / mapax)]) {
+  //           let n = noise.simplex2(seed + ((z % mapax) / 14), seed + (z / mapax / 14))
+  //           if (n < 0.5) {
+  //               data[i + 1] = 255 + 100 * (n + 0.25)
+  //           } else {
+  //               data[i + 1] = 255
+  //           }
+  //           data[i + 3] = 255
+  //       }
+  //   }
+  // }
+  //ob.context.putImageData(imageData, 0, 0);
+  
+  if(ob.kroky<120){
+    setTimeout(function(ob){postupbum(ob)},tick,ob)
+  }
 }
 
 function removeter(xp, yp, r) {
