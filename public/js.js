@@ -6,6 +6,9 @@ clearbum=[]
 for(let i=0;i<50*50;i++){
   clearbum[i]=[0,0,0,0]
 }
+function simplexnoise(){
+  return noise.simplex2(Math.random()*999,Math.random()*999)*0.5+0.5
+}
 function resize(){
   document.querySelector("aside").style.height=window.innerHeight-1+"px"
   if(connected){
@@ -331,67 +334,80 @@ function letim(speedx, speedy, ob, typ, damagemulti) {
 bumnum=0
 bumy=[]
 function bum(x, y) {
-  document.querySelector(".tanky").innerHTML+="<canvas id=\"Canvas"+bumnum+"\" style='left:"+x+"em;top:"+y+"em;></canvas>"
+  document.querySelector(".tanky").innerHTML+='<canvas class="bum" id="Canvas'+bumnum+'" style="left:'+x+'em;top:'+y+'em;"></canvas>'
   bumy[bumnum] = {}
   bumy[bumnum].kroky = 0
   bumy[bumnum].id = bumnum
   bumy[bumnum].canvas = document.querySelector("#Canvas"+bumnum)
   bumy[bumnum].context = bumy[bumnum].canvas.getContext('2d');
   bumy[bumnum].context.imageSmoothingEnabled = false
-  bumy[bumnum].imgdata=bumy[bumnum].context.getImageData(0, 0, canvas.width, canvas.height);
-  bumy[bumnum].context.width = 50;
-  bumy[bumnum].context.height = 50;
+  bumy[bumnum].imgdata=bumy[bumnum].context.getImageData(0, 0, 100, 100);
+  bumy[bumnum].canvas.width = 50;
+  bumy[bumnum].canvas.height = 60;
+  bumy[bumnum].radius=2
   bumy[bumnum].flame=[]
   bumy[bumnum].smoke=[]
   bumy[bumnum].sharp=[]
-  for(let i=0;i<10;i++){
+  bumy[bumnum].vitr=(Math.random()-0.5)*0.25
+  for(let i=0;i<20;i++){
     bumy[bumnum].sharp[i]=[25,50,Math.random()*2-1,Math.random()*-1]//bumy[bumnum].sharp[i][2]
-    multipli=Math.sqrt(2.5/(bumy[bumnum].sharp[i][2]*bumy[bumnum].sharp[i][2]+bumy[bumnum].sharp[i][3]*bumy[bumnum].sharp[i][3]))
+    multipli=Math.sqrt(2.5/(bumy[bumnum].sharp[i][2]*bumy[bumnum].sharp[i][2]+bumy[bumnum].sharp[i][3]*bumy[bumnum].sharp[i][3]))*2
     bumy[bumnum].sharp[i][2]=bumy[bumnum].sharp[i][2]*multipli
     bumy[bumnum].sharp[i][3]=bumy[bumnum].sharp[i][3]*multipli
   }
+  bumy[bumnum].Interval=setInterval(function(ob){postupbum(ob)},tick*2,bumy[bumnum])
   bumnum++
-  postupbum(bumy[bumnum])
 }
 function postupbum(ob){
-  ob.imgdata.data
+  //ob.context.imgdata.data
   for(let i=0;i<ob.sharp.length;i++){
-    ob.sharp[i][0]+=ob.sharp[i][2]
+    ob.sharp[i][0]+=ob.sharp[i][2]+ob.vitr
     ob.sharp[i][1]+=ob.sharp[i][3]
   }
   for(let i=0;i<ob.flame.length;i++){
-    ob.smoke[ob.flame.length]=[ob.flame[i][0],ob.flame[i][1],Math.random()*0.5+1,Math.random()*0.2,ob.kroky]//x,y,posunx,barva(0-1),kdyspawn
+    let barva=Math.random()
+    ob.smoke[ob.smoke.length]=[ob.flame[i][0],ob.flame[i][1],noise.simplex2(Math.random()*456431,9645624)*0.2+ob.vitr,"rgb("+barva*75+","+barva*75+","+barva*75+")",ob.kroky-15,Math.random()*9963]//x,y,posunx,barva(0-1),kdyspawn,seed stoupání
   }
   ob.flame=[]
-  if(ob.kroky<60){
-    for(let i=0;i<5;i++){
-      ob.flame[i]=[Math.random()*5+25,+Math.random()*2.5+47.5,Math.random()*0.5+1]//x,y,barva(0-1)
+  if(ob.kroky<30){
+    if(ob.kroky<15){
+      x=Math.sin(ob.kroky*0.15707963267948966192313216916398)
+      for(let i=0;i<20;i++){
+        ob.flame[i]=[simplexnoise()*(10+x*7)+20-x/2*7,simplexnoise()*(5+x*4)+47.5-(x*4),Math.random()]//rozšířený výbuch
+      }
+      if(ob.kroky==14){ob.sharp=[]}
+    }else{
+      for(let i=0;i<3;i++){
+        ob.flame[i]=[simplexnoise()*10+20,+simplexnoise()*5+47.5,Math.random()]//x,y,barva(0-1)
+      }
     }
   }
-
+  ob.context.clearRect(0, 0, ob.canvas.width, ob.canvas.height);
+  
   for(let i=0;i<ob.smoke.length;i++){
-    ob.smoke[i][1]+=1
+    ob.smoke[i][1]+=-24/(ob.kroky-ob.smoke[i][4]+15)+noise.simplex2(ob.smoke[i][5],419654)*0.8
+    ob.smoke[i][5]++
     ob.smoke[i][0]+=ob.smoke[i][2]
     ob.context.beginPath()
-    ob.context.arc(ob.smoke[i][0], ob.smoke[i][1], 2, 0, Math.PI * 2, false)
-    ob.context.strokeStyle = "rgb("+ob.smoke[i][3]*25+","+ob.smoke[i][3]*25+","+ob.smoke[i][3]*25+")"
+    ob.context.arc(ob.smoke[i][0], ob.smoke[i][1], ob.radius, 0, Math.PI * 2, false)
+    ob.context.strokeStyle = ob.smoke[i][3]
     ob.context.stroke()
-    ob.context.fillStyle = "rgb("+ob.smoke[i][3]*25+","+ob.smoke[i][3]*25+","+ob.smoke[i][3]*25+")"
+    ob.context.fillStyle = ob.smoke[i][3]
     ob.context.fill()
   }
 
   for(let i=0;i<ob.flame.length;i++){
     ob.context.beginPath()
-    ob.context.arc(ob.flame[i][0], ob.flame[i][1], 2, 0, Math.PI * 2, false)
-    ob.context.strokeStyle = "rgb("+ob.flame[i][3]*25+","+ob.smoke[i][3]*25+","+ob.smoke[i][3]*25+")"
+    ob.context.arc(ob.flame[i][0], ob.flame[i][1], 2.5, 0, Math.PI * 2, false)
+    ob.context.strokeStyle = "rgb(255,"+(235-ob.flame[i][2]*84)+","+(235-ob.flame[i][2]*235)+")"
     ob.context.stroke()
-    ob.context.fillStyle = this.color
+    ob.context.fillStyle = "rgb(255,"+(235-ob.flame[i][2]*84)+","+(235-ob.flame[i][2]*235)+")"
     ob.context.fill()
   }
 
   for(let i=0;i<ob.sharp.length;i++){
     ob.context.beginPath()
-    ob.context.arc(ob.sharp[i][0], ob.sharp[i][1], 2, 0, Math.PI * 2, false)
+    ob.context.arc(ob.sharp[i][0], ob.sharp[i][1], 0.5, 0, Math.PI * 2, false)
     ob.context.strokeStyle = "#FFAC00"
     ob.context.stroke()
     ob.context.fillStyle = "#FFAC00"
@@ -416,9 +432,23 @@ function postupbum(ob){
   //   }
   // }
   //ob.context.putImageData(imageData, 0, 0);
-  
-  if(ob.kroky<120){
-    setTimeout(function(ob){postupbum(ob)},tick,ob)
+  ob.kroky++
+  if(ob.kroky>45){
+    savesussprojusus=[]
+    if(ob.smoke.length>10){
+      for(let i=10;i<ob.smoke.length;i++){
+        savesussprojusus[savesussprojusus.length]=ob.smoke[i]
+      }
+    }else{
+      for(let i=0;i<ob.smoke.length;i++){
+        savesussprojusus[savesussprojusus.length]=ob.smoke[i]
+      }
+    }
+    ob.smoke=savesussprojusus
+    ob.radius=ob.radius-2/45+0.00000000000001
+  }
+  if(ob.kroky>90){
+    clearInterval(ob.Interval)
   }
 }
 
@@ -760,7 +790,6 @@ function send(){
   }
 }
 function actualsend(){
-  console.log(sendqueue)
   if(roomdata.player[roomdata.activeid]==username){
     socket.emit("sendstate",sendqueue)
   }
@@ -769,7 +798,7 @@ function actualsend(){
 }
 firsttimehe=false
 socket.on("sendstate",(movequeue)=>{
-  for(i=0;i<movequeue.length;i++){
+  for(let i=0;i<movequeue.length;i++){
     if(firsttimehe==false){
       firsttimemy=new Date().getTime()
       firsttimehe=movequeue[0][1]
