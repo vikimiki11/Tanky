@@ -325,7 +325,9 @@ function letim(speedx, speedy, ob, typ, damagemulti) {
           }, tick)
       } else {
           removeElement(document.querySelector("#" + ob.typ))
+          console.log("hi")
           removeter(Math.round(ob.x), Math.round(ob.y), ammo[typ][3])
+          bum(Math.round(ob.x), Math.round(ob.y))
       }
   } else {
       removeElement(document.querySelector("#" + ob.typ))
@@ -334,23 +336,25 @@ function letim(speedx, speedy, ob, typ, damagemulti) {
 bumnum=0
 bumy=[]
 function bum(x, y) {
-  document.querySelector(".tanky").innerHTML+='<canvas class="bum" id="Canvas'+bumnum+'" style="left:'+x+'em;top:'+y+'em;"></canvas>'
-  bumy[bumnum] = {}
-  bumy[bumnum].kroky = 0
-  bumy[bumnum].id = bumnum
-  bumy[bumnum].canvas = document.querySelector("#Canvas"+bumnum)
-  bumy[bumnum].context = bumy[bumnum].canvas.getContext('2d');
-  bumy[bumnum].context.imageSmoothingEnabled = false
-  bumy[bumnum].imgdata=bumy[bumnum].context.getImageData(0, 0, 100, 100);
-  bumy[bumnum].canvas.width = 50;
-  bumy[bumnum].canvas.height = 60;
-  bumy[bumnum].radius=2
-  bumy[bumnum].flame=[]
-  bumy[bumnum].smoke=[]
-  bumy[bumnum].sharp=[]
-  bumy[bumnum].vitr=(Math.random()-0.5)*0.25
+  //document.querySelector(".tanky").innerHTML+='<canvas class="bum" id="Canvas'+bumnum+'" style="left:'+x+'em;top:'+y+'em;"></canvas>'
+  document.querySelector(".tanky").innerHTML+='<svg class="bum" id="SVG'+bumnum+'" viewBox="0 0 50 60" style="left:'+x+'em;top:'+y+'em;"></svg>'
+  bumy[bumnum] = {};
+  bumy[bumnum].kroky = 0;
+  bumy[bumnum].id = bumnum;
+  bumy[bumnum].canvas = function(){return document.querySelector("#SVG"+this.id)};
+  // bumy[bumnum].canvas.width = 50;
+  // bumy[bumnum].canvas.height = 60;
+  // bumy[bumnum].canvas = document.querySelector("#Canvas"+bumnum);
+  // bumy[bumnum].context = bumy[bumnum].canvas.getContext('2d');
+  // bumy[bumnum].context.imageSmoothingEnabled = false;
+  // bumy[bumnum].imgdata=bumy[bumnum].context.getImageData(0, 0, 100, 100);
+  bumy[bumnum].radius=2;
+  bumy[bumnum].flame=[];
+  bumy[bumnum].smoke=[];
+  bumy[bumnum].sharp=[];
+  bumy[bumnum].vitr=(Math.random()-0.5)*0.25;
   for(let i=0;i<20;i++){
-    bumy[bumnum].sharp[i]=[25,50,Math.random()*2-1,Math.random()*-1]//bumy[bumnum].sharp[i][2]
+    bumy[bumnum].sharp[i]=[25,50,Math.random()*2-1,Math.random()*-1]//creating sharp
     multipli=Math.sqrt(2.5/(bumy[bumnum].sharp[i][2]*bumy[bumnum].sharp[i][2]+bumy[bumnum].sharp[i][3]*bumy[bumnum].sharp[i][3]))*2
     bumy[bumnum].sharp[i][2]=bumy[bumnum].sharp[i][2]*multipli
     bumy[bumnum].sharp[i][3]=bumy[bumnum].sharp[i][3]*multipli
@@ -360,6 +364,7 @@ function bum(x, y) {
 }
 function postupbum(ob){
   //ob.context.imgdata.data
+  print=""
   for(let i=0;i<ob.sharp.length;i++){
     ob.sharp[i][0]+=ob.sharp[i][2]+ob.vitr
     ob.sharp[i][1]+=ob.sharp[i][3]
@@ -378,60 +383,46 @@ function postupbum(ob){
       if(ob.kroky==14){ob.sharp=[]}
     }else{
       for(let i=0;i<3;i++){
-        ob.flame[i]=[simplexnoise()*10+20,+simplexnoise()*5+47.5,Math.random()]//x,y,barva(0-1)
+        ob.flame[i]=[simplexnoise()*10+20,simplexnoise()*5+47.5,Math.random()]//x,y,barva(0-1)
       }
     }
   }
-  ob.context.clearRect(0, 0, ob.canvas.width, ob.canvas.height);
+  //ob.context.clearRect(0, 0, ob.canvas.width, ob.canvas.height);
   
   for(let i=0;i<ob.smoke.length;i++){
     ob.smoke[i][1]+=-24/(ob.kroky-ob.smoke[i][4]+15)+noise.simplex2(ob.smoke[i][5],419654)*0.8
     ob.smoke[i][5]++
     ob.smoke[i][0]+=ob.smoke[i][2]
-    ob.context.beginPath()
-    ob.context.arc(ob.smoke[i][0], ob.smoke[i][1], ob.radius, 0, Math.PI * 2, false)
-    ob.context.strokeStyle = ob.smoke[i][3]
-    ob.context.stroke()
-    ob.context.fillStyle = ob.smoke[i][3]
-    ob.context.fill()
+    // ob.context.beginPath()
+    // ob.context.arc(ob.smoke[i][0], ob.smoke[i][1], ob.radius, 0, Math.PI * 2, false)
+    // ob.context.strokeStyle = ob.smoke[i][3]
+    // ob.context.stroke()
+    // ob.context.fillStyle = ob.smoke[i][3]
+    // ob.context.fill()
+    print+='<circle cx="'+ob.smoke[i][0]+'" cy="'+ob.smoke[i][1]+'" r="'+ob.radius+'" fill="'+ob.smoke[i][3]+'" />'
   }
 
   for(let i=0;i<ob.flame.length;i++){
-    ob.context.beginPath()
-    ob.context.arc(ob.flame[i][0], ob.flame[i][1], 2.5, 0, Math.PI * 2, false)
-    ob.context.strokeStyle = "rgb(255,"+(235-ob.flame[i][2]*84)+","+(235-ob.flame[i][2]*235)+")"
-    ob.context.stroke()
-    ob.context.fillStyle = "rgb(255,"+(235-ob.flame[i][2]*84)+","+(235-ob.flame[i][2]*235)+")"
-    ob.context.fill()
+    // ob.context.beginPath()
+    // ob.context.arc(ob.flame[i][0], ob.flame[i][1], 2.5, 0, Math.PI * 2, false)
+    // ob.context.strokeStyle = "rgb(255,"+(235-ob.flame[i][2]*84)+","+(235-ob.flame[i][2]*235)+")"
+    // ob.context.stroke()
+    // ob.context.fillStyle = "rgb(255,"+(235-ob.flame[i][2]*84)+","+(235-ob.flame[i][2]*235)+")"
+    // ob.context.fill()
+    print+='<circle cx="'+ob.flame[i][0]+'" cy="'+ob.flame[i][1]+'" r="2.5" fill="rgb(255,'+(235-ob.flame[i][2]*84)+','+(235-ob.flame[i][2]*235)+')" />'
   }
 
   for(let i=0;i<ob.sharp.length;i++){
-    ob.context.beginPath()
-    ob.context.arc(ob.sharp[i][0], ob.sharp[i][1], 0.5, 0, Math.PI * 2, false)
-    ob.context.strokeStyle = "#FFAC00"
-    ob.context.stroke()
-    ob.context.fillStyle = "#FFAC00"
-    ob.context.fill()
+    // ob.context.beginPath()
+    // ob.context.arc(ob.sharp[i][0], ob.sharp[i][1], 0.5, 0, Math.PI * 2, false)
+    // ob.context.strokeStyle = "#FFAC00"
+    // ob.context.stroke()
+    // ob.context.fillStyle = "#FFAC00"
+    // ob.context.fill()
+    print+='<circle cx="'+ob.sharp[i][0]+'" cy="'+ob.sharp[i][1]+'" r="0.5" fill="#FFAC00" />'
   }
-
-  // function terain(data) {
-  //   for (let i = 0; i < data.length; i++) {
-  //       data[i] = 0
-  //   }
-  //   for (let i = 0; i < data.length; i += 4) {
-  //       z = i / 4
-  //       if (mapa[z % mapax][Math.floor(z / mapax)]) {
-  //           let n = noise.simplex2(seed + ((z % mapax) / 14), seed + (z / mapax / 14))
-  //           if (n < 0.5) {
-  //               data[i + 1] = 255 + 100 * (n + 0.25)
-  //           } else {
-  //               data[i + 1] = 255
-  //           }
-  //           data[i + 3] = 255
-  //       }
-  //   }
-  // }
-  //ob.context.putImageData(imageData, 0, 0);
+  ob.canvas().innerHTML=print
+  //document.querySelector("#SVG"+ob.id).innerHTML=print
   ob.kroky++
   if(ob.kroky>45){
     savesussprojusus=[]
@@ -453,6 +444,10 @@ function postupbum(ob){
 }
 
 function removeter(xp, yp, r) {
+  for(let i=0;i<document.querySelectorAll(".stromy img").length;i++){
+    console.log(Math.sqrt((parseFloat(document.querySelectorAll(".stromy img")[i].style.left)-xp)*(parseFloat(document.querySelectorAll(".stromy img")[i].style.left)-xp)+(parseFloat(document.querySelectorAll(".stromy img")[i].style.top)-yp)*(parseFloat(document.querySelectorAll(".stromy img")[i].style.top)-yp))<r)
+    if(Math.sqrt((parseFloat(document.querySelectorAll(".stromy img")[i].style.left)-xp)*(parseFloat(document.querySelectorAll(".stromy img")[i].style.left)-xp)+(parseFloat(document.querySelectorAll(".stromy img")[i].style.top)-yp)*(parseFloat(document.querySelectorAll(".stromy img")[i].style.top)-yp))<r){removeElement(document.querySelectorAll(".stromy img")[i])}
+  }
   yp = yp - 15
   qd = []
   x = 0
@@ -490,6 +485,10 @@ function removeter(xp, yp, r) {
   for (let i = 0; i < tanky.length; i++) {
       tanky[i].gravity(0, i, true)
   }
+  // for(let i=0;i<document.querySelectorAll(".stromy img").length;i++){
+  //   console.log(Math.sqrt((parseFloat(document.querySelectorAll(".stromy img")[i].style.left)-xp)*(parseFloat(document.querySelectorAll(".stromy img")[i].style.left)-xp)+(parseFloat(document.querySelectorAll(".stromy img")[i].style.height)-yp)*(parseFloat(document.querySelectorAll(".stromy img")[i].style.height)-yp))<r)
+  //   if(mapa[parseFloat(document.querySelectorAll(".stromy img")[i].style.left)][parseFloat(document.querySelectorAll(".stromy img")[i].style.top)]){removeElement(document.querySelectorAll(".stromy img")[i])}
+  // }
 }
 
 function removeElement(element) {
