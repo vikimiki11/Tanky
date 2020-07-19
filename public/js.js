@@ -1,8 +1,9 @@
 connected=false
 zpravy={g:[]}
 playing=false
-ammo={kulka:[0.98851402035289613535686750493829,0.98851402035289613535686750493829,1,25,12],glider:[0.995,0.995,0,25,12]}//sablona:[slowx,slowy,gravitymultiplayer,radius,speed],
+ammo={kulka:[0.98851402035289613535686750493829,0.98851402035289613535686750493829,1,25,10/50],glider:[0.9975,0.9975,0,25,10/50]}//sablona:[slowx,slowy,gravitymultiplayer,radius,speed],
 clearbum=[]
+fuel=300
 for(let i=0;i<50*50;i++){
   clearbum[i]=[0,0,0,0]
 }
@@ -102,7 +103,7 @@ window.addEventListener('keyup', function(event) {
         pal = ""
     }
     if (event.keyCode == 32) {
-        fire(tanky[mujtank], "kulka",true,1)
+      fire(tanky[mujtank], document.querySelector('#vybava').value,true,parseFloat(document.querySelector("#power").value))
     }
 })
 
@@ -157,6 +158,9 @@ function spawntank(x, owner) {
   tanky[pos].aim = 180 - x / mapax * 180
   tanky[pos].rotate = 0
   tanky[pos].own = owner
+  tanky[pos].health =100
+  tanky[pos].def = 1
+  tanky[pos].attackmul = 1
   document.querySelector(".tanky").innerHTML += '<div class="tank" id="' + owner + '" style="left:' + x + 'em;top:0em;background-image: url(\'img/'+ getUsernameColor(owner)+'.png\');"><div class="cannon"></div></div>'      
   mir(1, tanky[pos])
   mir(-1, tanky[pos])
@@ -243,29 +247,33 @@ function rotation(ob) {
 
 updown = [-2, -1, 0, 1, 2, 3, 4]
 function brm(smer, ob) {
-  if(playing==false){clearInterval(pohyb)}
-  mem = ob.x
-  for (let i = 0; i < updown.length; i++) {
-      if (mapa[Math.round(ob.x + smer)][Math.round(ob.y + updown[i])] != mapa[Math.round(ob.x + smer)][Math.round(ob.y + updown[i] - 1)]) {
-          if (updown[i] < 0) {
-              ob.x += (smer / (2 - updown[i]))
-          } else {
-              ob.x += smer
-          }
-          ob.y += updown[i]
-          document.querySelector("#" + ob.own).style.top = ob.y + "em"
-          document.querySelector("#" + ob.own).style.left = ob.x + "em"
-      }
+  fuel+=(-1)
+  if(playing==false || fuel<1){clearInterval(pohyb)}
+  if(fuel>-1){
+    document.querySelector("#fuel").innerHTML=fuel
+    mem = ob.x
+    for (let i = 0; i < updown.length; i++) {
+        if (mapa[Math.round(ob.x + smer)][Math.round(ob.y + updown[i])] != mapa[Math.round(ob.x + smer)][Math.round(ob.y + updown[i] - 1)]) {
+            if (updown[i] < 0) {
+                ob.x += (smer / (2 - updown[i]))
+            } else {
+                ob.x += smer
+            }
+            ob.y += updown[i]
+            document.querySelector("#" + ob.own).style.top = ob.y + "em"
+            document.querySelector("#" + ob.own).style.left = ob.x + "em"
+        }
+    }
+    if (mem == ob.x && !mapa[Math.round(ob.x + smer)][Math.round(ob.y)]) {
+        ob.x += smer
+        clearInterval(pohyb)
+        pohyb = ""
+        ob.gravity(0, ob.pos, false)
+    } else {
+        rotation(ob)
+    }
+    send()
   }
-  if (mem == ob.x && !mapa[Math.round(ob.x + smer)][Math.round(ob.y)]) {
-      ob.x += smer
-      clearInterval(pohyb)
-      pohyb = ""
-      ob.gravity(0, ob.pos, false)
-  } else {
-      rotation(ob)
-  }
-  send()
 }
 
 function mir(smer, ob) {
@@ -282,19 +290,20 @@ function mir(smer, ob) {
   send()
 }
 
-function fire(ob, typ, cansend, damagemulti) {
+function fire(ob, typ, cansend, speed) {
   if(playing==true || cansend==false){
     clearInterval(pal)
     clearInterval(pohyb)
     pos = kulky.length
     kulky[pos] = {}
     kulky[pos].typ = typ
+    kulky[pos].damagemulti = ob.attackmul
     xcan = Math.cos(dtr(ob.rotate + ob.aim - 180) * -1)
     ycan = Math.sin(dtr(ob.rotate + ob.aim - 180) * -1)
     kulky[pos].x = ob.x - Math.sin(dtr(ob.rotate) * -1) * 30.5 + xcan * 27
     kulky[pos].y = ob.y - Math.cos(dtr(ob.rotate) * -1) * 30.5 - ycan * 27
     document.querySelector(".tanky").innerHTML += '<div class="' + typ + '" id="' + typ + '" style="left:' + kulky[pos].x + 'em;top:' + kulky[pos].y + 'em"></div>'
-    hore = (xcan * xcan + ycan * ycan) * ammo[typ][4] * ammo[typ][4]
+    hore = (xcan * xcan + ycan * ycan) * ammo[typ][4] * ammo[typ][4] * speed * speed
     ys = Math.sqrt(hore / ((xcan * xcan / (ycan * ycan)) + 1))
     xs = Math.sqrt(hore / ((ycan * ycan / (xcan * xcan)) + 1))
     if (ob.rotate + ob.aim < 180 && 0 < ob.rotate + ob.aim) {
@@ -304,40 +313,68 @@ function fire(ob, typ, cansend, damagemulti) {
       xs = xs * (-1)
     }
     if(roomdata.player[roomdata.activeid]==username && playing==true && cansend==true){
-      socket.emit("fire",[[mujtank,typ, damagemulti],[JSON.parse(JSON.stringify(tanky)),new Date().getTime()]])
+      socket.emit("fire",[[mujtank,typ, speed],[JSON.parse(JSON.stringify(tanky)),new Date().getTime()]])
     }
     playing=false
-    letim(xs, ys, kulky[pos],typ, damagemulti)
+    letim(xs, ys, kulky[pos])
   }
 }
 
-function letim(speedx, speedy, ob, typ, damagemulti) {
+function letim(speedx, speedy, ob) {
   ob.x += speedx
   ob.y += speedy
-  document.querySelector("."+typ).style.top = ob.y + "em"
-  document.querySelector("."+typ).style.left = ob.x + "em"
-  speedx = speedx * ammo[typ][0]
-  speedy = speedy * ammo[typ][1] + (10 / (1000 / tick) * ammo[typ][2])
+  document.querySelector("."+ob.typ).style.top = ob.y + "em"
+  document.querySelector("."+ob.typ).style.left = ob.x + "em"
+  speedx = speedx * ammo[ob.typ][0]
+  speedy = speedy * ammo[ob.typ][1] + (10 / (1000 / tick) * ammo[ob.typ][2])
   if (Math.round(ob.x) > -1 && Math.round(ob.x) < mapax + 1 && Math.round(ob.y) < mapay + 1) {
       if (!mapa[Math.round(ob.x)][Math.round(ob.y)]) {
           setTimeout(function() {
-              letim(speedx, speedy, ob, typ, damagemulti)
+              letim(speedx, speedy, ob, ob.typ)
           }, tick)
       } else {
           removeElement(document.querySelector("#" + ob.typ))
-          console.log("hi")
-          removeter(Math.round(ob.x), Math.round(ob.y), ammo[typ][3])
+          removeter(Math.round(ob.x), Math.round(ob.y), ammo[ob.typ][3])
+          damagetanks(Math.round(ob.x), Math.round(ob.y), ammo[ob.typ][3], ob.damagemulti)
           bum(Math.round(ob.x), Math.round(ob.y))
       }
   } else {
       removeElement(document.querySelector("#" + ob.typ))
   }
 }
+
+function damagetanks(x,y,radius,damagemulti) {
+  for(let i=0;i<tanky.length;i++){
+    dis=Math.sqrt((tanky[i].x-x)*(tanky[i].x-x)+(tanky[i].y-y)*(tanky[i].y-y))
+    if(dis<radius*2){
+      tanky[i].health+=-(Math.abs(radius*2-dis)*damagemulti/tanky[i].def);
+      if(tanky[i].health<=0){
+        bum(tanky[i].x,tanky[i].y)
+        removeElement(document.querySelector("#"+tanky[i].own))
+        haha=[]
+        for(let y=0;y<tanky.length;y++){
+          if(i!=y){
+            haha[haha.length]=tanky[y]
+          }
+        }
+        tanky=haha
+        if(inqgame){
+          if(username==tanky[0].own){
+            alert("You win")
+          }else{
+            alert("You lost")
+          }
+        }
+      }
+    }
+  }
+}
+
 bumnum=0
 bumy=[]
 function bum(x, y) {
   //document.querySelector(".tanky").innerHTML+='<canvas class="bum" id="Canvas'+bumnum+'" style="left:'+x+'em;top:'+y+'em;"></canvas>'
-  document.querySelector(".tanky").innerHTML+='<svg class="bum" id="SVG'+bumnum+'" viewBox="0 0 50 60" style="left:'+x+'em;top:'+y+'em;"></svg>'
+  document.querySelector(".vybuchy").innerHTML+='<svg class="bum" id="SVG'+bumnum+'" viewBox="0 0 50 60" style="left:'+x+'em;top:'+y+'em;"></svg>'
   bumy[bumnum] = {};
   bumy[bumnum].kroky = 0;
   bumy[bumnum].id = bumnum;
@@ -352,7 +389,7 @@ function bum(x, y) {
   bumy[bumnum].flame=[];
   bumy[bumnum].smoke=[];
   bumy[bumnum].sharp=[];
-  bumy[bumnum].vitr=(Math.random()-0.5)*0.25;
+  bumy[bumnum].vitr=(Math.random()-0.5)*0.5;
   for(let i=0;i<20;i++){
     bumy[bumnum].sharp[i]=[25,50,Math.random()*2-1,Math.random()*-1]//creating sharp
     multipli=Math.sqrt(2.5/(bumy[bumnum].sharp[i][2]*bumy[bumnum].sharp[i][2]+bumy[bumnum].sharp[i][3]*bumy[bumnum].sharp[i][3]))*2
@@ -363,6 +400,7 @@ function bum(x, y) {
   bumnum++
 }
 function postupbum(ob){
+  ob.kroky++
   //ob.context.imgdata.data
   print=""
   for(let i=0;i<ob.sharp.length;i++){
@@ -393,37 +431,17 @@ function postupbum(ob){
     ob.smoke[i][1]+=-24/(ob.kroky-ob.smoke[i][4]+15)+noise.simplex2(ob.smoke[i][5],419654)*0.8
     ob.smoke[i][5]++
     ob.smoke[i][0]+=ob.smoke[i][2]
-    // ob.context.beginPath()
-    // ob.context.arc(ob.smoke[i][0], ob.smoke[i][1], ob.radius, 0, Math.PI * 2, false)
-    // ob.context.strokeStyle = ob.smoke[i][3]
-    // ob.context.stroke()
-    // ob.context.fillStyle = ob.smoke[i][3]
-    // ob.context.fill()
     print+='<circle cx="'+ob.smoke[i][0]+'" cy="'+ob.smoke[i][1]+'" r="'+ob.radius+'" fill="'+ob.smoke[i][3]+'" />'
   }
 
   for(let i=0;i<ob.flame.length;i++){
-    // ob.context.beginPath()
-    // ob.context.arc(ob.flame[i][0], ob.flame[i][1], 2.5, 0, Math.PI * 2, false)
-    // ob.context.strokeStyle = "rgb(255,"+(235-ob.flame[i][2]*84)+","+(235-ob.flame[i][2]*235)+")"
-    // ob.context.stroke()
-    // ob.context.fillStyle = "rgb(255,"+(235-ob.flame[i][2]*84)+","+(235-ob.flame[i][2]*235)+")"
-    // ob.context.fill()
     print+='<circle cx="'+ob.flame[i][0]+'" cy="'+ob.flame[i][1]+'" r="2.5" fill="rgb(255,'+(235-ob.flame[i][2]*84)+','+(235-ob.flame[i][2]*235)+')" />'
   }
 
   for(let i=0;i<ob.sharp.length;i++){
-    // ob.context.beginPath()
-    // ob.context.arc(ob.sharp[i][0], ob.sharp[i][1], 0.5, 0, Math.PI * 2, false)
-    // ob.context.strokeStyle = "#FFAC00"
-    // ob.context.stroke()
-    // ob.context.fillStyle = "#FFAC00"
-    // ob.context.fill()
     print+='<circle cx="'+ob.sharp[i][0]+'" cy="'+ob.sharp[i][1]+'" r="0.5" fill="#FFAC00" />'
   }
   ob.canvas().innerHTML=print
-  //document.querySelector("#SVG"+ob.id).innerHTML=print
-  ob.kroky++
   if(ob.kroky>45){
     savesussprojusus=[]
     if(ob.smoke.length>10){
@@ -440,14 +458,14 @@ function postupbum(ob){
   }
   if(ob.kroky>90){
     clearInterval(ob.Interval)
+    removeElement(ob.canvas())
   }
 }
 
 function removeter(xp, yp, r) {
-  for(let i=0;i<document.querySelectorAll(".stromy img").length;i++){
-    console.log(Math.sqrt((parseFloat(document.querySelectorAll(".stromy img")[i].style.left)-xp)*(parseFloat(document.querySelectorAll(".stromy img")[i].style.left)-xp)+(parseFloat(document.querySelectorAll(".stromy img")[i].style.top)-yp)*(parseFloat(document.querySelectorAll(".stromy img")[i].style.top)-yp))<r)
-    if(Math.sqrt((parseFloat(document.querySelectorAll(".stromy img")[i].style.left)-xp)*(parseFloat(document.querySelectorAll(".stromy img")[i].style.left)-xp)+(parseFloat(document.querySelectorAll(".stromy img")[i].style.top)-yp)*(parseFloat(document.querySelectorAll(".stromy img")[i].style.top)-yp))<r){removeElement(document.querySelectorAll(".stromy img")[i])}
-  }
+  // for(let i=0;i<document.querySelectorAll(".stromy img").length;i++){
+  //   if(Math.sqrt((parseFloat(document.querySelectorAll(".stromy img")[i].style.left)-xp)*(parseFloat(document.querySelectorAll(".stromy img")[i].style.left)-xp)+(parseFloat(document.querySelectorAll(".stromy img")[i].style.top)-yp)*(parseFloat(document.querySelectorAll(".stromy img")[i].style.top)-yp))<r){removeElement(document.querySelectorAll(".stromy img")[i])}
+  // }
   yp = yp - 15
   qd = []
   x = 0
@@ -485,10 +503,9 @@ function removeter(xp, yp, r) {
   for (let i = 0; i < tanky.length; i++) {
       tanky[i].gravity(0, i, true)
   }
-  // for(let i=0;i<document.querySelectorAll(".stromy img").length;i++){
-  //   console.log(Math.sqrt((parseFloat(document.querySelectorAll(".stromy img")[i].style.left)-xp)*(parseFloat(document.querySelectorAll(".stromy img")[i].style.left)-xp)+(parseFloat(document.querySelectorAll(".stromy img")[i].style.height)-yp)*(parseFloat(document.querySelectorAll(".stromy img")[i].style.height)-yp))<r)
-  //   if(mapa[parseFloat(document.querySelectorAll(".stromy img")[i].style.left)][parseFloat(document.querySelectorAll(".stromy img")[i].style.top)]){removeElement(document.querySelectorAll(".stromy img")[i])}
-  // }
+  for(let i=0;i<document.querySelectorAll(".stromy img").length;i++){
+    if(!(mapa[Math.round(parseFloat(document.querySelectorAll(".stromy img")[i].style.left))][Math.round(parseFloat(document.querySelectorAll(".stromy img")[i].style.top+1))])){removeElement(document.querySelectorAll(".stromy img")[i])}
+  }
 }
 
 function removeElement(element) {
@@ -497,12 +514,20 @@ function removeElement(element) {
 
 opal = 0
 function malert(mes) {
-  document.querySelector(".alert").innerHTML = mes;
+  document.querySelector(".alert").innerHTML = mes+'<button onclick="document.querySelector(\'p.alert\').style.display=\'none\'">✗</button>';
   opal = 1
+  visal=true
+  document.querySelector("p.alert").style.display='block'
 }
+visal=false
 setInterval(function() {
   opal = opal * 0.97;
-  document.querySelector(".alert").style.opacity = opal
+  if(opal<0.001 || !visal){
+    visal=false;
+    document.querySelector("p.alert").style.display='none'
+  }else{
+    document.querySelector("p.alert").style.opacity = opal
+  }
 }, 100)
 membersact = {}
 //var COLORS = ['#e21400', '#91580f', '#f8a700', '#f78b00', '#58dc00', '#287b00', '#a8f07a', '#4ae8c4', '#3b88eb', '#3824aa', '#a700ff', '#d300e7'];
@@ -572,7 +597,9 @@ socket.on('login', (data)=>{
 
 socket.on('denied', ()=>{
   alert("již použité jméno")
-  location.reload();
+  if (window.location.hostname != "localhost") {
+    location.reload();
+  }
 }
 )
 
@@ -608,6 +635,7 @@ socket.on('in room', (data)=>{
   ingame=true
   $(".hiscreen").hide()
   $(".hracipole").show()
+  document.querySelector("#fuel").innerHTML=fuel
   $('.gamelobby').hide()
   resize()
   inqgame = true
@@ -756,7 +784,9 @@ socket.on('new message', (data)=>{
 socket.on('disconnect', ()=>{
   log('you have been disconnected');
   alert("Byl jsi odpojen")
-  location.reload()
+  if (window.location.hostname != "localhost" && !connected) {
+    location.reload();
+  }
 }
 );
 
@@ -765,7 +795,7 @@ socket.on('reconnect', ()=>{
   if (username) {
       socket.emit('add user', username);
   } else {
-      location.reload()
+    location.reload();
   }
 }
 );
@@ -853,5 +883,5 @@ socket.on("fire",(data)=>{
     roomdata=data[1]
     if(roomdata.player[roomdata.activeid]==username){
       playing=true
-    }},data[0][1][1]-firsttimehe-(new Date().getTime()-firsttimemy)+305,data)
+    }},data[0][1][1]-firsttimehe-(new Date().getTime()-firsttimemy)+1300,data)
 })

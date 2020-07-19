@@ -25,6 +25,23 @@
         width: 100%;
       }
 
+      .control{
+        height: 100em;
+        border: solid black 1em;
+        box-sizing: border-box;
+        padding: 10em 25em;
+        transition: width;
+      }
+
+      .controls {
+        display: inline-block;
+        margin: 25em;
+      }
+
+      .controls button.hide {
+        width: 2rem;
+      }
+
       .hracipole {
         position: relative;
         display: none;
@@ -145,11 +162,11 @@
         border-bottom: 1px solid black ;
       }
 
-      @media screen and (max-width: 510px) {
+      /* @media screen and (max-width: 510px) {
         body {
           background-color: lightgreen;
         }
-      }
+      } */
 
       .gamelobby {
         max-width: 1600px;
@@ -170,10 +187,6 @@
       #seznamhracu {
         display: table;
         margin: 2rem auto;
-      }
-
-      p.alert:hover {
-        opacity: 1 !important;
       }
 
       .login.page {
@@ -268,14 +281,78 @@
       .chat{
         overflow-y: auto;
       }
+      .stromy{
+        position: absolute;
+        top:0em;
+      }
+      .tanky{
+        position: absolute;
+        top:0em;
+      }
+      .vybuchy{
+        position: absolute;
+        top:0em;
+      }
+      p.alert:hover {
+        opacity: 1 !important;
+      }
+      p.alert button {
+       background: none;
+       border: none;
+      }
+      div.controls button.hide {
+       background: none;
+       border: none;
+       font-size: 20em;
+      }
+      div.controls:contains-selector(button.hide) {
+        border:black solid 1px;
+      }
+      .battlefield{
+        position: relative;
+      }
+      #power{
+        padding: 0;
+        border: 0;
+        position: relative;
+        top:5px
+      }
+      div.controls span{
+        margin-left: 2px ;
+        padding: 3em;
+        border: black solid 1px;
+      }
     </style>
   </head>
   <body onresize="resize()" onload="resize()">
     <main>
       <div class="hracipole">
-        <canvas id="Canvas"></canvas>
-        <div class="tanky"></div>
-        <div class="stromy"></div>
+        <div class="control centr">
+          <div class="controls">
+            <button class="hide" onmousedown="if(pohyb == ''){pohyb = setInterval(function() {brm(-1, tanky[mujtank])}, tick)}" onmouseleave="clearInterval(pohyb);pohyb = ''" onmouseup="clearInterval(pohyb);pohyb = ''">⟸</button><button class="hide" onmousedown="if(pohyb == ''){pohyb = setInterval(function() {brm(1, tanky[mujtank])}, tick)}" onmouseup="clearInterval(pohyb);pohyb = ''" onmouseleave="clearInterval(pohyb);pohyb = ''">⟹</button><span id="fuel">69</span>
+          </div>
+          <div class="controls">
+            <button class="hide" onmousedown="if(pal == ''){pal = setInterval(function() {mir(-1, tanky[mujtank])}, tick)}" onmouseleave="clearInterval(pal);pal = ''" onmouseup="clearInterval(pal);pal = ''">⤹</button><button class="hide" onmousedown="if(pal == ''){pal = setInterval(function() {mir(1, tanky[mujtank])}, tick)}" onmouseup="clearInterval(pal);pal = ''" onmouseleave="clearInterval(pal);pal = ''">⤸</button>
+          </div>
+          <div class="controls">
+          <input type="range" id="power" onchange='this.parentNode.lastElementChild.innerHTML=this.value' onmousemove='this.parentNode.lastElementChild.innerHTML=this.value'><span id="poweruk">50</span>
+          </div>
+          <div class="controls">
+            <button class="pal" onclick="fire(tanky[mujtank], document.querySelector('#vybava').value,true,parseFloat(document.querySelector('#power').value))">PAL</button>
+          </div>
+          <div class="controls">
+            <select name="vybava" id="vybava">
+              <option value="kulka" id="kulkavyber">Základní střela</option>
+              <option value="glider" id="glidervyber">Glider</option>
+            </select>
+          </div>
+        </div>
+        <div class="battlefield">
+          <canvas id="Canvas"></canvas>
+          <div class="tanky"></div>
+          <div class="vybuchy"></div>
+          <div class="stromy"></div>
+        </div>
       </div>
       <div class="centr gamelobby" style="display: none;">
         <div class="centr seznamhraci">
