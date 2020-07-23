@@ -1,7 +1,7 @@
 connected=false
 zpravy={g:[]}
 playing=false
-ammo={kulka:[0.98851402035289613535686750493829,0.98851402035289613535686750493829,1,25,10/50],glider:[0.9975,0.9975,0,25,10/50]}//sablona:[slowx,slowy,gravitymultiplayer,radius,speed],
+ammo={kulka:[0.98851402035289613535686750493829,0.98851402035289613535686750493829,1,25,10/50],glider:[0.99767334516076867649202696642422,0.99767334516076867649202696642422,0,25,10/50]}//sablona:[slowx,slowy,gravitymultiplayer,radius,speed],
 clearbum=[]
 fuel=300
 for(let i=0;i<50*50;i++){
@@ -175,6 +175,7 @@ function spawntank(x, owner) {
           setTimeout(function() {
             tanky[pos].gravity(jump, pos, true)
           }, tick,jump, pos)
+          send()
       } else {
           rotation(this)
           if (up) {
@@ -185,6 +186,7 @@ function spawntank(x, owner) {
               this.y = this.y - p + 2
           }
           document.querySelector("#" + this.own).style.top = (this.y) + "em"
+          send()
       }
   }
   tanky[pos].gravity(0, pos, true)
@@ -349,6 +351,7 @@ function damagetanks(x,y,radius,damagemulti) {
     if(dis<radius*2){
       tanky[i].health+=-(Math.abs(radius*2-dis)*damagemulti/tanky[i].def);
       if(tanky[i].health<=0){
+        if(i<mujtank){mujtank+=-1}
         bum(tanky[i].x,tanky[i].y)
         removeElement(document.querySelector("#"+tanky[i].own))
         haha=[]
@@ -360,11 +363,14 @@ function damagetanks(x,y,radius,damagemulti) {
         tanky=haha
         if(inqgame){
           if(username==tanky[0].own){
-            alert("You win")
+            document.querySelector("#win").style.top="50vh"
           }else{
-            alert("You lost")
+            document.querySelector("#lost").style.top="50vh"
           }
         }
+      }else{
+        if(i==mujtank){document.querySelector("#power").max=Math.ceil(tanky[mujtank].health).toString()}
+        document.querySelector("#poweruk").innerHTML=document.querySelector("#power").value
       }
     }
   }
@@ -379,12 +385,6 @@ function bum(x, y) {
   bumy[bumnum].kroky = 0;
   bumy[bumnum].id = bumnum;
   bumy[bumnum].canvas = function(){return document.querySelector("#SVG"+this.id)};
-  // bumy[bumnum].canvas.width = 50;
-  // bumy[bumnum].canvas.height = 60;
-  // bumy[bumnum].canvas = document.querySelector("#Canvas"+bumnum);
-  // bumy[bumnum].context = bumy[bumnum].canvas.getContext('2d');
-  // bumy[bumnum].context.imageSmoothingEnabled = false;
-  // bumy[bumnum].imgdata=bumy[bumnum].context.getImageData(0, 0, 100, 100);
   bumy[bumnum].radius=2;
   bumy[bumnum].flame=[];
   bumy[bumnum].smoke=[];
@@ -401,7 +401,6 @@ function bum(x, y) {
 }
 function postupbum(ob){
   ob.kroky++
-  //ob.context.imgdata.data
   print=""
   for(let i=0;i<ob.sharp.length;i++){
     ob.sharp[i][0]+=ob.sharp[i][2]+ob.vitr
@@ -530,7 +529,6 @@ setInterval(function() {
   }
 }, 100)
 membersact = {}
-//var COLORS = ['#e21400', '#91580f', '#f8a700', '#f78b00', '#58dc00', '#287b00', '#a8f07a', '#4ae8c4', '#3b88eb', '#3824aa', '#a700ff', '#d300e7'];
 var COLORS = ['0F0', '0EE', '22F', 'EE0', 'E00', 'E0E'];
 inqgame = false
 invites = []
@@ -538,8 +536,8 @@ socket.on('players', data=>{
   membersact = data
   if (inqgame) {
       if (membersact[rival].active == 0) {
-          socket.emit('leave')
-          malert("Odešel ti sploluhráč")
+        leave()
+        malert("Odešel ti sploluhráč")
       }
   }
   document.querySelector("#members").innerHTML = ""
@@ -583,9 +581,30 @@ socket.on('players', data=>{
 
 }
 )
+function leave(){
+  socket.emit('leave')
+  document.querySelector('.tanky').innerHTML=""
+  document.querySelector('.stromy').innerHTML=""
+  document.querySelector('#power').max=100
+  document.querySelector('#poweruk').innerHTML=100
+  document.querySelector("#win").style.top="-50vh"
+  document.querySelector("#lost").style.top="-50vh"
+  membersact[username].room=""
+  switchchat()
+  tanky=[]
+  if(roomdata.player[roomdata.activeid]==username){
+    playing=false
+  }
+  rival = ""
+  $(".hracipole").hide()
+  $('.gamelobby').hide()
+  $(".hiscreen").show()
+  resize()
+  ingame = false
+  inqgame = false
+}
 socket.on('login', (data)=>{
   connected = true;
-  // Display the welcome message
   var message = "Chat pro hráče lodí:";
   log(message);
   addParticipantsMessage(data);
@@ -614,6 +633,8 @@ socket.on('in queue', ()=>{
 
 socket.on('in room', (data)=>{
   roomdata = data[1]
+  console.log("Vstup do roomy")
+  console.log(data)
   if(roomdata.player[roomdata.activeid]==username){
     playing=true
   }
@@ -624,21 +645,33 @@ socket.on('in room', (data)=>{
   for(let i=0;i<zpravy[membersact[username].room].length;i++){
     addChatMessage(zpravy[rs][i],false)
   }
-  log("Začal jsi hru s: " + rival)
   tanky=[]
   createterain(roomdata.seed);
   aktualizace();
   spawntrees();
-  for(let i=0;i<roomdata.sp.length;i++){
-    spawntank(roomdata.sp[i][0],roomdata.sp[i][1]);
+  if(roomdata.player[roomdata.activeid]==username){
+    for(let i=0;i<roomdata.sp.length;i++){
+      spawntank(roomdata.sp[i][0],roomdata.sp[i][1]);
+    }
+  }else{
+    let i = 0
+    while(typeof mujtank=="undefined"){
+      if(roomdata.sp[i][1]==username){
+        mujtank=i
+      }
+      i++
+    }
   }
-  ingame=true
+  if(data[2]){
+    log("Začal jsi hru s: " + rival)
+    inqgame = true
+    $(".hracipole").show()
+    document.querySelector("#fuel").innerHTML=fuel
+    $('.gamelobby').hide()
+    resize()
+  }
   $(".hiscreen").hide()
-  $(".hracipole").show()
-  document.querySelector("#fuel").innerHTML=fuel
-  $('.gamelobby').hide()
-  resize()
-  inqgame = true
+  ingame=true
   //idiooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooot
 }
 );
@@ -793,7 +826,7 @@ socket.on('disconnect', ()=>{
 socket.on('reconnect', ()=>{
   log('Připojení bylo obnoveno');
   if (username) {
-      socket.emit('add user', username);
+    socket.emit('add user', username);
   } else {
     location.reload();
   }
@@ -821,6 +854,7 @@ function send(){
 function actualsend(){
   if(roomdata.player[roomdata.activeid]==username){
     socket.emit("sendstate",sendqueue)
+    console.log(sendqueue)
   }
   sendinprogress=false
   sendqueue=[]
@@ -843,6 +877,7 @@ function write(movequeue){
           this.y += jump
           jump += 10 / (1000 / tick)
           document.querySelector("#" + this.own).style.top = this.y + "em"
+          send()
           if (jump > 2) {
               up = true
           }
@@ -859,6 +894,7 @@ function write(movequeue){
               this.y = this.y - p + 2
           }
           document.querySelector("#" + this.own).style.top = (this.y) + "em"
+          send()
       }
   }
   }

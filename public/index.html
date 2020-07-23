@@ -22,7 +22,10 @@
       }
 
       #Canvas {
+        background-size: contain;
         width: 100%;
+        background-image: url(img/pozadi.gif);
+        image-rendering: auto;
       }
 
       .control{
@@ -322,6 +325,20 @@
         padding: 3em;
         border: black solid 1px;
       }
+      .endgame{
+        margin: auto;
+        display: table;
+        top:-50vh;
+        left: 50vw;
+        transform: translate(-50%, -50%);
+        transition: top 1s;
+        border: black solid 1px;
+        border-radius: 8px;
+        background-color: #EAEFF3;
+        position: absolute;
+        width: 25vw;
+        padding: 24px;
+      }
     </style>
   </head>
   <body onresize="resize()" onload="resize()">
@@ -352,6 +369,14 @@
           <div class="tanky"></div>
           <div class="vybuchy"></div>
           <div class="stromy"></div>
+        </div>
+        <div class="endgame" id="win">
+          <h1 class="centr">Vyhrál jsi.</h1>
+          <button class="centr" onclick="leave()">Odejít</button>
+        </div>
+        <div class="endgame" id="lost">
+          <h1 class="centr">Prohrál jsi.</h1>
+          <button class="centr" onclick="leave()">Odejít</button>
         </div>
       </div>
       <div class="centr gamelobby" style="display: none;">

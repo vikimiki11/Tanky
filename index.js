@@ -47,7 +47,7 @@ io.on('connection', (socket) => {
 
       // we store the username in the socket session for this client
       socket.username = username;
-      tolog=tolog+JSON.stringify(members)+"</div>"
+      tolog=JSON.stringify(members)+"</div>"
       logit(tolog)
       socket.emit('login', {
         numUsers: memnum
@@ -91,7 +91,7 @@ io.on('connection', (socket) => {
         roominf[lobbyid].player=[user2,user1]
         roominf[lobbyid].activeid=0
         roominf[lobbyid].sp=[[200,user2],[1400,user1]]
-        socket.emit('in room',[user2,roominf[lobbyid]])
+        socket.emit('in room',[user2,roominf[lobbyid],true])
         socket.join(lobbyid)
         socket.to(membersact[queue[0]].id).emit("jj",[lobbyid,user1])
         membersact[user1].active=true
@@ -111,7 +111,7 @@ io.on('connection', (socket) => {
   });
   socket.on('jj', (data) => {
     socket.join(data[0])
-    socket.emit('in room',[data[1],roominf[data[0]]])
+    socket.emit('in room',[data[1],roominf[data[0]],true])
   });
   socket.on('new message', (data) => {
     // we tell the client to execute 'new message'
@@ -160,5 +160,15 @@ io.on('connection', (socket) => {
       roominf[membersact[socket.username].room].activeid=0
     }
     io.to(membersact[socket.username].room).emit("fire",[data,roominf[membersact[socket.username].room]])
+  })
+  socket.on('leave',()=>{
+    socket.leave(membersact[socket.username].room)
+    membersact[socket.username].active=0
+    membersact[socket.username].rival=""
+    roominf[membersact[socket.username].room].player=roominf[membersact[socket.username].room].player.filter(function (el) {
+      return el != roominf[membersact[socket.username].room].player[0];
+    });
+    membersact[socket.username].room==""
+    io.emit('players',membersact)
   })
 })
