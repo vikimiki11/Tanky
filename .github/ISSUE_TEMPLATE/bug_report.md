@@ -11,7 +11,7 @@ assignees: ''
 Popiš problém prosím co nejjasněji.
 
 **Error**
-Běž zpět na Tab tanků a
+Běž zpět na Tab tanků a zmáčkni F12. Rozšiř si okno co se otevře a udělej a udělej screenshot.
 
 **Screenshots**
 Pomohl by screenshot.
