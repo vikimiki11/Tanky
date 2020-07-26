@@ -36,7 +36,7 @@ function switchchat() {
   }
 }
 if (window.location.hostname == "localhost") {
-  socket = io("localhost:3000");
+  socket = io("localhost:8080");
 } else {
   socket = io(window.location.hostname);
 }
@@ -304,6 +304,7 @@ function fire(ob, typ, cansend, speed) {
     ycan = Math.sin(dtr(ob.rotate + ob.aim - 180) * -1)
     kulky[pos].x = ob.x - Math.sin(dtr(ob.rotate) * -1) * 30.5 + xcan * 27
     kulky[pos].y = ob.y - Math.cos(dtr(ob.rotate) * -1) * 30.5 - ycan * 27
+    removeElement(document.querySelector(typ))
     document.querySelector(".tanky").innerHTML += '<div class="' + typ + '" id="' + typ + '" style="left:' + kulky[pos].x + 'em;top:' + kulky[pos].y + 'em"></div>'
     hore = (xcan * xcan + ycan * ycan) * ammo[typ][4] * ammo[typ][4] * speed * speed
     ys = Math.sqrt(hore / ((xcan * xcan / (ycan * ycan)) + 1))
@@ -626,12 +627,13 @@ socket.on('in queue', ()=>{
   //idiooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooot
   malert("Jsi v pořadí počkej.")
   if (window.location.hostname != "localhost") {
-      $('.priprava').hide()
+      $('.Quickgame').hide()
   }
 }
 )
 
 socket.on('in room', (data)=>{
+  mujtank = undefined
   roomdata = data[1]
   console.log("Vstup do roomy")
   console.log(data)
@@ -761,13 +763,13 @@ $(window).keydown(event=>{
   }
 }
 );
-quckread = true
-document.querySelector("#Quckgame").addEventListener("click", ()=>{
-  if (quckread || window.location.hostname == "localhost") {
+quickread = true
+document.querySelector("#Quickgame").addEventListener("click", ()=>{
+  if (quickread || window.location.hostname == "localhost") {
       socket.emit('quickgame', )
-      quckread = false
+      quickread = false
       setTimeout(function() {
-          quckread = true
+          quickread = true
       }, 1000)
   }
 }
@@ -854,7 +856,6 @@ function send(){
 function actualsend(){
   if(roomdata.player[roomdata.activeid]==username){
     socket.emit("sendstate",sendqueue)
-    console.log(sendqueue)
   }
   sendinprogress=false
   sendqueue=[]
