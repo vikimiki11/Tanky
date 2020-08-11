@@ -30,8 +30,8 @@ function switchchat() {
     document.querySelector(".chat").innerHTML=""
     rs=document.querySelector("#rs").className.split("switch")[1]
     if(rs!="g"){rs=membersact[username].room;if(typeof zpravy[membersact[username].room]=="undefined"){zpravy[membersact[username].room]=[]}}
-    for(let i=0;i<zpravy[rs].length;i++){
-      addChatMessage(zpravy[rs][i],false)
+    for(let i of zpravy[rs]){
+      addChatMessage(i,false)
     }
   }
 }
@@ -249,32 +249,34 @@ function rotation(ob) {
 
 updown = [-2, -1, 0, 1, 2, 3, 4]
 function brm(smer, ob) {
-  fuel+=(-1)
-  if(playing==false || fuel<1){clearInterval(pohyb)}
-  if(fuel>-1){
-    document.querySelector("#fuel").innerHTML=fuel
-    mem = ob.x
-    for (let i = 0; i < updown.length; i++) {
-        if (mapa[Math.round(ob.x + smer)][Math.round(ob.y + updown[i])] != mapa[Math.round(ob.x + smer)][Math.round(ob.y + updown[i] - 1)]) {
-            if (updown[i] < 0) {
-                ob.x += (smer / (2 - updown[i]))
-            } else {
-                ob.x += smer
-            }
-            ob.y += updown[i]
-            document.querySelector("#" + ob.own).style.top = ob.y + "em"
-            document.querySelector("#" + ob.own).style.left = ob.x + "em"
-        }
+  if(document.querySelector(".glider")==null&&document.querySelector(".kulka")==null){
+    fuel+=(-1)
+    if(playing==false || fuel<1){clearInterval(pohyb)}
+    if(fuel>-1){
+      document.querySelector("#fuel").innerHTML=fuel
+      mem = ob.x
+      for (let i = 0; i < updown.length; i++) {
+          if (mapa[Math.round(ob.x + smer)][Math.round(ob.y + updown[i])] != mapa[Math.round(ob.x + smer)][Math.round(ob.y + updown[i] - 1)]) {
+              if (updown[i] < 0) {
+                  ob.x += (smer / (2 - updown[i]))
+              } else {
+                  ob.x += smer
+              }
+              ob.y += updown[i]
+              document.querySelector("#" + ob.own).style.top = ob.y + "em"
+              document.querySelector("#" + ob.own).style.left = ob.x + "em"
+          }
+      }
+      if (mem == ob.x && !mapa[Math.round(ob.x + smer)][Math.round(ob.y)]) {
+          ob.x += smer
+          clearInterval(pohyb)
+          pohyb = ""
+          ob.gravity(0, ob.pos, false)
+      } else {
+          rotation(ob)
+      }
+      send()
     }
-    if (mem == ob.x && !mapa[Math.round(ob.x + smer)][Math.round(ob.y)]) {
-        ob.x += smer
-        clearInterval(pohyb)
-        pohyb = ""
-        ob.gravity(0, ob.pos, false)
-    } else {
-        rotation(ob)
-    }
-    send()
   }
 }
 
@@ -293,7 +295,7 @@ function mir(smer, ob) {
 }
 
 function fire(ob, typ, cansend, speed) {
-  if(playing==true || cansend==false){
+  if((playing==true || cansend==false)&&document.querySelector(".glider")==null&&document.querySelector(".kulka")==null){
     clearInterval(pal)
     clearInterval(pohyb)
     pos = kulky.length
@@ -304,7 +306,7 @@ function fire(ob, typ, cansend, speed) {
     ycan = Math.sin(dtr(ob.rotate + ob.aim - 180) * -1)
     kulky[pos].x = ob.x - Math.sin(dtr(ob.rotate) * -1) * 30.5 + xcan * 27
     kulky[pos].y = ob.y - Math.cos(dtr(ob.rotate) * -1) * 30.5 - ycan * 27
-    removeElement(document.querySelector(typ))
+    if(typeof document.querySelector(typ)==null){removeElement(document.querySelector(typ))}
     document.querySelector(".tanky").innerHTML += '<div class="' + typ + '" id="' + typ + '" style="left:' + kulky[pos].x + 'em;top:' + kulky[pos].y + 'em"></div>'
     hore = (xcan * xcan + ycan * ycan) * ammo[typ][4] * ammo[typ][4] * speed * speed
     ys = Math.sqrt(hore / ((xcan * xcan / (ycan * ycan)) + 1))
@@ -391,7 +393,7 @@ function bum(x, y) {
   bumy[bumnum].smoke=[];
   bumy[bumnum].sharp=[];
   bumy[bumnum].vitr=(Math.random()-0.5)*0.5;
-  for(let i=0;i<20;i++){
+  for(let i=0;i<30;i++){
     bumy[bumnum].sharp[i]=[25,50,Math.random()*2-1,Math.random()*-1]//creating sharp
     multipli=Math.sqrt(2.5/(bumy[bumnum].sharp[i][2]*bumy[bumnum].sharp[i][2]+bumy[bumnum].sharp[i][3]*bumy[bumnum].sharp[i][3]))*2
     bumy[bumnum].sharp[i][2]=bumy[bumnum].sharp[i][2]*multipli
@@ -439,7 +441,7 @@ function postupbum(ob){
   }
 
   for(let i=0;i<ob.sharp.length;i++){
-    print+='<circle cx="'+ob.sharp[i][0]+'" cy="'+ob.sharp[i][1]+'" r="0.5" fill="#FFAC00" />'
+    print+='<circle cx="'+ob.sharp[i][0]+'" cy="'+ob.sharp[i][1]+'" r="1" fill="#FFAC00" />'
   }
   ob.canvas().innerHTML=print
   if(ob.kroky>45){
