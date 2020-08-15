@@ -1,1 +1,1 @@
-web: node --inspect=battletank.herokuapp.com:9229 index.js
+web: node index.js
