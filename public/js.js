@@ -306,7 +306,7 @@ function fire(ob, typ, cansend, speed) {
     ycan = Math.sin(dtr(ob.rotate + ob.aim - 180) * -1)
     kulky[pos].x = ob.x - Math.sin(dtr(ob.rotate) * -1) * 30.5 + xcan * 27
     kulky[pos].y = ob.y - Math.cos(dtr(ob.rotate) * -1) * 30.5 - ycan * 27
-    if(typeof document.querySelector(typ)==null){removeElement(document.querySelector(typ))}
+    setTimeout(function(typ){if(document.querySelector("."+typ)!=null){removeElement(document.querySelector("."+typ))}},10000,typ)
     document.querySelector(".tanky").innerHTML += '<div class="' + typ + '" id="' + typ + '" style="left:' + kulky[pos].x + 'em;top:' + kulky[pos].y + 'em"></div>'
     hore = (xcan * xcan + ycan * ycan) * ammo[typ][4] * ammo[typ][4] * speed * speed
     ys = Math.sqrt(hore / ((xcan * xcan / (ycan * ycan)) + 1))
@@ -617,10 +617,53 @@ socket.on('login', (data)=>{
 }
 );
 
+socket.on('in game room',(data)=>{
+  roomdata=data
+  $(".hiscreen").hide()
+  $(".gamelobby").show()
+  write_teams()
+})
+function write_teams(){
+  temp=""
+  z=0
+  for(i of roomdata.freeplayers){
+    temp+="<li draggable=\"true\" id=\""+i+"\"ondragstart=\"drag(event)\">"+i+"</li>"
+    z++
+  }
+  document.querySelector("#seznamhracu").innerHTML=temp
+  for(i in roomdata.teams){
+    temp=""
+    for(y of roomdata.teams[i]){
+      temp+="<li draggable=\"true\" id=\""+y+"\"ondragstart=\"drag(event)\">"+y+"</li>"
+      z++
+    }
+    document.querySelector("#team"+i).innerHTML=temp+"<li>&nbsp;</li>"
+  }
+}
+function allowDrop(ev) {
+  ev.preventDefault();
+}
+function drag(ev) {
+  ev.dataTransfer.setData("text", ev.target.id);
+}
+function drop(ev) {
+  ev.preventDefault();
+  var data = ev.dataTransfer.getData("text");
+  roomdata.freeplayers=roomdata.freeplayers.filter(function (el) {
+    return el != data;
+  });
+  for(i in roomdata.teams){
+    roomdata.teams[i]=roomdata.teams[i].filter(function (el) {
+    return el != data;
+  });}
+  roomdata.teams[parseInt(ev.target.parentNode.id.split("team")[1])][roomdata.teams[parseInt(ev.target.parentNode.id.split("team")[1])].length]=data
+  write_teams()
+  //todo:synchronizace roomdata
+}
 socket.on('denied', ()=>{
   alert("již použité jméno")
   if (window.location.hostname != "localhost") {
-    location.reload();
+    window.location.href=window.location.hostname
   }
 }
 )
@@ -636,6 +679,7 @@ socket.on('in queue', ()=>{
 
 socket.on('in room', (data)=>{
   mujtank = undefined
+  fuel=300
   roomdata = data[1]
   console.log("Vstup do roomy")
   console.log(data)
@@ -776,6 +820,17 @@ document.querySelector("#Quickgame").addEventListener("click", ()=>{
   }
 }
 );
+quickreadrg = true
+document.querySelector("#normalhra").addEventListener("click", ()=>{
+  if (quickreadrg || window.location.hostname == "localhost") {
+      socket.emit('game', )
+      quickreadrg = false
+      setTimeout(function() {
+          quickreadrg = true
+      }, 1000)
+  }
+}
+);
 document.querySelector("#inviteinput").addEventListener("keyup", ()=>{
   if (document.querySelector("#inviteinput").value != "") {
       document.querySelector("#invitestyle").innerHTML = "ul#members li[value*='" + document.querySelector("#inviteinput").value + "']{display:block}"
@@ -822,18 +877,13 @@ socket.on('disconnect', ()=>{
   log('you have been disconnected');
   alert("Byl jsi odpojen")
   if (window.location.hostname != "localhost" && !connected) {
-    location.reload();
+    window.location.href=window.location.hostname
   }
 }
 );
 
 socket.on('reconnect', ()=>{
-  log('Připojení bylo obnoveno');
-  if (username) {
-    socket.emit('add user', username);
-  } else {
-    location.reload();
-  }
+  log('Připojení bylo obnoveno'); 
 }
 );
 socket.on('denied', ()=>{

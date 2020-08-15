@@ -11,13 +11,13 @@ server.listen(port, () => {
 
 app.use(express.static(path.join(__dirname, 'public')));
 
-var memnum=0
-var members = []
-var membersact={}
-var lobbyid=0
-var queue=[]
-var logs=[]
-var roominf=[]
+memnum=0
+members = []
+membersact={}
+lobbyid=0
+queue=[]
+logs=[]
+roominf=[]
 function rcolor(){
   r=127+Math.round(127*Math.random())
   g=127+Math.round(127*Math.random())
@@ -109,6 +109,41 @@ io.on('connection', (socket) => {
     }
     console.log("čekárna"+queue);
   });
+  socket.on('game',()=>{
+    user1=socket.username
+    roominf[lobbyid]={}
+    roominf[lobbyid].player=[user1]
+    roominf[lobbyid].freeplayers=[user1]
+    roominf[lobbyid].teams=[[],[]]
+    roominf[lobbyid].king=user1
+    roominf[lobbyid].playerup={}
+    roominf[lobbyid].playerup[user1]=[[0],[]]//ammo(gliderammo),upgrady(),
+    socket.emit('in game room',roominf[lobbyid])
+    socket.join(lobbyid)
+    membersact[user1].active=true
+    membersact[user1].rival="team"
+    membersact[user1].room=lobbyid
+    io.emit('players',membersact)
+    lobbyid++
+    queue=queue.filter(function (el) {
+      return el != queue[0];
+    });
+  })
+  socket.on('accinvite',(data)=>{
+    user1=socket.username
+    roominf[data].player[roominf[data].player.length]=user1
+    roominf[data].playerup[user1]=[[0],[]]//ammo(gliderammo),upgrady(),
+    socket.emit('in game room',[user1,roominf[data],true])
+    socket.join(data)
+    socket.broadcast.to(data).emit('updateroominf',roominf[data]);
+    membersact[user1].active=true
+    membersact[user1].rival=user2
+    membersact[user1].room=data
+    io.emit('players',membersact)
+    queue=queue.filter(function (el) {
+      return el != queue[0];
+    });
+  })
   socket.on('jj', (data) => {
     socket.join(data[0])
     socket.emit('in room',[data[1],roominf[data[0]],true])
@@ -168,7 +203,7 @@ io.on('connection', (socket) => {
     roominf[membersact[socket.username].room].player=roominf[membersact[socket.username].room].player.filter(function (el) {
       return el != roominf[membersact[socket.username].room].player[0];
     });
-    membersact[socket.username].room==""
+    membersact[socket.username].room=""
     io.emit('players',membersact)
   })
 })

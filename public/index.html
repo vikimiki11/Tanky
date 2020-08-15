@@ -340,6 +340,9 @@
         width: 25vw;
         padding: 24px;
       }
+      .endgame h1{
+        font-size: 12px;
+      }
     </style>
   </head>
   <body onresize="resize()" onload="resize()">
@@ -383,17 +386,11 @@
       <div class="centr gamelobby" style="display: none;">
         <div class="centr seznamhraci">
           <ul class="menu centr" id="seznamhracu">
-            <li>1</li>
-            <li>2</li>
           </ul>
           <div class="taemhraci centr">
-            <ul class="menu" id="team1">
-              <li>1</li>
-              <li>2</li>
+            <ul class="menu" id="team0" ondragover="allowDrop(event)"ondrop="drop(event)">
             </ul>
-            <ul class="menu" id="team2">
-              <li>1</li>
-              <li>2</li>
+            <ul class="menu" id="team1" ondragover="allowDrop(event)"ondrop="drop(event)">
             </ul>
           </div>
         </div>
@@ -417,6 +414,7 @@
       </div>
       <div class="hiscreen">
         <input type="button" id="Quickgame" value="Rychlá hra" class="promo-new-btn centr" style="width: 15rem;">
+        <input type="button" id="normalhra" value="Vytvořit hru" class="promo-new-btn centr" style="width: 15rem;margin-top:20px;">
         <div style="width: 40rem;height: 20rem;padding: 0.5rem;margin: 0.5rem auto;background-color:#EAEFF3;border: 2px solid grey ;">
           <p style="text-align: center;font-weight: bold;">Sem ti přijdou invity.</p>
           <ul id="invites" style="height: 14rem;width: 100%;overflow-y: auto;">
