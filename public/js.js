@@ -293,7 +293,12 @@ function mir(smer, ob) {
   document.querySelector("#" + ob.own + " .cannon").style.transform = "rotate(" + ob.aim + "deg)translate(10.5em,6em)"
   send()
 }
-
+kulkus=-1
+kulkustimus=[]
+socket.on('update roomdata',(data)=>{
+  roomdata=data
+  write_teams()
+})
 function fire(ob, typ, cansend, speed) {
   if((playing==true || cansend==false)&&document.querySelector(".glider")==null&&document.querySelector(".kulka")==null){
     clearInterval(pal)
@@ -306,7 +311,8 @@ function fire(ob, typ, cansend, speed) {
     ycan = Math.sin(dtr(ob.rotate + ob.aim - 180) * -1)
     kulky[pos].x = ob.x - Math.sin(dtr(ob.rotate) * -1) * 30.5 + xcan * 27
     kulky[pos].y = ob.y - Math.cos(dtr(ob.rotate) * -1) * 30.5 - ycan * 27
-    setTimeout(function(typ){if(document.querySelector("."+typ)!=null){removeElement(document.querySelector("."+typ))}},10000,typ)
+    kulkus++
+    kulkustimus[kulkus]=setTimeout(function(typ){if(document.querySelector("."+typ)!=null){removeElement(document.querySelector("."+typ))}},10000,typ)
     document.querySelector(".tanky").innerHTML += '<div class="' + typ + '" id="' + typ + '" style="left:' + kulky[pos].x + 'em;top:' + kulky[pos].y + 'em"></div>'
     hore = (xcan * xcan + ycan * ycan) * ammo[typ][4] * ammo[typ][4] * speed * speed
     ys = Math.sqrt(hore / ((xcan * xcan / (ycan * ycan)) + 1))
@@ -321,11 +327,11 @@ function fire(ob, typ, cansend, speed) {
       socket.emit("fire",[[mujtank,typ, speed],[JSON.parse(JSON.stringify(tanky)),new Date().getTime()]])
     }
     playing=false
-    letim(xs, ys, kulky[pos])
+    letim(xs, ys, kulky[pos], kulkus)
   }
 }
 
-function letim(speedx, speedy, ob) {
+function letim(speedx, speedy, ob, kulkusus) {
   ob.x += speedx
   ob.y += speedy
   document.querySelector("."+ob.typ).style.top = ob.y + "em"
@@ -335,13 +341,14 @@ function letim(speedx, speedy, ob) {
   if (Math.round(ob.x) > -1 && Math.round(ob.x) < mapax + 1 && Math.round(ob.y) < mapay + 1) {
       if (!mapa[Math.round(ob.x)][Math.round(ob.y)]) {
           setTimeout(function() {
-              letim(speedx, speedy, ob, ob.typ)
+              letim(speedx, speedy, ob, kulkusus)
           }, tick)
       } else {
           removeElement(document.querySelector("#" + ob.typ))
           removeter(Math.round(ob.x), Math.round(ob.y), ammo[ob.typ][3])
           damagetanks(Math.round(ob.x), Math.round(ob.y), ammo[ob.typ][3], ob.damagemulti)
           bum(Math.round(ob.x), Math.round(ob.y))
+          clearTimeout(kulkustimus[kulkusus])
       }
   } else {
       removeElement(document.querySelector("#" + ob.typ))
@@ -560,15 +567,9 @@ socket.on('players', data=>{
   )
 
   invites = invites.filter(function(el) {
-      return membersact[el].active === 0;
+      return (membersact[el].active === 0 || membersact[el].rival==="team");
   });
-  document.querySelector("#members").innerHTML = ""
-  for (let i = 0; i < invites.length; i++) {
-      if (invites[i] != username && membersact[invites[i]].active === 0) {
-          document.querySelector("#members").innerHTML = "<li value='" + invites[i] + "'>" + invites[i] + "</li>" + document.querySelector("#invites").innerHTML
-      }
-  }
-  document.querySelectorAll("#members li").forEach(item=>{
+  document.querySelectorAll("#invites li").forEach(item=>{
       item.addEventListener('click', event=>{
           if (onceacc === true) {
               socket.emit('acceptinvite', item.innerText)
@@ -658,7 +659,7 @@ function drop(ev) {
   });}
   roomdata.teams[parseInt(ev.target.parentNode.id.split("team")[1])][roomdata.teams[parseInt(ev.target.parentNode.id.split("team")[1])].length]=data
   write_teams()
-  //todo:synchronizace roomdata
+  socket.emit('update roomdata',roomdata)
 }
 socket.on('denied', ()=>{
   alert("již použité jméno")
@@ -839,35 +840,6 @@ document.querySelector("#inviteinput").addEventListener("keyup", ()=>{
   }
 }
 );
-socket.on('recieveinvite', data=>{
-  if (data[1] == username) {
-      invites = invites.filter(function(el) {
-          return el != data[0];
-      });
-      malert("Přišel ti invite od " + data[0] + ".")
-      invites[invites.length] = data[0]
-  }
-  document.querySelector("#invites").innerHTML = ""
-  for (let i = 0; i < invites.length; i++) {
-      if (invites[i] != username && membersact[invites[i]].active === 0) {
-          document.querySelector("#invites").innerHTML = "<li value='" + invites[i] + "'>" + invites[i] + "</li>" + document.querySelector("#invites").innerHTML
-      }
-  }
-  document.querySelectorAll("#invites li").forEach(item=>{
-      item.addEventListener('click', event=>{
-          if (onceacc === true) {
-              socket.emit('acceptinvite', item.innerText)
-              onceacc = false
-              setTimeout(function() {
-                  onceacc = true
-              }, 1000)
-          }
-      }
-      )
-  }
-  )
-}
-)
 socket.on('new message', (data)=>{
   addChatMessage(data,true);
 }
@@ -973,4 +945,41 @@ socket.on("fire",(data)=>{
     if(roomdata.player[roomdata.activeid]==username){
       playing=true
     }},data[0][1][1]-firsttimehe-(new Date().getTime()-firsttimemy)+1300,data)
+})
+
+
+document.querySelector("#inviteinput").addEventListener("keyup", ()=>{
+  if(document.querySelector("#inviteinput").value!=""){
+    document.querySelector("#invitestyle").innerHTML="ul#members li[value*='"+document.querySelector("#inviteinput").value+"']{display:block}"
+  }else{
+    document.querySelector("#invitestyle").innerHTML="ul#members li{display:block !important}"
+  }
+});
+
+
+
+onceacc=true
+socket.on('recieveinvite',data=>{
+  if(data[1]==username){
+    invites=invites.filter(function (el) {
+      return el!=data[0];
+    });
+    malert("Přišel ti invite od "+data[0]+".")
+    invites[invites.length]=data[0]
+  }
+  document.querySelector("#invites").innerHTML=""
+  for(i=0; i<invites.length;i++){
+    if(invites[i]!=username){
+      document.querySelector("#invites").innerHTML="<li value='"+invites[i]+"'>"+invites[i]+"</li>"+document.querySelector("#invites").innerHTML
+    }
+  }
+  document.querySelectorAll("#invites li").forEach(item => {
+    item.addEventListener('click', event => {
+      if(onceacc===true){
+      socket.emit('acceptinvite',item.innerText)
+      onceacc=false
+      setTimeout(function(){onceacc=true},1000)
+      }
+    })
+  })
 })

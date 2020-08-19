@@ -58,21 +58,44 @@ io.on('connection', (socket) => {
     tolog=""
     if(socket.username){
       try{
-        let username=socket.username
+        username=socket.username
+        members=members.filter(function (el) {
+          return el != username;
+        });
+        queue=queue.filter(function (el) {
+          return el != username;
+        });
+        console.log("disconect disconect multi multi try")
+        if(membersact[username].rival=="team"){
+          console.log("disconect multi multi")
+          roominf[membersact[username].room].freeplayers=roominf[membersact[socket.username].room].freeplayers.filter(function (el) {
+            return el != username;
+          });
+          roominf[membersact[username].room].player=roominf[membersact[socket.username].room].player.filter(function (el) {
+            return el != username;
+          });
+          for(y in roominf[membersact[username].room].teams){
+            roominf[membersact[username].room].teams[y]=roominf[membersact[socket.username].room].teams[y].filter(function (el) {
+              return el != username;
+            });
+          }
+          if(roominf[membersact[username].room].king=username && roominf[membersact[username].room].player.length!=0){
+            roominf[membersact[username].room].king=roominf[membersact[username].room].player[0]
+          }
+          socket.broadcast.to(membersact[username].room).emit('update roomdata',roominf[membersact[username].room])
+        }
+        roominf[membersact[username].room].player=roominf[membersact[username].room].player.filter(function (el) {
+          return el != username;
+        });
         membersact[username].active=false
         membersact[username].rival=""
         membersact[username].room=""
-        members=members.filter(function (el) {
-          return el != socket.username;
-        });
-        queue=queue.filter(function (el) {
-          return el != socket.username;
-        });
         memnum=memnum-1
         tolog="<div style='background-color:"+rcolor()+";padding:1rem;margin:1rem;box-sizing: border-box;'><h2>"+socket.username+" se odpojil</h2>čekárna "+JSON.stringify(queue)+"<br>"+JSON.stringify(members)+"</div>"
      
       }
       catch(err){
+        console.log(err)
         tolog="<div style='background-color:"+rcolor()+";padding:1rem;margin:1rem;box-sizing: border-box;'><h2>Velkej Debil co není schopen se lognout se odpojil</h2>čekárna "+JSON.stringify(queue)+"<br>"+JSON.stringify(members)+"<br>"+err+"</div>"
       }}
       logit(tolog)
@@ -103,12 +126,35 @@ io.on('connection', (socket) => {
         io.emit('players',membersact)
         lobbyid++
         queue=queue.filter(function (el) {
-          return el != queue[0];
+          return el != user2;
         });
       }
     }
     console.log("čekárna"+queue);
   });
+  socket.on('sendinvite',data=>{
+    tolog="<div style='background-color:"+rcolor()+";padding:1rem;margin:1rem;box-sizing: border-box;'><h2>"+socket.username+" poslal invite pro "+data+"</h2>čekárna "+JSON.stringify(queue)+"<br>"+JSON.stringify(members)+"</div>"
+    logit(tolog)
+    socket.broadcast.emit('recieveinvite',[socket.username,data])
+  })
+  socket.on('acceptinvite',data=>{
+    user1=socket.username
+    data=membersact[data].room
+    if(membersact[user1].room==""){
+      roominf[data].player[roominf[data].player.length]=user1
+      roominf[data].freeplayers[roominf[data].freeplayers.length]=user1
+      roominf[data].playerup[user1]=[[0],[]]//ammo(gliderammo),upgrady(),
+      socket.emit('in game room',roominf[data])
+      socket.join(data)
+      socket.broadcast.to(data).emit('update roomdata',roominf[data])
+      membersact[user1].active=true
+      membersact[user1].rival="team"
+      membersact[user1].room=data
+      io.emit('players',membersact)
+      queue=queue.filter(function (el) {
+        return el != user1;})
+    }
+  })
   socket.on('game',()=>{
     user1=socket.username
     roominf[lobbyid]={}
@@ -126,22 +172,7 @@ io.on('connection', (socket) => {
     io.emit('players',membersact)
     lobbyid++
     queue=queue.filter(function (el) {
-      return el != queue[0];
-    });
-  })
-  socket.on('accinvite',(data)=>{
-    user1=socket.username
-    roominf[data].player[roominf[data].player.length]=user1
-    roominf[data].playerup[user1]=[[0],[]]//ammo(gliderammo),upgrady(),
-    socket.emit('in game room',[user1,roominf[data],true])
-    socket.join(data)
-    socket.broadcast.to(data).emit('updateroominf',roominf[data]);
-    membersact[user1].active=true
-    membersact[user1].rival=user2
-    membersact[user1].room=data
-    io.emit('players',membersact)
-    queue=queue.filter(function (el) {
-      return el != queue[0];
+      return el != user1;
     });
   })
   socket.on('jj', (data) => {
@@ -164,27 +195,6 @@ io.on('connection', (socket) => {
       },true);
     }
   });
-  socket.on('acceptinvite',data=>{
-    user1=socket.username
-    user2=data
-    if(membersact[user1].room=="" && membersact[user2].room==""){
-      socket.join(lobbyid)
-      socket.emit('in room',user2)
-      socket.to(membersact[user2].id).emit("jj",[lobbyid,user1])
-      membersact[user1].active=true
-      membersact[user1].rival=user2
-      membersact[user1].room=lobbyid
-      membersact[user2].active=true
-      membersact[user2].rival=user1
-      membersact[user2].room=lobbyid
-      io.emit('players',membersact)
-      lobbyid++
-      queue=queue.filter(function (el) {
-        return el != user1;});
-      queue=queue.filter(function (el) {
-        return el != user2;});
-      }
-})
   socket.on('sendstate', (data) => {
     socket.broadcast.to(membersact[socket.username].room).emit('sendstate',data)
   });
@@ -197,13 +207,38 @@ io.on('connection', (socket) => {
     io.to(membersact[socket.username].room).emit("fire",[data,roominf[membersact[socket.username].room]])
   })
   socket.on('leave',()=>{
+    console.log("leave disconect multi multi try")
+    username=socket.username
+    if(membersact[socket.username].rival=="team"){
+      console.log("disconect multi multi")
+      roominf[membersact[username].room].freeplayers=roominf[membersact[socket.username].room].freeplayers.filter(function (el) {
+        return el != username;
+      });
+      roominf[membersact[username].room].player=roominf[membersact[socket.username].room].player.filter(function (el) {
+        return el != username;
+      });
+      for(y in roominf[membersact[username].room].teams){
+        roominf[membersact[username].room].teams[y]=roominf[membersact[socket.username].room].teams[y].filter(function (el) {
+          return el != username;
+        });
+      }
+      if(roominf[membersact[username].room].king=username && roominf[members[username].room].player.length!=0){
+        roominf[membersact[username].room].king=roominf[membersact[username].room].player[0]
+      }
+      socket.broadcast.to(membersact[username].room).emit('update roomdata',roominf[membersact[username].room])
+    }
+    roominf[membersact[socket.username].room].player=roominf[membersact[socket.username].room].player.filter(function (el) {
+      return el != socket.username;
+    });
+    socket.broadcast.to(membersact[socket.username].room).emit('update roomdata',data)
     socket.leave(membersact[socket.username].room)
     membersact[socket.username].active=0
     membersact[socket.username].rival=""
-    roominf[membersact[socket.username].room].player=roominf[membersact[socket.username].room].player.filter(function (el) {
-      return el != roominf[membersact[socket.username].room].player[0];
-    });
     membersact[socket.username].room=""
     io.emit('players',membersact)
+  })
+  socket.on('update roomdata',(data)=>{
+    roominf[membersact[data.player[0]].room]=data
+    socket.broadcast.to(membersact[data.player[0]].room).emit('update roomdata',data)
   })
 })
