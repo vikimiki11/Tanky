@@ -20,7 +20,7 @@ function resize(){
 function switchchat() {
   sa=document.querySelector("#rs").className
   if(document.querySelector("#rs").className=="switchg"){
-    if(membersact[username].room!=""){
+    if(membersact[username].room!==""){
       document.querySelector("#rs").className="switchl";document.querySelector("#rs").innerHTML="Local chat"
     }
   }else{
@@ -65,6 +65,7 @@ canvas.width = mapax;
 canvas.height = mapay;
 pohyb = ""
 pal = ""
+// MARK: Key eventy
 window.addEventListener('keydown', function(event) {
     if (pohyb == "" && playing==true) {
         if (event.keyCode == 37) {
@@ -106,7 +107,7 @@ window.addEventListener('keyup', function(event) {
       fire(tanky[mujtank], document.querySelector('#vybava').value,true,parseFloat(document.querySelector("#power").value))
     }
 })
-
+// MARK: Terén
 function aktualizace() {
   imageData = context.getImageData(0, 0, canvas.width, canvas.height);
   terain(imageData.data);
@@ -145,7 +146,7 @@ function createterain(iseed) {
   }
   return mapa
 }
-
+// MARK: Spawn
 function spawntank(x, owner) {
   if(owner==username){
     mujtank=tanky.length
@@ -206,7 +207,7 @@ function spawntrees() {
       z = z + 1000
   }
 }
-
+// MARK: Pohyb a míření
 function rtd(rad) {
   return rad * (180 / Math.PI)
 }
@@ -299,6 +300,7 @@ socket.on('update roomdata',(data)=>{
   roomdata=data
   write_teams()
 })
+// MARK: Palba a posun
 function fire(ob, typ, cansend, speed) {
   if((playing==true || cansend==false)&&document.querySelector(".glider")==null&&document.querySelector(".kulka")==null){
     clearInterval(pal)
@@ -542,6 +544,7 @@ membersact = {}
 var COLORS = ['0F0', '0EE', '22F', 'EE0', 'E00', 'E0E'];
 inqgame = false
 invites = []
+// MARK: Aktualizace hráčů
 socket.on('players', data=>{
   membersact = data
   if (inqgame) {
@@ -585,6 +588,7 @@ socket.on('players', data=>{
 
 }
 )
+// MARK: Leave
 function leave(){
   socket.emit('leave')
   document.querySelector('.tanky').innerHTML=""
@@ -617,7 +621,7 @@ socket.on('login', (data)=>{
   //idiooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooot
 }
 );
-
+// MARK: Normal game
 socket.on('in game room',(data)=>{
   roomdata=data
   $(".hiscreen").hide()
@@ -641,6 +645,7 @@ function write_teams(){
     document.querySelector("#team"+i).innerHTML=temp+"<li>&nbsp;</li>"
   }
 }
+// MARK: Drag
 function allowDrop(ev) {
   ev.preventDefault();
 }
@@ -677,7 +682,7 @@ socket.on('in queue', ()=>{
   }
 }
 )
-
+// MARK: Quickgame
 socket.on('in room', (data)=>{
   mujtank = undefined
   fuel=300
@@ -729,7 +734,7 @@ socket.on('jj', (data)=>{
   socket.emit('jj', (data))
 }
 )
-
+// MARK: Zprávy
 const addParticipantsMessage = (data)=>{
   var message = '';
   if (data.numUsers == 1) {
@@ -811,6 +816,7 @@ $(window).keydown(event=>{
 }
 );
 quickread = true
+// MARK: Tlačítka vstupy
 document.querySelector("#Quickgame").addEventListener("click", ()=>{
   if (quickread || window.location.hostname == "localhost") {
       socket.emit('quickgame', )
@@ -844,7 +850,7 @@ socket.on('new message', (data)=>{
   addChatMessage(data,true);
 }
 );
-
+// MARK: DIsconect
 socket.on('disconnect', ()=>{
   log('you have been disconnected');
   alert("Byl jsi odpojen")
@@ -868,6 +874,7 @@ socket.on('waiting for accept', ()=>{
 )
 sendqueue=[]
 sendinprogress=false
+// MARK: Posílání pohybu a příjmání
 function send(){
   if(roomdata.player[roomdata.activeid]==username){
     if(!sendinprogress){
@@ -947,7 +954,7 @@ socket.on("fire",(data)=>{
     }},data[0][1][1]-firsttimehe-(new Date().getTime()-firsttimemy)+1300,data)
 })
 
-
+// MARK: Invity
 document.querySelector("#inviteinput").addEventListener("keyup", ()=>{
   if(document.querySelector("#inviteinput").value!=""){
     document.querySelector("#invitestyle").innerHTML="ul#members li[value*='"+document.querySelector("#inviteinput").value+"']{display:block}"

@@ -44,8 +44,6 @@ io.on('connection', (socket) => {
       membersact[username].room=""
       membersact[username].id=socket.id
       io.emit('players',membersact)
-
-      // we store the username in the socket session for this client
       socket.username = username;
       tolog=JSON.stringify(members)+"</div>"
       logit(tolog)

@@ -345,12 +345,16 @@
       }
       ul#members li{
         display:none;
+      }
+      ul#members li,ul#invites li{
         margin-top: 0.5rem;
         background-color: rgba(0,0,0,0);
         border:0;
       }
-      ul#members li::before {
+      ul#members li::before{
         content: "+";
+      }
+      ul#members li::before,ul#invites li::before {
         color: #000000;
         font-weight: bold;
         margin-left: -2em;
@@ -362,14 +366,6 @@
       }
       ul#invites li::before {
         content: "✓";
-        color: #000000;
-        font-weight: bold;
-        margin-left: -2em;
-        margin-right: 1rem;
-        background-color: #00ff03;
-        border-radius: 0.5rem;
-        padding: 0 0.2rem;
-        border: 1px black solid;
       }
     </style>
     <style id="invitestyle">ul#members li{display:block !important}</style>
