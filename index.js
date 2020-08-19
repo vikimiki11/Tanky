@@ -236,7 +236,18 @@ io.on('connection', (socket) => {
     io.emit('players',membersact)
   })
   socket.on('update roomdata',(data)=>{
-    roominf[membersact[data.player[0]].room]=data
-    socket.broadcast.to(membersact[data.player[0]].room).emit('update roomdata',data)
+    team=data[1]
+    data=data[0]
+    roomdata=roominf[membersact[data].room]
+    roomdata.freeplayers=roomdata.freeplayers.filter(function (el) {
+      return el != data;
+    });
+    for(i in roomdata.teams){
+      roomdata.teams[i]=roomdata.teams[i].filter(function (el) {
+      return el != data;
+    });}
+    roomdata.teams[team][roomdata.teams[team].length]=data
+    roominf[membersact[data].room]=roomdata
+    socket.broadcast.to(membersact[data].room).emit('update roomdata',roominf[membersact[data].room])
   })
 })

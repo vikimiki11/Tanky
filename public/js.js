@@ -662,9 +662,10 @@ function drop(ev) {
     roomdata.teams[i]=roomdata.teams[i].filter(function (el) {
     return el != data;
   });}
-  roomdata.teams[parseInt(ev.target.parentNode.id.split("team")[1])][roomdata.teams[parseInt(ev.target.parentNode.id.split("team")[1])].length]=data
+  team=parseInt(ev.target.parentNode.id.split("team")[1])
+  roomdata.teams[team][roomdata.teams[team].length]=data
   write_teams()
-  socket.emit('update roomdata',roomdata)
+  socket.emit('update roomdata',[data,team])
 }
 socket.on('denied', ()=>{
   alert("již použité jméno")
