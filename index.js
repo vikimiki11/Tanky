@@ -1,6 +1,7 @@
 var express = require('express');
 var app = express();
 var path = require('path');
+const { Socket } = require('net');
 var server = require('http').createServer(app);
 var io = require('socket.io')(server);
 var port = process.env.PORT || 8080;
@@ -141,7 +142,7 @@ io.on('connection', (socket) => {
     if(membersact[user1].room==""){
       roominf[data].player[roominf[data].player.length]=user1
       roominf[data].freeplayers[roominf[data].freeplayers.length]=user1
-      roominf[data].playerup[user1]=[[0],[]]//ammo(gliderammo),upgrady(),
+      roominf[data].playerup[user1]=[false,[0],[]]//ammo(gliderammo),upgrady(),
       socket.emit('in game room',roominf[data])
       socket.join(data)
       socket.broadcast.to(data).emit('update roomdata',roominf[data])
@@ -161,7 +162,7 @@ io.on('connection', (socket) => {
     roominf[lobbyid].teams=[[],[]]
     roominf[lobbyid].king=user1
     roominf[lobbyid].playerup={}
-    roominf[lobbyid].playerup[user1]=[[0],[]]//ammo(gliderammo),upgrady(),
+    roominf[lobbyid].playerup[user1]=[false,[0],[]]//ready,ammo(gliderammo),upgrady(),
     socket.emit('in game room',roominf[lobbyid])
     socket.join(lobbyid)
     membersact[user1].active=true
@@ -247,7 +248,16 @@ io.on('connection', (socket) => {
       return el != data;
     });}
     roomdata.teams[team][roomdata.teams[team].length]=data
+    if(data!=socket.username){roomdata.playerup[data][0]=false}
     roominf[membersact[data].room]=roomdata
     socket.broadcast.to(membersact[data].room).emit('update roomdata',roominf[membersact[data].room])
+    socket.emit('update roomdata',roominf[membersact[data].room])
+  })
+  socket.on('update roomup',(data)=>{
+    name=data[0]
+    data=data[1]
+    roominf[membersact[name].room].playerup[name]=data
+    socket.broadcast.to(membersact[name].room).emit('update roomdata',roominf[membersact[name].room])
+    socket.emit('update roomdata',roominf[membersact[name].room])
   })
 })

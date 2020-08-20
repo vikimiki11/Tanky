@@ -298,6 +298,11 @@ kulkus=-1
 kulkustimus=[]
 socket.on('update roomdata',(data)=>{
   roomdata=data
+  if(roomdata.playerup[username][0]){
+    document.querySelector("#Ready").style.display="none"
+  }else{
+    document.querySelector("#Ready").style.display="block"
+  }
   write_teams()
 })
 // MARK: Palba a posun
@@ -626,6 +631,7 @@ socket.on('in game room',(data)=>{
   roomdata=data
   $(".hiscreen").hide()
   $(".gamelobby").show()
+  document.querySelector("#Ready").style.display="block"//TODO: dát aji na odstartování bitvy
   write_teams()
 })
 function write_teams(){
@@ -644,6 +650,19 @@ function write_teams(){
     }
     document.querySelector("#team"+i).innerHTML=temp+"<li>&nbsp;</li>"
   }
+  if(roomdata.king==username){
+    document.querySelector("#Start").style.display="block"
+  }else{
+    document.querySelector("#Start").style.display="none"
+  }
+  write_ready_state()
+}
+function write_ready_state(){
+  style=""
+  for(i of roomdata.player){
+    style+="div.seznamhraci li#"+i+"::before{background-color: "+(roomdata.playerup[i][0]?"#00ff03":"red")+";content: \"KOKOTVYJELNAVÝLET\";}"
+  }
+  document.querySelector("#readystates").innerHTML=style
 }
 // MARK: Drag
 function allowDrop(ev) {
@@ -824,6 +843,22 @@ document.querySelector("#Quickgame").addEventListener("click", ()=>{
       quickread = false
       setTimeout(function() {
           quickread = true
+      }, 1000)
+  }
+}
+);
+document.querySelector("#Ready").addEventListener("click", ()=>{
+  roomdata.playerup[username][0]=true
+  socket.emit('update roomup',[username,roomdata.playerup[username]])
+  document.querySelector("#Ready").style.display="none"
+}
+);
+startread = true
+document.querySelector("#Start").addEventListener("click", ()=>{
+  if (startread || window.location.hostname == "localhost") {
+      startread = false
+      setTimeout(function() {
+        startread = true
       }, 1000)
   }
 }

@@ -48,6 +48,7 @@
       .hracipole {
         position: relative;
         display: none;
+        user-select: none;
       }
 
       .tank {
@@ -283,6 +284,9 @@
       }
       .chat{
         overflow-y: auto;
+        -webkit-hyphens: auto;
+        -ms-hyphens: auto;
+        hyphens: auto;
       }
       .stromy{
         position: absolute;
@@ -367,8 +371,25 @@
       ul#invites li::before {
         content: "✓";
       }
+      div.seznamhraci li::before{
+      color: #000000;
+      font-weight: bold;
+      margin-left: 0.5rem;
+      box-sizing: unset;
+      top: -0.35rem;
+      position: relative;
+      margin-right: 1rem;
+      padding: 0.5rem;
+      border-radius: 0.5rem;
+      border: 1px black solid;
+      font-size: 0px;
+      }
+      #Start{
+        margin:1rem auto;
+      }
     </style>
     <style id="invitestyle">ul#members li{display:block !important}</style>
+    <style id="readystates"></style>
   </head>
   <body onresize="resize()" onload="resize()">
     <main>
@@ -424,6 +445,8 @@
           <input class="centr" style="width: 98%;border-width: 2px;border-style: inset;border-color: -internal-light-dark-color(rgb(118, 118, 118), rgb(195, 195, 195));border-image: initial;" id="inviteinput">
           <ul id="members" style="height: 12rem;width: 100%;overflow-y: auto;"></ul>
         </div>
+        <input type="button" id="Ready" value="Ready" class="promo-new-btn centr" style="width: 5rem;">
+        <input type="button" id="Start" value="Start" class="promo-new-btn centr" style="width: 5rem;display: none;">
         <div style="width: 100%;position: absolute;top:0">
           <div class="upgrade">
             <ul class="menu" id="nabojemenu">

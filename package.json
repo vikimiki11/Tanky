@@ -11,6 +11,6 @@
     "socket.io": "~2.3.0"
   },
   "scripts": {
-    "start": "node --inspect=127.0.0.1:9229 index.js"
+    "start": "node --inspect index.js"
   }
 }
