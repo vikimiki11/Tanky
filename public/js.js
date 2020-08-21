@@ -162,7 +162,7 @@ function spawntank(x, owner) {
   tanky[pos].health =100
   tanky[pos].def = 1
   tanky[pos].attackmul = 1
-  document.querySelector(".tanky").innerHTML += '<div class="tank" id="' + owner + '" style="left:' + x + 'em;top:0em;background-image: url(\'img/'+ getUsernameColor(owner)+'.png\');"><div class="cannon"></div></div>'      
+  document.querySelector(".tanky").innerHTML += '<div class="tank" id="' + owner + '" style="left:' + x + 'em;top:0em;background-image: url(\'img/'+ getUsernameColor(owner)+'.png\');"><div class="cannon"></div></div>'
   mir(1, tanky[pos])
   mir(-1, tanky[pos])
   tanky[pos].gravity = function(jump, pos, up) {
@@ -319,7 +319,7 @@ function fire(ob, typ, cansend, speed) {
     kulky[pos].x = ob.x - Math.sin(dtr(ob.rotate) * -1) * 30.5 + xcan * 27
     kulky[pos].y = ob.y - Math.cos(dtr(ob.rotate) * -1) * 30.5 - ycan * 27
     kulkus++
-    kulkustimus[kulkus]=setTimeout(function(typ){if(document.querySelector("."+typ)!=null){removeElement(document.querySelector("."+typ))}},10000,typ)
+    //kulkustimus[kulkus]=setTimeout(function(typ){if(document.querySelector("."+typ)!=null){removeElement(document.querySelector("."+typ))}},10000,typ)
     document.querySelector(".tanky").innerHTML += '<div class="' + typ + '" id="' + typ + '" style="left:' + kulky[pos].x + 'em;top:' + kulky[pos].y + 'em"></div>'
     hore = (xcan * xcan + ycan * ycan) * ammo[typ][4] * ammo[typ][4] * speed * speed
     ys = Math.sqrt(hore / ((xcan * xcan / (ycan * ycan)) + 1))
@@ -330,7 +330,7 @@ function fire(ob, typ, cansend, speed) {
     if (ob.rotate + ob.aim < 90 && -90 < ob.rotate + ob.aim) {
       xs = xs * (-1)
     }
-    if(roomdata.player[roomdata.activeid]==username && playing==true && cansend==true){
+    if((roomdata.player[roomdata.activeid]==username || roomdata.teams[roomdata.teamsai][roomdata.teamspi[roomdata.teamsai]]==username) && playing==true && cansend==true){
       socket.emit("fire",[[mujtank,typ, speed],[JSON.parse(JSON.stringify(tanky)),new Date().getTime()]])
     }
     playing=false
@@ -605,7 +605,7 @@ function leave(){
   membersact[username].room=""
   switchchat()
   tanky=[]
-  if(roomdata.player[roomdata.activeid]==username){
+  if(roomdata.player[roomdata.activeid]==username || roomdata.teams[roomdata.teamsai][roomdata.teamspi[roomdata.teamsai]]==username){
     playing=false
   }
   rival = ""
@@ -631,8 +631,9 @@ socket.on('in game room',(data)=>{
   roomdata=data
   $(".hiscreen").hide()
   $(".gamelobby").show()
-  document.querySelector("#Ready").style.display="block"//TODO: dát aji na odstartování bitvy
+  document.querySelector("#Ready").style.display="block"
   write_teams()
+  if(typeof zpravy[membersact[username].room]=="undefined"){zpravy[membersact[username].room]=[]}
 })
 function write_teams(){
   temp=""
@@ -857,9 +858,10 @@ startread = true
 document.querySelector("#Start").addEventListener("click", ()=>{
   if (startread || window.location.hostname == "localhost") {
       startread = false
+      socket.emit('start game',)
       setTimeout(function() {
         startread = true
-      }, 1000)
+      }, 2000)
   }
 }
 );
@@ -912,7 +914,7 @@ sendqueue=[]
 sendinprogress=false
 // MARK: Posílání pohybu a příjmání
 function send(){
-  if(roomdata.player[roomdata.activeid]==username){
+  if(roomdata.player[roomdata.activeid]==username || roomdata.teams[roomdata.teamsai][roomdata.teamspi[roomdata.teamsai]]==username){
     if(!sendinprogress){
       setTimeout(function(){actualsend()},200)
       sendinprogress=true
@@ -921,7 +923,7 @@ function send(){
   }
 }
 function actualsend(){
-  if(roomdata.player[roomdata.activeid]==username){
+  if(roomdata.player[roomdata.activeid]==username || roomdata.teams[roomdata.teamsai][roomdata.teamspi[roomdata.teamsai]]==username){
     socket.emit("sendstate",sendqueue)
   }
   sendinprogress=false
@@ -985,7 +987,7 @@ socket.on("fire",(data)=>{
   }
   setTimeout(function(data){
     roomdata=data[1]
-    if(roomdata.player[roomdata.activeid]==username){
+    if(roomdata.player[roomdata.activeid]==username || roomdata.teams[roomdata.teamsai][roomdata.teamspi[roomdata.teamsai]]==username){
       playing=true
     }},data[0][1][1]-firsttimehe-(new Date().getTime()-firsttimemy)+1300,data)
 })
@@ -1025,4 +1027,39 @@ socket.on('recieveinvite',data=>{
       }
     })
   })
+})
+socket.on("start game",(data)=>{
+  roomdata=data
+  mujtank = undefined
+  fuel=300
+  console.log("Vstup do roomy")
+  console.log(data)
+  tanky=[]
+  createterain(roomdata.seed);
+  aktualizace();
+  spawntrees();
+  if(roomdata.teams[roomdata.teamsai][roomdata.teamspi[roomdata.teamsai]]==username){
+    playing=true
+    for(let i=0;i<roomdata.sp.length;i++){
+      spawntank(roomdata.sp[i][0],roomdata.sp[i][1]);
+    }
+  }else{
+    let i = 0
+    while(mujtank == undefined){
+      if(roomdata.sp[i][1]==username){
+        mujtank=i//TODO:po zničení znovuzjišttění čísla
+      }
+      i++
+    }
+  }
+  log("Začal jsi hru")
+
+  $(".hracipole").show()
+  document.querySelector("#fuel").innerHTML=fuel
+  $('.gamelobby').hide()
+  $(".hiscreen").hide()
+  document.querySelector("#Ready").style.display="block"
+  resize()
+  ingame=true
+  //idiooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooot
 })

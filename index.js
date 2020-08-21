@@ -160,6 +160,7 @@ io.on('connection', (socket) => {
     roominf[lobbyid].player=[user1]
     roominf[lobbyid].freeplayers=[user1]
     roominf[lobbyid].teams=[[],[]]
+    roominf[lobbyid].teamsi=0
     roominf[lobbyid].king=user1
     roominf[lobbyid].playerup={}
     roominf[lobbyid].playerup[user1]=[false,[0],[]]//ready,ammo(gliderammo),upgrady(),
@@ -198,10 +199,20 @@ io.on('connection', (socket) => {
     socket.broadcast.to(membersact[socket.username].room).emit('sendstate',data)
   });
   socket.on('fire',(data)=>{
-    roominf[membersact[socket.username].room].activeid++
-    //roominf[lobbyid].player
-    if(roominf[membersact[socket.username].room].activeid==roominf[membersact[socket.username].room].player.length){
-      roominf[membersact[socket.username].room].activeid=0
+    if(membersact[socket.username].rival=="team"){
+      roominf[membersact[socket.username].room].teamspi[roominf[membersact[socket.username].room].teamsai]++
+      roominf[membersact[socket.username].room].teamsai++
+      if(roominf[membersact[socket.username].room].teamsai>=roominf[membersact[socket.username].room].teams.length){
+        roominf[membersact[socket.username].room].teamsai=0
+      }
+      if(roominf[membersact[socket.username].room].teamspi[roominf[membersact[socket.username].room].teamsai]>=roominf[membersact[socket.username].room].teams[roominf[membersact[socket.username].room].teamsai].length){
+        roominf[membersact[socket.username].room].teamspi[roominf[membersact[socket.username].room].teamsai]=0
+      }
+    }else{
+      roominf[membersact[socket.username].room].activeid++
+      if(roominf[membersact[socket.username].room].activeid==roominf[membersact[socket.username].room].player.length){
+        roominf[membersact[socket.username].room].activeid=0
+      }
     }
     io.to(membersact[socket.username].room).emit("fire",[data,roominf[membersact[socket.username].room]])
   })
@@ -229,7 +240,7 @@ io.on('connection', (socket) => {
     roominf[membersact[socket.username].room].player=roominf[membersact[socket.username].room].player.filter(function (el) {
       return el != socket.username;
     });
-    socket.broadcast.to(membersact[socket.username].room).emit('update roomdata',data)
+    socket.broadcast.to(membersact[socket.username].room).emit('update roomdata',roominf[membersact[socket.username].room])
     socket.leave(membersact[socket.username].room)
     membersact[socket.username].active=0
     membersact[socket.username].rival=""
@@ -259,5 +270,26 @@ io.on('connection', (socket) => {
     roominf[membersact[name].room].playerup[name]=data
     socket.broadcast.to(membersact[name].room).emit('update roomdata',roominf[membersact[name].room])
     socket.emit('update roomdata',roominf[membersact[name].room])
+  })
+  socket.on('start game',()=>{
+    roominf[membersact[socket.username].room].seed=Math.random()*9999999
+    spt=[]
+    temp=0
+    for(i of roominf[membersact[socket.username].room].teams){
+      for(y in i){
+        if(temp==0){
+          spt[spt.length]=[50+y*100,i[y]]
+        }else{
+          spt[spt.length]=[1550-y*100,i[y]]
+        }
+      }
+      temp++
+    }
+    roominf[membersact[socket.username].room].sp=spt
+    roominf[membersact[socket.username].room].teamspi=[0,0]
+    if(roominf[membersact[socket.username].room].teamsi>=roominf[membersact[socket.username].room].teams.length){roominf[membersact[socket.username].room].teamsi=0}
+    roominf[membersact[socket.username].room].teamsai=roominf[membersact[socket.username].room].teamsi
+    roominf[membersact[socket.username].room].teamsi++
+    io.to(membersact[socket.username].room).emit('start game',roominf[membersact[socket.username].room])
   })
 })
