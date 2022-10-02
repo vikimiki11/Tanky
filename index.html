@@ -7,8 +7,23 @@
 	<title>Tanky</title>
 	<link rel="stylesheet" type="text/css" href="style.css">
 </head>
-<body>
-	<main></main>
+<body onresize="changeBaseFontSize()">
+	<main>
+		<div id="startupScreen" style="display:block">A<button onclick="switchScreen('shopScreen')">shop</button><button onclick="switchScreen('gameScreen')">game</button></div>
+		<div id="shopScreen" style="display:none">B<button onclick="switchScreen('startupScreen')">setup</button><button onclick="switchScreen('gameScreen')">game</button></div>
+		<div id="gameScreen" style="display:none">C<button onclick="switchScreen('startupScreen')">setup</button><button onclick="switchScreen('shopScreen')">shop</button></div>
+	</main>
+	<div id="switchScreen">
+		<div id="bottomPartSwitchScreen">
+			<div id="leftPartSwitchScreen"></div>
+			<div id="middlePartSwitchScreen"></div>
+			<div id="rightPartSwitchScreen"></div>
+		</div>
+		<div id="topPartSwitchScreen"></div>
+	</div>
+	<div id="cachedImages">
+		<img src="img/inside.jpg">
+	</div>
 	<script src="main.js"></script>
 </body>
 </html>
