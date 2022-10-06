@@ -25,3 +25,11 @@ function switchScreen(screenID) {
 		}, animationLength);
 	}, animationLength);
 }
+
+function fullScreen() {
+	if (document.fullscreen) {
+		document.exitFullscreen();
+	} else {
+		document.body.requestFullscreen()
+	}
+}

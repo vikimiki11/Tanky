@@ -8,10 +8,21 @@
 	<link rel="stylesheet" type="text/css" href="style.css">
 </head>
 <body onresize="changeBaseFontSize()">
+<div id="body">
 	<main>
-		<div id="startupScreen" style="display:block">A<button onclick="switchScreen('shopScreen')">shop</button><button onclick="switchScreen('gameScreen')">game</button></div>
-		<div id="shopScreen" style="display:none">B<button onclick="switchScreen('startupScreen')">setup</button><button onclick="switchScreen('gameScreen')">game</button></div>
-		<div id="gameScreen" style="display:none">C<button onclick="switchScreen('startupScreen')">setup</button><button onclick="switchScreen('shopScreen')">shop</button></div>
+		<div id="startupScreen" style="display:block">
+			<div>
+				<button onclick="switchScreen('shopScreen')">shop</button>
+				<button onclick="switchScreen('gameScreen')">game</button>
+			</div>
+			A
+		</div>
+		<div id="shopScreen" style="display:none">
+			B<button onclick="switchScreen('startupScreen')">setup</button><button onclick="switchScreen('gameScreen')">game</button>
+		</div>
+		<div id="gameScreen" style="display:none">
+			C<button onclick="switchScreen('startupScreen')">setup</button><button onclick="switchScreen('shopScreen')">shop</button>
+		</div>
 	</main>
 	<div id="switchScreen">
 		<div id="bottomPartSwitchScreen">
@@ -25,5 +36,6 @@
 		<img src="img/inside.jpg">
 	</div>
 	<script src="main.js"></script>
+</div>
 </body>
 </html>

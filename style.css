@@ -3,7 +3,6 @@
 	initial-value: 0;
 	inherits: true;
 }
-
 @keyframes switchOut {
 	0% {
 		--switchState: 1;
@@ -26,13 +25,21 @@ body{
 	margin: auto;
 	background-color: black;
 	position: relative;
-	--switchStateCompression:0.9;
-	--aspectRatio: calc(16 / 9);
+	display: flex;
+	align-items: center;
+	overflow: hidden;
+}
+
+#body {
+	margin: auto;
+	background-color: black;
+	position: relative;
 	display: flex;
 	flex-direction: column-reverse;
 	align-items: center;
 	overflow: hidden;
 }
+
 body.switchIn{
 	animation: 1s switchIn normal forwards;
 }
@@ -43,8 +50,10 @@ body.switchIn #switchScreen, body.switchOut #switchScreen{
 	display: flex;
 }
 
-body, main, main > *{
-	aspect-ratio: 16 / 9;
+#body, main, main > *{
+	--switchStateCompression: 0.9;
+	--aspectRatio: calc(16 / 9);
+	aspect-ratio: var(--aspectRatio);
 	height: 1em;
 }
 
@@ -85,6 +94,7 @@ main{
 	flex-wrap: nowrap;
 	align-items: center;
 }
+
 #topPartSwitchScreen{
 	background-color: red;
 	width: calc(1em * var(--aspectRatio) / var(--switchStateCompression));
@@ -93,14 +103,17 @@ main{
 	background-size: cover;
 	background-position: bottom;
 }
+
 #bottomPartSwitchScreen{
 	height: 1em;
 	display: flex;
 	justify-content: center
 }
+
 #middlePartSwitchScreen{
 	width: calc(1em * var(--aspectRatio) * (1 - var(--switchState)));
 }
+
 #leftPartSwitchScreen{
 	background-color: yellow;
 	height: 1em;
@@ -109,6 +122,7 @@ main{
 	background-size: cover;
 	background-position: right;
 }
+
 #rightPartSwitchScreen{
 	background-color: pink;
 	height: 1em;
