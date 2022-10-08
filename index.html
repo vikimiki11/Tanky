@@ -6,24 +6,89 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>Tanky</title>
 	<link rel="stylesheet" type="text/css" href="style.css">
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
 </head>
 <body onresize="changeBaseFontSize()">
 <div id="body">
 	<main>
+
+
+
+
+
+
+
+
 		<div id="startupScreen" style="display:block">
 			<div>
-				<button onclick="switchScreen('shopScreen')">shop</button>
+				<div id="setupBasic" class="setupMenu" style="display: block;">
+					<div class="normalizeFont">
+						<h2>Typ terénu</h2>
+						<input type="radio" name="terrain" value="0" checked><label>Náhodný</label><br>
+						<input type="radio" name="terrain" value="1"        ><label>Hory</label><br>
+						<input type="radio" name="terrain" value="2"        ><label>Les</label><br>
+						<input type="radio" name="terrain" value="3"        ><label>Poušť</label><br>
+						<hr>
+						<input type="checkbox"><label>Jeskyně</label><br>
+						<hr>
+						Počet Hráčů: <input type="number" id="playerCount" min="2" max="5" value="2">
+						<button onclick="selectTerrain();nextStartupScreen()">hrát</button>
+					</div>
+				</div>
+				<div id="setupPlayer" class="setupMenu" style="display: none;">
+					<div class="normalizeFont">
+						<h2 id="">1. Player</h2>
+						<label>Jméno: </label><input id="playerName"><br>
+						<hr>
+						<label>AI: </label><input type="checkbox" id="AICheckbox">
+						Color: <input type="color" id="playerColor"><br><br>
+						<button onclick="addPlayer()">Next</button>
+					</div>
+				</div>
+			</div>
+		</div>
+
+
+
+
+
+
+
+
+		<div id="shopScreen" style="display:none">
+			<div>
+				B
+				<button onclick="switchScreen('startupScreen')">setup</button>
 				<button onclick="switchScreen('gameScreen')">game</button>
 			</div>
-			A
 		</div>
-		<div id="shopScreen" style="display:none">
-			B<button onclick="switchScreen('startupScreen')">setup</button><button onclick="switchScreen('gameScreen')">game</button>
-		</div>
+
+
+
+
+
+
+
+
 		<div id="gameScreen" style="display:none">
-			C<button onclick="switchScreen('startupScreen')">setup</button><button onclick="switchScreen('shopScreen')">shop</button>
+			<div class="normalizeFont">
+				<div id="gameTopBar">
+					<button onclick="switchScreen('startupScreen')">setup</button>
+					<button onclick="switchScreen('shopScreen')">shop</button>
+				</div>
+			</div>
 		</div>
 	</main>
+
+
+
+
+
+
+
+
 	<div id="switchScreen">
 		<div id="bottomPartSwitchScreen">
 			<div id="leftPartSwitchScreen"></div>
@@ -35,7 +100,8 @@
 	<div id="cachedImages">
 		<img src="img/inside.jpg">
 	</div>
-	<script src="main.js"></script>
+	<script src="gui.js"></script>
+	<script src="game.js"></script>
 </div>
 </body>
 </html>

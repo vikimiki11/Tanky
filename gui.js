@@ -4,12 +4,17 @@ function changeBaseFontSize() {
 	var baseFontSize = Math.min(window.innerWidth / 16, window.innerHeight / 9)*9;
 	document.body.style.fontSize = baseFontSize + "px";
 }
-lastScreen = "startupScreen";
+
+
+
+
+lastScreen = document.querySelector('main > *[style="display:block"]').id;
 switchScreenInProgress = false;
 endOfSwitchScreen = null;
+
 function switchScreen(screenID) {
 	animationLength = 1000;
-	if (switchScreenInProgress || !screenID) return endOfSwitchScreen;
+	if (switchScreenInProgress || !screenID) return endOfSwitchScreen - Date.now();
 	switchScreenInProgress = true;
 	endOfSwitchScreen = Date.now() + 2 * animationLength;
 	document.body.classList.add("switchIn");
@@ -26,10 +31,21 @@ function switchScreen(screenID) {
 	}, animationLength);
 }
 
+
+
+
 function fullScreen() {
 	if (document.fullscreen) {
 		document.exitFullscreen();
 	} else {
 		document.body.requestFullscreen()
 	}
+}
+
+
+
+
+function nextStartupScreen() {
+	document.querySelector("#setupBasic").style.display = "none";
+	document.querySelector("#setupPlayer").style.display = "block";
 }
