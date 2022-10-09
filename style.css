@@ -30,6 +30,7 @@ body{
 	overflow: hidden;
 	font-family: 'Roboto', sans-serif;
 	font-weight: bolder;
+	user-select: none;
 }
 
 #body {
@@ -71,6 +72,7 @@ main, #switchScreen{
 main{
 	background-color: green;
 	height: 1em;
+	position: relative;
 }
 
 #cachedImages{
@@ -83,6 +85,8 @@ main{
 
 .normalizeFont{
 	font-size: 0.04em;
+	height: 100%;
+	width: 100%;
 }
 
 
@@ -144,6 +148,21 @@ main{
 
 
 
+#fullscreenButton{
+	position: absolute;
+	top: 0.01em;
+	right: 0.01em;
+	width: 0.05em;
+	height: 0.05em;
+}
+
+
+
+
+
+
+
+
 #shopScreen{
 	background-image: url("img/inside.jpg");
 	background-size: cover;
@@ -187,6 +206,28 @@ input[type="checkbox"]{
 	width: 0.6em;
 	height: 0.6em;
 }
+input[type="color"]{
+	width: 2.4em;
+}
+input[type="range"][orient="vertical"]{
+	/* IE */
+	-webkit-appearance: slider-vertical;/* Chromium */
+	width: 0.5em;
+	height: 3em;
+	position: relative;
+}
+.clickable {
+	border-radius: 1em;
+	width: 1.5em;
+	text-align: center;
+	display: inline-block;
+	padding-bottom: 0.15em;
+}
+
+.clickable:active {
+	background-color: rgba(214, 214, 214, 0.64);
+}
+
 
 
 
@@ -199,6 +240,164 @@ input[type="checkbox"]{
 	top: 0;
 	left: 0;
 	width: 100%;
-	height: 5em;
+	height: 4em;
+	background-color: rgba(255, 240, 240, 0.64);
+}
+
+#playerName{
+	font-size: 0.8em;
+	position: absolute;
+	padding: 0.5em 0.65em;
+	height: 1em;
+	width: 8em;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	overflow: hidden;
+	border-right: 0.11em rgb(160 160 160) solid;
+	border-bottom: 0.11em rgb(160 160 160) solid;
+}
+
+#engineControll{
+	font-size: 0.8em;
+	position: absolute;
+	top: 0.5em;
+	left: 12em;
+}
+
+#gadgets{
+	font-size: 0.8em;
+	position: absolute;
+	top: 3em;
+	left: 0.5em;
+}
+
+#shootControll{
+	position: absolute;
+	left: 16em;
+	height: 100%;
+	width: 10em;
+	border-left: 0.1em rgb(160 160 160) solid;
+	border-right: 0.1em rgb(160 160 160) solid;
+}
+
+#firePowerControll{
+	position: absolute;
+	left: 1.5em;
+	top: 0.25em;
+}
+#firePowerDisplay{
+	position: absolute;
+	left: 3em;
+	top: 3.75em;
+	font-size: 0.75em;
+}
+
+#aimControll{
+	position: absolute;
+	left: 4em;
+}
+#aimDisplay{
+	position: absolute;
+	left: 11em;
+	top: 1.5em;
+	font-size: 0.75em;
+}
+
+#fireButton{
+	position: absolute;
+	left: 9em;
+	top: 2.75em;
+	font-size: 0.85em;
+}
+
+#info{
+	top: 0;
+	left: 0;
+	width: 0;
+	height: 0;
+}
+
+#info > img{
+	position: absolute;
+	top: 0.125em;
+	right: 1.75em;
+	width: 1.5em;
+	height: 1.5em;
+}
+
+#info > .setupMenu{
+	display: none;
+	position: absolute;
+	top: 7em;
+	left: 50%;
+	transform: translateX(-50%);
+	background-color: rgba(240, 240, 240, 0.64);
+	padding: 1em;
+	border-radius: 0.8em;
+	min-width: 10em;
+}
+
+#info:hover > .setupMenu{
+	display: block;
+}
+
+#ammo{
+	position: absolute;
+	top: 0.25em;
+	left: 26.5em;
+}
+#ammo > *{
+	display: inline-block;
+}
+#previousAmmo, #nextAmmo {
+	vertical-align: top;
+}
+#allAmmo{
+	position: relative;
+	display: none;
+	font-size: 0.7em;
+}
+#ammo:has(.ammoRow:hover) #allAmmo{
+	display: block;
+}
+#selectedAmmo{
+	font-size: 0.7em;
+	margin-top: 0.35em;
+}
+
+.ammoRow{
+	display: grid;
+	background-color: #ccc;
+}
+#gameScreen .ammoRow{
+	grid-template-columns: 1.5em 10em 1.5em;
+	height: 1.5em;
+}
+
+.ammoRow > *{
+	display: inline-block;
+	border: 0.1em solid black;
+	padding: 0.2em 0.1em 0.2em 0.1em;
+	font-size: 0.8em;
+}
+
+#gameScreen .ammoCost, #gameScreen .ammoBuyAmount{
+	display: none;
+}
+
+.ammoName{
 	background-color: white;
+}
+
+.ammoAmount{
+	background-color: #666;
+	text-align: center;
+}
+
+.ammoAmount::after{
+	content: "99";
+}
+
+#selectedAmmo > *{
+	display: none;
 }

@@ -13,7 +13,7 @@ switchScreenInProgress = false;
 endOfSwitchScreen = null;
 
 function switchScreen(screenID) {
-	animationLength = 1000;
+	const animationLength = 1000;
 	if (switchScreenInProgress || !screenID) return endOfSwitchScreen - Date.now();
 	switchScreenInProgress = true;
 	endOfSwitchScreen = Date.now() + 2 * animationLength;
@@ -34,7 +34,7 @@ function switchScreen(screenID) {
 
 
 
-function fullScreen() {
+function fullscreen() {
 	if (document.fullscreen) {
 		document.exitFullscreen();
 	} else {
@@ -49,3 +49,7 @@ function nextStartupScreen() {
 	document.querySelector("#setupBasic").style.display = "none";
 	document.querySelector("#setupPlayer").style.display = "block";
 }
+
+
+
+

@@ -9,6 +9,15 @@
 	<link rel="preconnect" href="https://fonts.googleapis.com">
 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 	<link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
+	<style id="playerStyle">
+		#selectedAmmo .ammo2{
+		display: grid;
+		}
+		
+		#allAmmo .ammo2 {
+		display: none;
+		}
+	</style>
 </head>
 <body onresize="changeBaseFontSize()">
 <div id="body">
@@ -39,11 +48,11 @@
 				</div>
 				<div id="setupPlayer" class="setupMenu" style="display: none;">
 					<div class="normalizeFont">
-						<h2 id="">1. Player</h2>
-						<label>Jméno: </label><input id="playerName"><br>
+						<h2 id="">1. Hráč</h2>
+						<label>Jméno: </label><input id="playerNameInput"><br>
 						<hr>
 						<label>AI: </label><input type="checkbox" id="AICheckbox">
-						Color: <input type="color" id="playerColor"><br><br>
+						Color: <input type="color" id="playerColorInput"><br><br>
 						<button onclick="addPlayer()">Next</button>
 					</div>
 				</div>
@@ -75,11 +84,46 @@
 		<div id="gameScreen" style="display:none">
 			<div class="normalizeFont">
 				<div id="gameTopBar">
-					<button onclick="switchScreen('startupScreen')">setup</button>
-					<button onclick="switchScreen('shopScreen')">shop</button>
+					<div id="playerName"><!-- filled by script --></div>
+					<div id="engineControll">
+						<div id="driveLeft" class="clickable">🢠</div>
+						<span id="fuelAmount">100</span>
+						<div id="driveRight" class="clickable">🢡</div></div>
+					<div id="gadgets">repair kit; shield; fuel; parachute; teleport;</div>
+					<div id="shootControll">
+						<div id="firePowerControll"><input type="range" orient="vertical" onChange="setFirePower(this.value)"></div>
+						<div id="firePowerDisplay">50</div>
+						<input type="range" id="aimControll" min="0" max="180" onChange="setAim(this.value)">
+						<div id="aimDisplay">50</div>
+						<button id="fireButton" onclick="fire()">Fire</button>
+					</div>
+					<div id="ammo">
+						<div id="previousAmmo" class="clickable">🢠</div>
+						<div id="ammoSelect">
+							<div id="selectedAmmo"><!-- filled by script --></div>
+							<div id="allAmmo"><!-- filled by script --></div>
+						</div>
+						<div id="nextAmmo" class="clickable">🢡</div></div>
+					<div id="money"></div>
+					<div id="airCurrent"></div>
+					<div id="info">
+						<img src="img/info.webp">
+						<div class="setupMenu">
+							<span style="font-size: 1.5em;">Ovládání</span><br>
+							A D - Pohyb<br>
+							Q E - Mýření<br>
+							W S - Síla Výstřelu<br>
+							Shift Ctrl - Výběř Střeliva<br>
+							Space - Střelba<br><br>
+							Vše lze také udělat v horním menu
+						</div>
+					</div>
+					<!-- <button onclick="switchScreen('startupScreen')">setup</button>
+					<button onclick="switchScreen('shopScreen')">shop</button> -->
 				</div>
 			</div>
 		</div>
+		<img id="fullscreenButton" src="img/fullscreen.png" onclick="fullscreen()">
 	</main>
 
 
@@ -100,6 +144,7 @@
 	<div id="cachedImages">
 		<img src="img/inside.jpg">
 	</div>
+	<script src="ammo.js"></script>
 	<script src="gui.js"></script>
 	<script src="game.js"></script>
 </div>
