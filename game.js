@@ -40,6 +40,10 @@ class Player {
 		for (let ammo of ammoList) {
 			this.ammo.push(ammo.defaultAmount);
 		}
+		this.gadget = [];
+		for (let gadget of gadgetList) {
+			this.gadget.push(gadget.defaultAmount);
+		}
 	}
 
 	get selected() {
@@ -61,12 +65,36 @@ class Player {
 	}
 	updateCSS() {
 		document.querySelector("style#playerStyle").innerHTML = `		#selectedAmmo .ammo${this.selectedAmmo} {
-		display: grid;
+			display: grid;
 		}
 		
 		#allAmmo .ammo${this.selectedAmmo} {
-		display: none;
+			display: none;
+		}
+
+		${this.tank?`:root{
+			--aim: ${this.tank.aim};
+			--firePower: ${this.tank.firePower};
+		}
+
+		#playerName{
+			color: ${this.color};
+		}
+
+		`: ""
+			}`;
+		for (let ammo in this.ammo) {
+			document.querySelector("style#playerStyle").innerHTML += `
+		.ammoRow.ammo${ammo} > .ammoAmount::after, .${ammoList[ammo].shortName}DisplayAfter::after{
+			content: "${this.ammo[ammo] == "Infinity"?"Inf.":this.ammo[ammo]}";
 		}`;
+		}
+		for (let gadget in this.gadget) {
+			document.querySelector("style#playerStyle").innerHTML += `
+		.${gadgetList[gadget].shortName}DisplayAfter::after{
+			content: "${this.gadget[gadget] == "Infinity" ?"Inf.":this.gadget[gadget]}";
+		}`;
+		}
 	}
 }
 
@@ -82,7 +110,7 @@ function addPlayer(name, color, AI) {
 		document.querySelector("#playerColorInput").value = "#000000";
 		document.querySelector("#setupPlayer  h2").innerHTML = (players.length + 1) + ". Hráč";
 	} else {
-		game = setupGame(players, selectedTerrain, generateCaves);
+		game = new Game(players, selectedTerrain, generateCaves);
 		console.log(game);
 		game.start()
 	}
@@ -118,6 +146,7 @@ class Game {
 	}
 
 	start() {
+		this.spawnTanks();
 		this.nextPlayer();
 		this.blockControls = true;
 		switchScreen("gameScreen");
@@ -125,19 +154,57 @@ class Game {
 	}
 
 	spawnTanks() {
-
+		for (let playerID in this.players) {
+			let player = this.players[playerID];
+			player.tank = new Tank(player);
+		}
 	}
 
 	nextPlayer() {
 		this.actualPlayerID++;
-		document.querySelector("#playerName").innerHTML = this.actualPlayer.name;
+		let player = this.actualPlayer;
+		document.querySelector("#playerName").innerHTML = player.name;
+		game.setAim(player.tank.aim)
+		document.querySelector("#firePowerControll input").value = player.tank.firePower;
+	}
 
+	setFirePower(power) {
+		this.actualPlayer.tank.firePower = parseFloat(power);
+		document.querySelector("#firePowerControll input").value = power;
+		this.actualPlayer.updateCSS();
+	}
+
+	setAim(angle) {
+		this.actualPlayer.tank.aim = parseFloat(angle);
+		document.querySelector("#aimControll").value = angle;
+		this.actualPlayer.updateCSS();
+	}
+
+	nextAmmo() {
+		do {
+			this.actualPlayer.selectedAmmo++;
+			if (this.actualPlayer.selectedAmmo >= ammoList.length) this.actualPlayer.selectedAmmo = 0;
+		} while (this.actualPlayer.ammo[this.actualPlayer.selectedAmmo] <= 0);
+	}
+
+	previousAmmo() {
+		do {
+			this.actualPlayer.selectedAmmo--;
+			if (this.actualPlayer.selectedAmmo < 0) this.actualPlayer.selectedAmmo = ammoList.length - 1;
+		} while (this.actualPlayer.ammo[this.actualPlayer.selectedAmmo] <= 0);
+	}
+
+	fire() {
+		
 	}
 }
-function setupGame(players, terrain, caves) {
-	return new Game(players, terrain, caves);
-}
-function setFirePower(power) {
-	document.querySelector("#firePowerControll").value = power;
-	game.pla
+
+class Tank {
+	constructor(player) {
+		this.player = player;
+		this.aim = 0;
+		this.firePower = 0;
+		this.x = 0;
+		this.y = 0;
+	}
 }

@@ -10,13 +10,6 @@
 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 	<link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
 	<style id="playerStyle">
-		#selectedAmmo .ammo2{
-		display: grid;
-		}
-		
-		#allAmmo .ammo2 {
-		display: none;
-		}
 	</style>
 </head>
 <body onresize="changeBaseFontSize()">
@@ -89,21 +82,72 @@
 						<div id="driveLeft" class="clickable">🢠</div>
 						<span id="fuelAmount">100</span>
 						<div id="driveRight" class="clickable">🢡</div></div>
-					<div id="gadgets">repair kit; shield; fuel; parachute; teleport;</div>
+					<div id="gadgets">
+
+
+						<div id="repairKit" class="repairKitDisplayAfter">
+							<img src="img/gadget/repairKit.png">
+						</div>
+
+
+						<div id="shield">
+							<div id="weakShieldDisplay" class="weakShieldDisplayAfter">
+								<svg class="shield weakShield">
+									<circle />
+									Sorry, your browser does not support inline SVG.
+								</svg>
+							</div>
+							<div id="shieldDisplay" class="dropMenu shieldDisplayAfter">
+								<svg class="shield">
+									<circle />
+								</svg>
+							</div>
+							<div id="strongShieldDisplay" class="dropMenu strongShieldDisplayAfter">
+								<svg class="shield strongShield">
+									<circle />
+									Sorry, your browser does not support inline SVG.
+								</svg>
+							</div>
+							<div id="superShieldDisplay" class="dropMenu superShieldDisplayAfter">
+								<svg class="shield superShield">
+									<circle />
+									Sorry, your browser does not support inline SVG.
+								</svg>
+							</div>
+						</div>
+
+
+						<div id="fuel" class="fuelDisplayAfter">
+							<img src="img/gadget/fuel.png">
+						</div>
+
+
+						<div id="parachute" class="parachuteDisplayAfter">
+							<img src="img/gadget/parachute.png">
+						</div>
+
+
+						<div id="teleport" class="teleportDisplayAfter">
+							<img src="img/gadget/teleport.png">
+						</div>
+
+
+					</div>
 					<div id="shootControll">
-						<div id="firePowerControll"><input type="range" orient="vertical" onChange="setFirePower(this.value)"></div>
-						<div id="firePowerDisplay">50</div>
-						<input type="range" id="aimControll" min="0" max="180" onChange="setAim(this.value)">
-						<div id="aimDisplay">50</div>
+						<div id="firePowerControll"><input type="range" orient="vertical" onchange="game.setFirePower(this.value)" onmousemove="game.setFirePower(this.value)"></div>
+						<div id="firePowerDisplay"></div>
+						<input type="range" id="aimControll" min="0" max="180" onChange="game.setAim(this.value)" onmousemove="game.setAim(this.value)">
+						<div id="aimDisplay"></div>
 						<button id="fireButton" onclick="fire()">Fire</button>
 					</div>
 					<div id="ammo">
-						<div id="previousAmmo" class="clickable">🢠</div>
+						<div id="previousAmmo" class="clickable" onclick="game.previousAmmo()">🢠</div>
 						<div id="ammoSelect">
 							<div id="selectedAmmo"><!-- filled by script --></div>
 							<div id="allAmmo"><!-- filled by script --></div>
 						</div>
-						<div id="nextAmmo" class="clickable">🢡</div></div>
+						<div id="nextAmmo" class="clickable" onclick="game.nextAmmo()">🢡</div>
+					</div>
 					<div id="money"></div>
 					<div id="airCurrent"></div>
 					<div id="info">
@@ -144,6 +188,7 @@
 	<div id="cachedImages">
 		<img src="img/inside.jpg">
 	</div>
+	<script src="gadget.js"></script>
 	<script src="ammo.js"></script>
 	<script src="gui.js"></script>
 	<script src="game.js"></script>

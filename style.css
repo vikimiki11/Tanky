@@ -268,7 +268,10 @@ input[type="range"][orient="vertical"]{
 	font-size: 0.8em;
 	position: absolute;
 	top: 3em;
-	left: 0.5em;
+	left: 1.5em;
+	display: grid;
+	grid-template-columns: auto auto auto auto auto;
+	width: 15em;
 }
 
 #shootControll{
@@ -291,6 +294,10 @@ input[type="range"][orient="vertical"]{
 	top: 3.75em;
 	font-size: 0.75em;
 }
+#firePowerDisplay::after {
+	counter-reset: firePower var(--firePower);
+	content: counter(firePower);
+}
 
 #aimControll{
 	position: absolute;
@@ -301,6 +308,10 @@ input[type="range"][orient="vertical"]{
 	left: 11em;
 	top: 1.5em;
 	font-size: 0.75em;
+}
+#aimDisplay::after {
+	counter-reset: aim var(--aim);
+	content: counter(aim);
 }
 
 #fireButton{
@@ -369,9 +380,18 @@ input[type="range"][orient="vertical"]{
 	display: grid;
 	background-color: #ccc;
 }
-#gameScreen .ammoRow{
-	grid-template-columns: 1.5em 10em 1.5em;
+.ammoRow img{
+	width: 1.5em;
 	height: 1.5em;
+	margin: 0.2em 0 0 0.25em;
+}
+.ammoRow .ammoIcon{
+	padding: 0;
+
+}
+#gameScreen .ammoRow{
+	grid-template-columns: 1.75em 10em 1.75em;
+	height: 1.75em;
 }
 
 .ammoRow > *{
@@ -394,10 +414,76 @@ input[type="range"][orient="vertical"]{
 	text-align: center;
 }
 
-.ammoAmount::after{
-	content: "99";
-}
-
 #selectedAmmo > *{
 	display: none;
+}
+
+#repairKit, #fuel, #parachute, #teleport{
+	display: inline-block;
+}
+
+#repairKit>img, #fuel>img, #parachute>img, #teleport>img{
+	width: 1em;
+	height: 1em;
+	display: inline-block;
+}
+
+svg.shield {
+	position: absolute;
+	width: 4em;
+	height: 4em;
+}
+svg.shield>circle {
+	cx: 50%;
+	cy: 50%;
+	r: 43%;
+	stroke: #00bbff;
+	stroke-width: 14%;
+	stroke-opacity: 0.75;
+	fill-opacity: 0;
+	position: absolute;
+}
+
+svg.weakShield>circle {
+	stroke: yellow;
+}
+svg.strongShield>circle {
+	stroke: blue;
+}
+svg.superShield>circle {
+	stroke: purple;
+}
+
+#gadgets svg.shield {
+	position: relative;
+	width: 1em;
+	height: 1em;
+}
+#gadgets svg.shield > circle {
+	r: 42.5%;
+	stroke-width: 15%;
+}
+#gadgets #shield>*:hover svg.shield > circle {
+	stroke: red;
+}
+
+.dropMenu {
+	display: none;
+}
+
+#shield:hover > .dropMenu{
+	display: inline-block;
+}
+#shield{
+	display: inline-flex;
+	justify-content: center;
+	flex-direction: column;
+	padding: 0.25em;
+	position: relative;
+	top: -0.25em;
+	border-radius: 0.25em;
+	/* height: 1.25em; */
+}
+#shield:hover{
+	background-color: rgba(255, 240, 240, 0.64);
 }
