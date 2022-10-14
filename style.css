@@ -30,7 +30,18 @@ body{
 	overflow: hidden;
 	font-family: 'Roboto', sans-serif;
 	font-weight: bolder;
+	user-drag: none;
+	-webkit-user-drag: none;
 	user-select: none;
+	-moz-user-select: none;
+	-webkit-user-select: none;
+	-ms-user-select: none;
+}
+img{
+	pointer-events: none;
+}
+img.clickableIMG{
+	pointer-events: auto;
 }
 
 #body {
@@ -102,6 +113,7 @@ main{
 	flex-direction: column-reverse;
 	flex-wrap: nowrap;
 	align-items: center;
+	z-index: 999999;
 }
 
 #topPartSwitchScreen{
@@ -123,21 +135,20 @@ main{
 	width: calc(1em * var(--aspectRatio) * (1 - var(--switchState)));
 }
 
-#leftPartSwitchScreen{
-	background-color: yellow;
+#leftPartSwitchScreen, #rightPartSwitchScreen{
 	height: 1em;
 	width: calc(1em * var(--aspectRatio) / 2 / var(--switchStateCompression));
 	background-image: url("img/door.png");
 	background-size: cover;
+}
+
+#leftPartSwitchScreen {
+	background-color: yellow;
 	background-position: right;
 }
 
 #rightPartSwitchScreen{
 	background-color: pink;
-	height: 1em;
-	width: calc(1em * var(--aspectRatio) / 2 / var(--switchStateCompression));
-	background-image: url("img/door.png");
-	background-size: cover;
 	background-position: left;
 }
 
@@ -379,6 +390,8 @@ input[type="range"][orient="vertical"]{
 .ammoRow{
 	display: grid;
 	background-color: #ccc;
+	position: relative;
+	z-index: 1;
 }
 .ammoRow img{
 	width: 1.5em;
@@ -417,6 +430,38 @@ input[type="range"][orient="vertical"]{
 #selectedAmmo > *{
 	display: none;
 }
+
+#money{
+	position: absolute;
+	right: 15em;
+	top: 3.25em;
+	font-size: 0.75em;
+}
+#wind{
+	position: absolute;
+	left: 48em;
+	top: 4em;
+	font-size: 0.75em;
+}
+#wind > img{
+	height: 2em;
+	position: absolute;
+	left: -0.5em;
+	top: -1.5em;
+}
+#windCurrent{
+	position: absolute;
+	right: -3em;
+	top: -0.75em;
+}
+
+
+
+
+
+
+
+
 
 #repairKit, #fuel, #parachute, #teleport{
 	display: inline-block;

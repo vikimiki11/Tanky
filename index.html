@@ -148,10 +148,20 @@
 						</div>
 						<div id="nextAmmo" class="clickable" onclick="game.nextAmmo()">🢡</div>
 					</div>
-					<div id="money"></div>
-					<div id="airCurrent"></div>
+					<div id="money">
+						€
+					</div>
+					<div id="wind">
+						<img src="img/cloud.png">
+						<div id="windDirection">
+							↩<!-- ↪↢ ↣ -->
+						</div>
+						<div id="windCurrent">
+							99
+						</div>
+					</div>
 					<div id="info">
-						<img src="img/info.webp">
+						<img src="img/info.webp" class="clickableIMG">
 						<div class="setupMenu">
 							<span style="font-size: 1.5em;">Ovládání</span><br>
 							A D - Pohyb<br>
@@ -167,7 +177,7 @@
 				</div>
 			</div>
 		</div>
-		<img id="fullscreenButton" src="img/fullscreen.png" onclick="fullscreen()">
+		<img id="fullscreenButton" src="img/fullscreen.png" onclick="fullscreen()" class="clickableIMG">
 	</main>
 
 
@@ -188,10 +198,13 @@
 	<div id="cachedImages">
 		<img src="img/inside.jpg">
 	</div>
+	<script src="libraries/perlin.js"></script>
 	<script src="gadget.js"></script>
 	<script src="ammo.js"></script>
 	<script src="gui.js"></script>
 	<script src="game.js"></script>
+	<script src="player.js"></script>
+	<script src="tank.js"></script>
 </div>
 </body>
 </html>
