@@ -25,11 +25,12 @@ class Terrain extends Array {
 		noise.seed(seed);
 		for (let x = 0; x < this.width; x++) {
 			this[x].terrainHeight = Math.round(((noise.simplex2(x / 500, 100000) + 1) / 10 + 0.2) * this.height);
-			this[x].grassThickness = Math.round((noise.simplex2(100000, x / 10) + 1.5) * 3.5);
+			this[x].grassThickness = Math.round((noise.simplex2(100000, x / 20) + 1.5) * 5);
 			for (let y = 0; y < this[x].length; y++) {
 				this[x][y].generateNew();
 			}
 		}
+		this.canvasData.grainification();
 		this.canvasData.update();
 		console.timeEnd("generate");
 	}
@@ -73,15 +74,14 @@ class TerrainBlock {
 	generateNew() {
 		this.distanceFromGround = this.column.terrainHeight - this.y;
 		const scale = 1 / 50
-		if (this.distanceFromGround>=0) {
-			let n = (noise.simplex2(this.x * scale, this.y * scale) + 1) / 2;
-			if (n > 0.75) {
-				this.color[0] = 204 - 89 * (n - 0.75) * 4;
-				this.color[1] = 88 - 38 * (n - 0.75) * 4;
-			} else {
-				this.color[0] = 0;
-				this.color[1] = 255;
-			}
+		if (this.distanceFromGround >= 0 && this.distanceFromGround - this.column.grassThickness < 0) {
+			this.color = [0, 255, 0, 255];
+			this.canvasData.setPixel(this.x, this.y, this.color);
+		}else if (this.distanceFromGround>=0) {
+			let n = noise.simplex2(this.x * scale, this.y * scale);
+			n = n < 0 ? n / 2 : n;
+			this.color[0] = 230 - n * 23;
+			this.color[1] = 100 - n * 10;
 			this.color[3] = 255;
 			this.canvasData.setPixel(this.x, this.y, this.color);
 		}
@@ -120,5 +120,13 @@ class CanvasData {
 		for (let i = 0; i < this.data.length; i++) {
 			this.data[i] = 0;
 		}
+	}
+	grainification() {
+		const decrease = 8;
+		console.time("grainification");
+		for (let i = 0; i < this.data.length; i++) {
+			if (this.data[i] && i % 4 != 3) this.data[i] = this.data[i] * ((Math.random() + decrease - 1) / decrease );
+		}
+		console.timeEnd("grainification");
 	}
 }
