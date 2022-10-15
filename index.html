@@ -176,6 +176,7 @@
 					<button onclick="switchScreen('shopScreen')">shop</button> -->
 				</div>
 			</div>
+			<canvas>
 		</div>
 		<img id="fullscreenButton" src="img/fullscreen.png" onclick="fullscreen()" class="clickableIMG">
 	</main>
@@ -199,12 +200,26 @@
 		<img src="img/inside.jpg">
 	</div>
 	<script src="libraries/perlin.js"></script>
+	<script src="terrain.js"></script>
 	<script src="gadget.js"></script>
 	<script src="ammo.js"></script>
 	<script src="gui.js"></script>
 	<script src="game.js"></script>
 	<script src="player.js"></script>
 	<script src="tank.js"></script>
+	<script>
+		let ter;
+	window.onload = function () {
+		setTimeout(()=>{
+			selectTerrain();
+			addPlayer("VIKI", undefined, false);
+			addPlayer("MIKI", "#F00", false);
+		},200)
+		let multiplayer = 100;
+		ter = new Terrain(16 * multiplayer, Math.round(9 / 25 * 21 * multiplayer));
+		ter.generateNew();
+}
+	</script>
 </div>
 </body>
 </html>
