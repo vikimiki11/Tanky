@@ -129,13 +129,15 @@ class TerrainBlock {
 				this.color[1] = 100 - n * 10;
 			} else if (this.table.currentTerrain == 3) {
 				const scale = 0.005;
-				let n = noise.simplex2(this.x * scale, this.y * scale) * 5;
-				this.color[0] = 230 - n * 23;
-				this.color[1] = 180 - n * 10;
-				this.color[2] = 70 - n * 10;
+				let n = noise.simplex2(this.x * scale, this.y * scale) * 1.5;
+				this.color = TerrainBlock.desertGradient(this.distanceFromGround/30 + n);
 			}
 			this.canvasData.setPixel(this.x, this.y, this.color);
 		}
+	}
+	static desertGradient(x) {
+		let n = Math.cos(x)/13 + 12/13;
+		return [230 * n, 180 * n, 70 * n, 255];
 	}
 }
 
