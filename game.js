@@ -12,7 +12,7 @@ function selectTerrain(terrain/* undefined: try to fatch it, 0:random, 1:mountai
 			}
 		}
 	}
-	selectedTerrain = terrain;
+	selectedTerrain = parseInt(terrain);
 
 	const checkboxQS = "#setupBasic > div > input[type=checkbox]"
 	if (caves === undefined && document.querySelector(checkboxQS)) caves = document.querySelector(checkboxQS).checked;

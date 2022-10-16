@@ -442,19 +442,19 @@ input[type="range"][orient="vertical"]{
 #wind{
 	position: absolute;
 	left: 48em;
-	top: 4em;
+	top: 3.75em;
 	font-size: 0.75em;
 }
 #wind > img{
 	height: 2em;
 	position: absolute;
 	left: -0.5em;
-	top: -1.5em;
+	top: -1.25em;
 }
 #windCurrent{
 	position: absolute;
 	right: -3em;
-	top: -0.75em;
+	top: -0.5em;
 }
 
 

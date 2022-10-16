@@ -30,7 +30,7 @@
 						<h2>Typ terénu</h2>
 						<input type="radio" name="terrain" value="0" checked><label>Náhodný</label><br>
 						<input type="radio" name="terrain" value="1"        ><label>Hory</label><br>
-						<input type="radio" name="terrain" value="2"        ><label>Les</label><br>
+						<input type="radio" name="terrain" value="2"		><label>Les</label><br>
 						<input type="radio" name="terrain" value="3"        ><label>Poušť</label><br>
 						<hr>
 						<input type="checkbox"><label>Jeskyně</label><br>
@@ -211,12 +211,12 @@
 		let ter;
 	window.onload = function () {
 		setTimeout(()=>{
-			selectTerrain();
 			addPlayer("VIKI", undefined, false);
 			addPlayer("MIKI", "#F00", false);
 		},200)
-		let multiplayer = 100;
-		ter = new Terrain(16 * multiplayer, Math.round(9 / 25 * 21 * multiplayer));
+		let multiplayer = 160;
+		selectTerrain();
+		ter = new Terrain(16 * multiplayer, Math.round(9 / 25 * 21 * multiplayer), selectedTerrain);
 		ter.generateNew();
 }
 	</script>
