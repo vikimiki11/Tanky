@@ -52,7 +52,7 @@ class Terrain extends Array {
 				this[x][y].generateNew();
 			}
 		}
-		this.canvasData.grainification();
+		this.canvasData.grainification2x2();
 		this.canvasData.update();
 		console.timeEnd("generate");
 	}
@@ -181,5 +181,18 @@ class CanvasData {
 			if (this.data[i] && i % 4 != 3) this.data[i] = this.data[i] * ((Math.random() + decrease - 1) / decrease );
 		}
 		console.timeEnd("grainification");
+	}
+	grainification2x2() {
+		const decrease = 10;
+		let actualDecrease = 0;
+		console.time("grainification2x2");
+		for (let i = 0; i < this.data.length; i = (i >> 2 + 2) % this.width < 2 ? i + (2 + this.width - (i / 4 + 2) % this.width) * 4 : i + 8) {
+			actualDecrease = [((Math.random() + decrease - 1) / decrease), ((Math.random() + decrease - 1) / decrease), ((Math.random() + decrease - 1) / decrease)];
+			for (let j = 0; j <= 6; j = ++j + Number(j == 3)) {
+				this.data[i + j] = this.data[i + j] * actualDecrease[j % 3];
+				this.data[i + this.width * 4 + j] = this.data[i + this.width * 4 + j] * actualDecrease[j % 3];
+			}
+		}
+		console.timeEnd("grainification2x2");
 	}
 }

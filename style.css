@@ -222,8 +222,8 @@ input[type="color"]{
 	width: 2.4em;
 }
 input[type="range"][orient="vertical"]{
-	/* IE */
-	-webkit-appearance: slider-vertical;/* Chromium */
+	writing-mode: bt-lr; /* IE */
+	-webkit-appearance: slider-vertical; /* Chromium */
 	width: 0.5em;
 	height: 3em;
 	position: relative;
