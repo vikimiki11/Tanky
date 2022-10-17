@@ -23,11 +23,10 @@ function selectTerrain(terrain/* undefined: try to fatch it, 0:random, 1:mountai
 
 	let multiplayer = 160;
 	ter = new Terrain(16 * multiplayer, Math.round(9 / 25 * 21 * multiplayer), selectedTerrain);
-	ter.generateNew();
+	ter.generate();
 
 	return [terrain, caves];
 }
-
 
 
 
@@ -68,6 +67,7 @@ class Game {
 		noise.seed(this.windSeed);
 		this.windCurrent = noise.simplex2(this.windStep * windJump, 1000) * windMax;
 		document.querySelector("#windCurrent").innerHTML = Math.abs(Math.round(this.windCurrent));
+		document.querySelector("#windDirection").innerHTML = this.windCurrent > 0 ? "↪" : "↩";
 	}
 	get windStep() {
 		return this._windStep;
@@ -125,7 +125,7 @@ class Game {
 	}
 
 	fire() {
-		
+		this.nextPlayer();
 	}
 }
 

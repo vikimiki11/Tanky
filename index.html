@@ -138,7 +138,7 @@
 						<div id="firePowerDisplay"></div>
 						<input type="range" id="aimControll" min="0" max="180" onChange="game.setAim(this.value)" onmousemove="game.setAim(this.value)">
 						<div id="aimDisplay"></div>
-						<button id="fireButton" onclick="fire()">Fire</button>
+						<button id="fireButton" onclick="game.fire()">Fire</button>
 					</div>
 					<div id="ammo">
 						<div id="previousAmmo" class="clickable" onclick="game.previousAmmo()">🢠</div>
@@ -217,7 +217,7 @@
 		let multiplayer = 160;
 		selectTerrain();
 		ter = new Terrain(16 * multiplayer, Math.round(9 / 25 * 21 * multiplayer), selectedTerrain);
-		ter.generateNew(); */
+		ter.generate(); */
 }
 	</script>
 </div>

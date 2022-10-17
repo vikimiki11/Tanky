@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Document</title>
+	<style>
+		body {
+			margin: 0%;
+			background-color: lightblue;
+		}
+
+		.tree {
+			position: absolute;
+			transform: translate(-50%) translateY(-95%);
+		}
+
+		.stromy {
+			position: absolute;
+			top: 0;
+			left: 0;
+		}
+
+		#Canvas {
+			position: absolute;
+			top: 0;
+			left: 0;
+		}
+		.rangeHorizontal, .rangeVertical{
+			position: relative;
+		}
+		:is(.rangeHorizontal, .rangeVertical) svg{
+			width: 100%;
+			height: 100%;
+			position: absolute;
+			left: 0;
+			top: 0;
+		}
+		.slider{
+			z-index: 1;
+			position: absolute;
+			border: 1px solid black;
+			box-sizing: border-box;
+		}
+		.rangeVertical > .slider{
+			width: 100%;
+			height: 0;
+			left: 0;
+		}
+		.rangeHorizontal > .slider{
+			width: 0;
+			height: 100%;
+			top: 0;
+		}
+	</style>
+</head>
+
+<body>
+	<!-- <div class="stromy"></div>
+	<canvas id="Canvas">YOUR BROWSER DOES NOT SUPPORT CANVAS</canvas>	<script src="perlin.js"></script>
+	<script src="../terrain.js"></script>
+	<script>
+		let multiplayer = 160;
+		ter = new Terrain(16 * multiplayer, Math.round(9 / 25 * 21 * multiplayer), 2);
+		ter.generate();
+	</script> -->
+	<div class="rangeVertical" style="width: 2em;height: 4em;">
+		<div class="slider" style="top:0%"></div>
+		<svg viewBox="0 0 200 400" preserveAspectRatio="none">
+			<defs>
+				<linearGradient id="grad" x1="50%" y1="100%" x2="50%" y2="0%">
+					<stop offset="0%" style="stop-color:rgb(255,255,255);stop-opacity:1" />
+					<stop offset="100%" style="stop-color:rgb(255,0,0);stop-opacity:1" />
+				</linearGradient>
+
+			</defs>
+			<polygon points="0,0 100,400 200,0" style="fill:url(#grad);stroke-width:0" />
+			Sorry, your browser does not support inline SVG.
+		</svg>
+	</div>
+	<div class="rangeHorizontal" style="width: 4em;height: 0.5em;">
+		<div class="slider" style="left:0"></div>
+		<svg viewBox="0 0 400 50" preserveAspectRatio="none">
+			<defs>
+				<linearGradient id="grad1" x1="0%" y1="50%" x2="100%" y2="50%">
+					<stop offset="0%" style="stop-color:rgb(255,255,255);stop-opacity:1" />
+					<stop offset="50%" style="stop-color:rgb(255,0,0);stop-opacity:1" />
+					<stop offset="100%" style="stop-color:rgb(255,255,255);stop-opacity:1" />
+				</linearGradient>
+			</defs>
+			<rect width="100%" height="100%" style="fill:url(#grad1);stroke-width:0" />
+			Sorry, your browser does not support inline SVG.
+		</svg>
+	</div>
+</body>
+
+</html>

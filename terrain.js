@@ -30,7 +30,7 @@ class Terrain extends Array {
 	clear() {
 		this.canvasData.clear();
 	}
-	generateNew(seed = Math.random()) {
+	generate(seed = Math.random()) {
 		console.time("generate");
 		this.currentTerrain = this.terrain;
 		this.clear();
@@ -47,9 +47,9 @@ class Terrain extends Array {
 				this[x].terrainHeight = Math.round(((noise.simplex2(x / 1000, 100000) + 1) / 20 + 0.2) * this.height);
 				this[x].topLevelThickness = 0;
 			}
-			this[x].generateNew();
+			this[x].generate();
 			for (let y = 0; y <= this[x].terrainHeight; y++) {
-				this[x][y].generateNew();
+				this[x][y].generate();
 			}
 		}
 		this.canvasData.grainification2x2();
@@ -78,7 +78,7 @@ class TerrainColumn extends Array {
 			this[y] = new TerrainBlock(this, y);
 		}
 	}
-	generateNew() {
+	generate() {
 		if (this.terrainBlockHeight < this.terrainHeight) {
 			for (let y = this.terrainBlockHeight; y <= this.terrainHeight; y++) {
 				this[y] = new TerrainBlock(this, y);
@@ -103,13 +103,13 @@ class TerrainBlock {
 		this.distanceFromGround = 0;
 		this.destroyed = false;
 	}
-	generateNew() {
+	generate() {
 		this.distanceFromGround = this.column.terrainHeight - this.y;
 		if (this.distanceFromGround >= 0 && this.distanceFromGround - this.column.topLevelThickness < 0) {
 			if (this.table.currentTerrain == 1) {
 				this.color = [255, 255, 255, 255];
 			} else if (this.table.currentTerrain == 2) {
-				this.color = [77, 161, 14, 255];
+				this.color = [95, 199, 17, 255];
 			}
 			this.canvasData.setPixel(this.x, this.y, this.color);
 		} else if (this.distanceFromGround >= 0) {
