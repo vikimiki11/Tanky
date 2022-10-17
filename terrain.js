@@ -109,7 +109,7 @@ class TerrainBlock {
 			if (this.table.currentTerrain == 1) {
 				this.color = [255, 255, 255, 255];
 			} else if (this.table.currentTerrain == 2) {
-				this.color = [0, 255, 0, 255];
+				this.color = [77, 161, 14, 255];
 			}
 			this.canvasData.setPixel(this.x, this.y, this.color);
 		} else if (this.distanceFromGround >= 0) {
@@ -125,19 +125,20 @@ class TerrainBlock {
 				const scale = 0.02;
 				let n = noise.simplex2(this.x * scale, this.y * scale);
 				n = n < 0 ? n / 2 : n;
-				this.color[0] = 230 - n * 23;
-				this.color[1] = 100 - n * 10;
+				this.color[0] = 151 - n * 23;
+				this.color[1] = 71 - n * 10;
+				this.color[2] = 28 - n * 4;
 			} else if (this.table.currentTerrain == 3) {
 				const scale = 0.005;
-				let n = noise.simplex2(this.x * scale, this.y * scale) * 1.5;
+				let n = noise.simplex2(this.x * scale, this.y * scale) * 1.25;
 				this.color = TerrainBlock.desertGradient(this.distanceFromGround/30 + n);
 			}
 			this.canvasData.setPixel(this.x, this.y, this.color);
 		}
 	}
-	static desertGradient(x) {
-		let n = Math.cos(x)/13 + 12/13;
-		return [230 * n, 180 * n, 70 * n, 255];
+	static desertGradient(pressure) {
+		let shade = Math.cos(pressure)/13 + 12/13;
+		return [230 * shade, 180 * shade, 70 * shade, 255];
 	}
 }
 
@@ -186,7 +187,7 @@ class CanvasData {
 		const decrease = 10;
 		let actualDecrease = 0;
 		console.time("grainification2x2");
-		for (let i = 0; i < this.data.length; i = (i >> 2 + 2) % this.width < 2 ? i + (2 + this.width - (i / 4 + 2) % this.width) * 4 : i + 8) {
+		for (let i = 0; i < this.data.length; i = (i / 4 + 2) % this.width < 2 ? i + (2 + this.width - (i / 4 + 2) % this.width) * 4 : i + 8) {
 			actualDecrease = [((Math.random() + decrease - 1) / decrease), ((Math.random() + decrease - 1) / decrease), ((Math.random() + decrease - 1) / decrease)];
 			for (let j = 0; j <= 6; j = ++j + Number(j == 3)) {
 				this.data[i + j] = this.data[i + j] * actualDecrease[j % 3];

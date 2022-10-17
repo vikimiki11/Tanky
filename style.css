@@ -81,7 +81,7 @@ main, #switchScreen{
 }
 
 main{
-	background-color: green;
+	background-color: #1bb6d0;
 	height: 1em;
 	position: relative;
 	/* z-index: -2; */
@@ -315,6 +315,7 @@ input[type="range"][orient="vertical"]{
 #aimControll{
 	position: absolute;
 	left: 4em;
+	width: 5em;
 }
 #aimDisplay{
 	position: absolute;

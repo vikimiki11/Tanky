@@ -20,6 +20,11 @@ function selectTerrain(terrain/* undefined: try to fatch it, 0:random, 1:mountai
 
 	maxPlayers = players;
 
+
+	let multiplayer = 160;
+	ter = new Terrain(16 * multiplayer, Math.round(9 / 25 * 21 * multiplayer), selectedTerrain);
+	ter.generateNew();
+
 	return [terrain, caves];
 }
 
