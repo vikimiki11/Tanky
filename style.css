@@ -221,13 +221,6 @@ input[type="checkbox"]{
 input[type="color"]{
 	width: 2.4em;
 }
-input[type="range"][orient="vertical"]{
-	writing-mode: bt-lr; /* IE */
-	-webkit-appearance: slider-vertical; /* Chromium */
-	width: 0.5em;
-	height: 3em;
-	position: relative;
-}
 .clickable {
 	border-radius: 1em;
 	width: 1.5em;
@@ -296,10 +289,84 @@ input[type="range"][orient="vertical"]{
 	border-right: 0.1em rgb(160 160 160) solid;
 }
 
-#firePowerControll{
+.rangeHorizontal,
+.rangeVertical {
+	position: relative;
+	font-size: 1em;
+}
+
+:is(.rangeHorizontal, .rangeVertical) svg {
+	width: 100%;
+	height: 100%;
 	position: absolute;
-	left: 1.5em;
-	top: 0.25em;
+	left: 0;
+	top: 0;
+	font-size: 1em;
+}
+
+.rangeVertical>input {
+	transform: rotate(-90deg) translateY(0.75em);
+	transform-origin: left;
+	font-size: 1em;
+}
+
+.rangeVertical>input::-webkit-slider-thumb {
+	font-size: 1em;
+	-webkit-appearance: none;
+	cursor: pointer;
+	height: 2em;
+	width: 0.2em;
+	border: none;
+	background-color: black;box-sizing: border-box;
+}
+
+.rangeHorizontal>input::-webkit-slider-thumb {
+	font-size: 1em;
+	-webkit-appearance: none;
+	appearance: none;
+	width: 0.2em;
+	height: 0.8em;
+	background: black;
+	cursor: pointer;
+	box-sizing: border-box;
+}
+
+:is(.rangeHorizontal, .rangeVertical)>input {
+	font-size: 1em;
+	width: 100%;
+	height: 100%;
+	position: absolute;
+	left: 0;
+	top: 0;
+	background: #0000;
+	outline: none;
+	-webkit-appearance: none;
+	z-index: 5;
+	margin: 0;
+}
+
+.rangeVertical>input {
+	font-size: 1em;
+	width: 200% !important;
+	height: 50% !important;
+	margin-top: 150% !important;
+}
+
+#firePowerControll{
+	font-size: 1em;
+	position: absolute;
+	left: 0.5em;
+	top: 0.5em;
+	width: 1.5em;
+	height: 3em;
+}
+.rangeHorizontal{
+	font-size: 1em;
+	position: absolute;
+	left: 4em;
+	top: 0.5em;
+	width: 7em;
+	height: 1.5em;
 }
 #firePowerDisplay{
 	position: absolute;
@@ -312,11 +379,6 @@ input[type="range"][orient="vertical"]{
 	content: counter(firePower);
 }
 
-#aimControll{
-	position: absolute;
-	left: 4em;
-	width: 5em;
-}
 #aimDisplay{
 	position: absolute;
 	left: 11em;
