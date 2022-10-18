@@ -8,8 +8,8 @@
 	<title>Document</title>
 	<style>
 		body {
-			margin: 0%;
 			background-color: lightblue;
+			font-size: 5em;
 		}
 
 		.tree {
@@ -41,18 +41,58 @@
 		.slider{
 			z-index: 1;
 			position: absolute;
-			border: 1px solid black;
+			border: 0.15em solid black;
+			background-color: black;
 			box-sizing: border-box;
 		}
-		.rangeVertical > .slider{
+		/* .rangeVertical > .slider{
 			width: 100%;
 			height: 0;
 			left: 0;
+			transform: translateY(50%);
 		}
 		.rangeHorizontal > .slider{
 			width: 0;
 			height: 100%;
 			top: 0;
+			transform: translateX(-50%);
+		} */
+		.rangeVertical > input{
+			transform: rotate(-90deg)  translateY(6em);
+			transform-origin: left;
+		}
+		.rangeVertical > input::-webkit-slider-thumb{
+			-webkit-appearance: none;
+			cursor: pointer;
+			height: 14em;
+			width: 1em;
+			border: none;
+			background-color: black;
+		}
+		.rangeHorizontal > input::-webkit-slider-thumb{
+			-webkit-appearance: none;
+			appearance: none;
+			width: 1em;
+			height: 4em;
+			background: black;
+			cursor: pointer;
+		}
+		:is(.rangeHorizontal, .rangeVertical) > input{
+			width: 100%;
+			height: 100%;
+			position: absolute;
+			left: 0;
+			top: 0;
+			background: #0000;
+			outline: none;
+			-webkit-appearance: none;
+			z-index: 5;
+			margin: 0;
+		}
+		.rangeVertical > input{
+			width: 200% !important;
+			height: 50% !important;
+			margin-top: 150% !important;
 		}
 	</style>
 </head>
@@ -67,27 +107,28 @@
 		ter.generate();
 	</script> -->
 	<div class="rangeVertical" style="width: 2em;height: 4em;">
-		<div class="slider" style="top:0%"></div>
+		<!-- <div class="slider" style="bottom:0%"></div> -->
+		<input type="range" orient="vertical" onchange="game.setFirePower(this.value)" onmousemove="game.setFirePower(this.value)" value="0">
 		<svg viewBox="0 0 200 400" preserveAspectRatio="none">
 			<defs>
 				<linearGradient id="grad" x1="50%" y1="100%" x2="50%" y2="0%">
-					<stop offset="0%" style="stop-color:rgb(255,255,255);stop-opacity:1" />
-					<stop offset="100%" style="stop-color:rgb(255,0,0);stop-opacity:1" />
+					<stop offset="0%" style="stop-color:rgb(255,255,255)" />
+					<stop offset="100%" style="stop-color:rgb(255,0,0)" />
 				</linearGradient>
-
 			</defs>
-			<polygon points="0,0 100,400 200,0" style="fill:url(#grad);stroke-width:0" />
+			<polygon points="0,0 100,400 200,0" style="fill:url(#grad)" />
 			Sorry, your browser does not support inline SVG.
 		</svg>
 	</div>
 	<div class="rangeHorizontal" style="width: 4em;height: 0.5em;">
-		<div class="slider" style="left:0"></div>
+		<!-- <div class="slider" style="left:0%"></div> -->
+		<input type="range" id="aimControll" min="0" max="180" value="0" onchange="game.setAim(this.value)" onmousemove="game.setAim(this.value)">
 		<svg viewBox="0 0 400 50" preserveAspectRatio="none">
 			<defs>
 				<linearGradient id="grad1" x1="0%" y1="50%" x2="100%" y2="50%">
-					<stop offset="0%" style="stop-color:rgb(255,255,255);stop-opacity:1" />
-					<stop offset="50%" style="stop-color:rgb(255,0,0);stop-opacity:1" />
-					<stop offset="100%" style="stop-color:rgb(255,255,255);stop-opacity:1" />
+					<stop offset="0%" style="stop-color:rgb(255,255,255)" />
+					<stop offset="50%" style="stop-color:rgb(255,0,0)" />
+					<stop offset="100%" style="stop-color:rgb(255,255,255)" />
 				</linearGradient>
 			</defs>
 			<rect width="100%" height="100%" style="fill:url(#grad1);stroke-width:0" />
