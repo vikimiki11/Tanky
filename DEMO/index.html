@@ -149,12 +149,12 @@
 			Sorry, your browser does not support inline SVG.
 		</svg>
 	</div> -->
-	<svg height="999" width="999" class="cloud">
+	<!-- <svg height="999" width="999" class="cloud">
 		<circle cx="350" cy="250" r="50"/>
 		<circle cx="50" cy="250" r="50"/>
 		<rect x="50" y="200" width="300" height="100"/>
 		Sorry, your browser does not support inline SVG.
-	</svg>
+	</svg> -->
 	<!-- <div class="tank">
 		<svg viewBox="0 0 400 175" preserveAspectRatio="none">
 			<circle cx="350" cy="125" r="50" stroke-width="0" fill="black" />
@@ -163,6 +163,8 @@
 			Sorry, your browser does not support inline SVG.
 		</svg>
 	</div> -->
+	<svg class="cloud" preserveaspectratio="none" viewbox="0 0 400 300">
+	</svg>
 	<script src="perlin.js"></script>
 	<script>
 		const minx = 50;
@@ -170,10 +172,10 @@
 		const miny = 75;
 		const maxy = 200;
 		function generateCloud(){
-			let html = `		<circle cx="350" cy="250" r="50"/>
+			let html = ""/* `		<circle cx="350" cy="250" r="50"/>
 		<circle cx="50" cy="250" r="50"/>
-		<rect x="50" y="200" width="300" height="100"/>`;
-			for(let i = 0; i < 200; i++){
+		<rect x="50" y="200" width="300" height="100"/>`; */
+			for(let i = 0; i < 50; i++){
 				let x = (noise.simplex2(Math.random()*999, Math.random() * 999) + 1) * (maxx - minx) / 2 + minx;
 				let y = Math.abs(noise.simplex2(Math.random() * 999, Math.random() * 999)) * -1 * (maxy - miny) + maxy + 40;
 				let r = Math.random() * 50 + 10;

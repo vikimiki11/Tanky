@@ -629,11 +629,33 @@ canvas{
 }
 
 
+#gamePlane {
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	--pixelSize: calc(var(--aspectRatio) / 2560);
+	font-size: calc(1em * var(--pixelSize));
+	height: calc(0.84em / var(--pixelSize));
+	width: calc(1em * var(--aspectRatio) / var(--pixelSize));
+}
+
+
 .tank{
 	position: absolute;
 	bottom: 0;
 	left: 0;
 	width: 100%;
+}
+
+
+.cloud{
+	position: absolute;
+	opacity: 0.5;
+}
+
+.cloud * {
+	fill: rgb(255, 255, 255);
+	stroke-width: 0;
 }
 
 

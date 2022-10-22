@@ -74,7 +74,7 @@
 					<div id="gadgetShop">
 						<!-- filled by script -->
 					</div>
-					<button>Next</button>
+					<button onclick="game.fire()">Next</button>
 				</div>
 				<div class="normalizeFont" style="position:absolute;left:0;top:0;width: 0;height: 0;">
 					<button onclick="switchScreen('startupScreen')">setup</button>
@@ -230,7 +230,8 @@
 					<button onclick="switchScreen('shopScreen')">shop</button> -->
 				</div>
 			</div>
-			<canvas>
+			<canvas></canvas>
+			<div id="gamePlane"></div>
 		</div>
 		<img id="fullscreenButton" src="img/fullscreen.png" onclick="fullscreen()" class="clickableIMG">
 	</main>
@@ -264,12 +265,12 @@
 	<script>
 		let ter;
 	window.onload = function () {
-		/* setTimeout(()=>{
+		setTimeout(()=>{
 			addPlayer("VIKI", undefined, false);
-			addPlayer("MIKI", "#F00", false);
+			addPlayer("MIKI", "#FF0000", false);
 		},200)
 		let multiplayer = 160;
-		selectTerrain();
+		selectTerrain();/* 
 		ter = new Terrain(16 * multiplayer, Math.round(9 / 25 * 21 * multiplayer), selectedTerrain);
 		ter.generate(); */
 }

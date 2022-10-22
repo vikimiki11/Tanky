@@ -95,3 +95,54 @@ for (let el of document.querySelectorAll("#shopScreen :is(.ammoRow, .gadgetRow)"
 		game.actualPlayer.updateCSS();
 	});
 }
+
+
+
+
+const clouds = [];
+setInterval(() => {
+	let left;
+	for (let i = 0; i < clouds.length; i++) {
+		left = parseFloat(clouds[i].style.left) + game.windCurrent / 20;
+		clouds[i].style.left = left + "em";
+		if (left < -251 || left > 2561) {
+			cloud = clouds.splice(i, 1)[0];
+			cloud.parentNode.removeChild(cloud);
+			i--;
+		}
+	}
+
+
+
+	if (Math.random() < game.windCurrent / 12000) generateCloud();
+}, 1000 / 60);
+
+const minx = 50;
+const maxx = 350;
+const miny = 75;
+const maxy = 200;
+function generateCloud(left) {
+	let cloud = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+	cloud.classList.add("cloud");
+	let width = 250 * Math.random() + 50;
+	left = left || game.windCurrent > 0 ? (-width) : 2560;
+	cloud.style.left = left + "em";
+	cloud.style.width = width + "em";
+	cloud.style.top = (50 + Math.random() * 200) + "em";
+	cloud.setAttribute("preserveAspectRatio", "none");
+	cloud.setAttribute("viewBox", "0 0 400 300");
+	let html = ""/* `
+	<circle cx="350" cy="250" r="50"></circle>
+	<circle cx="50" cy="250" r="50"></circle>
+	<rect x="50" y="200" width="300" height="100"></rect>` */;
+	for (let i = 0; i < 200; i++) {
+		let x = (noise.simplex2(Math.random() * 999, Math.random() * 999) + 1) * (maxx - minx) / 2 + minx;
+		let y = Math.abs(noise.simplex2(Math.random() * 999, Math.random() * 999)) * -1 * (maxy - miny) + maxy + 40;
+		let r = Math.random() * 50 + 10;
+		html += `
+	<circle cx="${x}" cy="${y}" r="${r}"></circle>`;
+	}
+	cloud.innerHTML = html;
+	clouds.push(cloud);
+	document.querySelector("#gamePlane").appendChild(cloud);
+}
