@@ -8,11 +8,11 @@
 	<title>Document</title>
 	<style>
 		body {
-			background-color: lightblue;
+			background-color: #1bb6d0;
 			font-size: 5em;
 		}
 
-		.tree {
+		/* .tree {
 			position: absolute;
 			transform: translate(-50%) translateY(-95%);
 		}
@@ -81,6 +81,32 @@
 			width: 200% !important;
 			height: 50% !important;
 			margin-top: 150% !important;
+		} */
+		.tank{
+			position: absolute;
+			left: 1em;
+			bottom: 1em;
+			transform-origin: 50% 100%;
+			transform: rotate(-12deg);
+			--scale: 0.5;
+			height: calc(7em * var(--scale));
+			width: calc(16em * var(--scale));
+		}
+		.tank > svg{
+			height: 100%;
+			position: absolute;
+			left: 0;
+			top: 0;
+		}
+		.cloud{
+			position: absolute;
+			left: 0;
+			top: 0;
+			opacity: 0.5;
+		}
+		.cloud *{
+			fill: rgb(255, 255, 255);
+			stroke-width: 0;
 		}
 	</style>
 </head>
@@ -94,9 +120,9 @@
 		ter = new Terrain(16 * multiplayer, Math.round(9 / 25 * 21 * multiplayer), 2);
 		ter.generate();
 	</script> -->
-	<div class="rangeVertical" style="width: 2em;height: 4em;">
+	<!-- <div class="rangeVertical" style="width: 2em;height: 4em;">
 		<!-- <div class="slider" style="bottom:0%"></div> -->
-		<input type="range" orient="vertical" onchange="game.setFirePower(this.value)" onmousemove="game.setFirePower(this.value)" value="0">
+		<!-- <input type="range" orient="vertical" onchange="game.setFirePower(this.value)" onmousemove="game.setFirePower(this.value)" value="0">
 		<svg viewBox="0 0 200 400" preserveAspectRatio="none">
 			<defs>
 				<linearGradient id="grad" x1="50%" y1="100%" x2="50%" y2="0%">
@@ -110,7 +136,7 @@
 	</div>
 	<div class="rangeHorizontal" style="width: 4em;height: 0.5em;">
 		<!-- <div class="slider" style="left:0%"></div> -->
-		<input type="range" id="aimControll" min="0" max="180" value="0" onchange="game.setAim(this.value)" onmousemove="game.setAim(this.value)">
+		<!-- <input type="range" id="aimControll" min="0" max="180" value="0" onchange="game.setAim(this.value)" onmousemove="game.setAim(this.value)">
 		<svg viewBox="0 0 400 50" preserveAspectRatio="none">
 			<defs>
 				<linearGradient id="grad1" x1="0%" y1="50%" x2="100%" y2="50%">
@@ -122,7 +148,45 @@
 			<rect width="100%" height="100%" style="fill:url(#grad1);stroke-width:0" />
 			Sorry, your browser does not support inline SVG.
 		</svg>
-	</div>
+	</div> -->
+	<svg height="999" width="999" class="cloud">
+		<circle cx="350" cy="250" r="50"/>
+		<circle cx="50" cy="250" r="50"/>
+		<rect x="50" y="200" width="300" height="100"/>
+		Sorry, your browser does not support inline SVG.
+	</svg>
+	<!-- <div class="tank">
+		<svg viewBox="0 0 400 175" preserveAspectRatio="none">
+			<circle cx="350" cy="125" r="50" stroke-width="0" fill="black" />
+			<circle cx="50" cy="125" r="50" stroke-width="0" fill="black" />
+			<rect x="50" y="75" width="75%" height="100" style="fill:black" />
+			Sorry, your browser does not support inline SVG.
+		</svg>
+	</div> -->
+	<script src="perlin.js"></script>
+	<script>
+		const minx = 50;
+		const maxx = 350;
+		const miny = 75;
+		const maxy = 200;
+		function generateCloud(){
+			let html = `		<circle cx="350" cy="250" r="50"/>
+		<circle cx="50" cy="250" r="50"/>
+		<rect x="50" y="200" width="300" height="100"/>`;
+			for(let i = 0; i < 200; i++){
+				let x = (noise.simplex2(Math.random()*999, Math.random() * 999) + 1) * (maxx - minx) / 2 + minx;
+				let y = Math.abs(noise.simplex2(Math.random() * 999, Math.random() * 999)) * -1 * (maxy - miny) + maxy + 40;
+				let r = Math.random() * 50 + 10;
+				html += `		<circle cx="${x}" cy="${y}" r="${r}" fill="red"/>`;
+			}
+			document.querySelector("svg").innerHTML = html;
+		}
+		setInterval(()=>{
+				console.time("cloudGen")
+				generateCloud();
+				console.timeEnd("cloudGen")
+			}, 1000);
+	</script>
 </body>
 
 </html>

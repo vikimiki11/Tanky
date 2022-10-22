@@ -179,6 +179,15 @@ main{
 	background-image: url("img/inside.jpg");
 	background-size: cover;
 }
+#shopScreen > *{
+	position:absolute;
+	left: 0;
+	top: 0;
+	width: 100%;
+	height: 100%;
+	display: grid;
+	grid-template-columns: auto auto;
+}
 
 
 .setupMenu{
@@ -250,7 +259,7 @@ input[type="color"]{
 	z-index: 2;
 }
 
-#playerName{
+#gameTopBar .playerName{
 	font-size: 0.8em;
 	position: absolute;
 	padding: 0.5em 0.65em;
@@ -300,8 +309,12 @@ input[type="color"]{
 	height: 100%;
 	position: absolute;
 	left: 0;
-	top: 0;
+	bottom: 0;
 	font-size: 1em;
+}
+
+.rangeVertical svg {
+	height: 3em;
 }
 
 .rangeVertical>input {
@@ -359,6 +372,14 @@ input[type="color"]{
 	top: 0.5em;
 	width: 1.5em;
 	height: 3em;
+}
+#firePowerControll>div{
+	position: absolute;
+	left: 0;
+	bottom: 0;
+	width: 100%;
+	overflow: hidden;
+	height: calc(1% * var(--maxFirePower,100));
 }
 .rangeHorizontal{
 	font-size: 1em;
@@ -452,27 +473,26 @@ input[type="color"]{
 	margin-top: 0.35em;
 }
 
-.ammoRow{
+:is(.ammoRow, .gadgetRow){
 	display: grid;
 	background-color: #ccc;
 	position: relative;
 	z-index: 1;
 }
-.ammoRow img{
+:is(.ammoRow, .gadgetRow) img{
 	width: 1.5em;
 	height: 1.5em;
 	margin: 0.2em 0 0 0.25em;
 }
-.ammoRow .ammoIcon{
+.ammoRow .ammoIcon,.gadgetRow .gadgetIcon{
 	padding: 0;
-
 }
-#gameScreen .ammoRow{
+#gameScreen :is(.ammoRow, .gadgetRow){
 	grid-template-columns: 1.75em 10em 1.75em;
 	height: 1.75em;
 }
 
-.ammoRow > *{
+:is(.ammoRow, .gadgetRow) > *{
 	display: inline-block;
 	border: 0.1em solid black;
 	padding: 0.2em 0.1em 0.2em 0.1em;
@@ -483,11 +503,11 @@ input[type="color"]{
 	display: none;
 }
 
-.ammoName{
+:is(.ammoName, .gadgetName){
 	background-color: white;
 }
 
-.ammoAmount{
+:is(.ammoAmount, .gadgetAmount){
 	background-color: #666;
 	text-align: center;
 }
@@ -496,7 +516,7 @@ input[type="color"]{
 	display: none;
 }
 
-#money{
+#gameTopBar .playerMoney{
 	position: absolute;
 	right: 15em;
 	top: 3.25em;
@@ -606,4 +626,36 @@ canvas{
 	bottom: 0;
 	left: 0;
 	height: 0.84em;
+}
+
+
+.tank{
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	width: 100%;
+}
+
+
+
+
+
+
+
+
+:is(#leftShopColumn, #rightShopColumn) > *{
+	margin: 5.5em 6.3333333333em;
+	font-size: 0.75em;
+}
+#shopScreen :is(.ammoRow, .gadgetRow) {
+	grid-template-columns: 1.75em 9em 2.75em 1.75em 1.75em;
+	height: 1.75em;
+}
+#shopTopBar{
+	position: absolute;
+	top: 1.5em;
+	left: 16em;
+	display: grid;
+	grid-template-columns: 8em 8em;
+	height: 0;
 }

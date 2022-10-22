@@ -27,7 +27,7 @@ class Player {
 		this.name = name;
 		this.color = color;
 		this.AI = AI;
-		this.money = 1000;
+		this.money = 1000000;
 		this.tank = null;
 		this._selected = false;
 		this._selectedAmmo = 0;
@@ -70,14 +70,18 @@ class Player {
 		${this.tank ? `:root{
 			--aim: ${this.tank.aim};
 			--firePower: ${this.tank.firePower};
+			--maxFirePower: ${this.tank.maxFirePower};
 		}
 
-		#money::before{
+		.playerMoney::before{
 			content: "${this.money.toLocaleString()}";
 		}
 
-		#playerName{
+		.playerName{
 			color: ${this.color};
+		}
+		.playerName::before{
+			content: "${this.name}";
 		}
 
 		`: ""
@@ -90,8 +94,8 @@ class Player {
 		}
 		for (let gadget in this.gadget) {
 			document.querySelector("style#playerStyle").innerHTML += `
-		.${gadgetList[gadget].shortName}DisplayAfter::after{
-			content: "${this.gadget[gadget] == "Infinity" ? "Inf." : this.gadget[gadget].toLocaleString()}";
+		.gadgetRow.gadget${gadget} > .gadgetAmount::after, .${gadgetList[gadget].shortName}DisplayAfter::after{
+			content: "${this.gadget[gadget] == "Infinity" ? "Inf." : this.gadget[gadget]}";
 		}`;
 		}
 	}

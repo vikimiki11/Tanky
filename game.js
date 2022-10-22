@@ -93,12 +93,12 @@ class Game {
 		this.windStep = this.windStep + 1;
 		this.actualPlayerID++;
 		let player = this.actualPlayer;
-		document.querySelector("#playerName").innerHTML = player.name;
 		game.setAim(player.tank.aim)
 		document.querySelector("#firePowerControll input").value = player.tank.firePower;
 	}
 
 	setFirePower(power) {
+		power = Math.min(parseFloat(power), this.actualPlayer.tank.maxFirePower);
 		this.actualPlayer.tank.firePower = parseFloat(power);
 		document.querySelector("#firePowerControll input").value = power;
 		this.actualPlayer.updateCSS();

@@ -38,9 +38,3 @@ gadgetList.push(new Gadget("Repair kit", "repairKit", 8, 20000, 1, console.log))
 gadgetList.push(new Gadget("Fuel", "fuel", 200, 2000, 50, console.log))
 gadgetList.push(new Gadget("Parachute", "parachute", 8, 20000, 1, console.log))
 gadgetList.push(new Gadget("Teleport", "teleport", 8, 20000, 1, console.log))
-
-
-
-for (let gadget of gadgetList) {
-	let html = gadget.html;
-}

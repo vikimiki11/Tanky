@@ -29,7 +29,7 @@ class Ammo{
 	}
 }
 ammoList = [];
-ammoList.push(new Ammo("Small missile", "smallMissile", "smallMissile.png", Infinity, 1000, 10, console.log))
+ammoList.push(new Ammo("Small missile", "smallMissile", "smallMissile.png", Infinity, 0, 10, console.log))
 ammoList.push(new Ammo("Missile", "missile", "missile.png", 0, 1000, 10, console.log))
 ammoList.push(new Ammo("1", "xd", "smallMissile.png", 10, 1000, 10, console.log))
 ammoList.push(new Ammo("2", "xd", "smallMissile.png", 10, 1000, 10, console.log))
@@ -48,18 +48,3 @@ ammoList.push(new Ammo("14", "xd", "smallMissile.png", 0, 1000, 10, console.log)
 ammoList.push(new Ammo("15", "xd", "smallMissile.png", 10, 1000, 10, console.log))
 ammoList.push(new Ammo("16", "xd", "smallMissile.png", 10, 1000, 10, console.log))
 ammoList.push(new Ammo("17", "xd", "smallMissile.png", 10, 1000, 10, console.log))
-
-
-
-
-for(let ammo of ammoList) {
-	let html = ammo.html;
-	document.querySelector("#selectedAmmo").innerHTML += html;
-	document.querySelector("#allAmmo").innerHTML += html;
-}
-
-for (let el of document.querySelectorAll("#allAmmo .ammoRow")) {
-	el.addEventListener("click", function() {
-		game.actualPlayer.selectedAmmo = el.getAttribute("ammo");
-	});
-}

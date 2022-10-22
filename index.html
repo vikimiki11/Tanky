@@ -61,9 +61,25 @@
 
 		<div id="shopScreen" style="display:none">
 			<div>
-				B
-				<button onclick="switchScreen('startupScreen')">setup</button>
-				<button onclick="switchScreen('gameScreen')">game</button>
+				<div id="shopTopBar" class="normalizeFont">
+					<div class="playerName"></div>
+					<div class="playerMoney"></div>
+				</div>
+				<div id="leftShopColumn" class="normalizeFont">
+					<div id="ammoShop">
+						<!-- filled by script -->
+					</div>
+				</div>
+				<div id="rightShopColumn" class="normalizeFont">
+					<div id="gadgetShop">
+						<!-- filled by script -->
+					</div>
+					<button>Next</button>
+				</div>
+				<div class="normalizeFont" style="position:absolute;left:0;top:0;width: 0;height: 0;">
+					<button onclick="switchScreen('startupScreen')">setup</button>
+					<button onclick="switchScreen('gameScreen')">game</button>
+				</div>
 			</div>
 		</div>
 
@@ -77,7 +93,7 @@
 		<div id="gameScreen" style="display:none">
 			<div class="normalizeFont">
 				<div id="gameTopBar">
-					<div id="playerName"><!-- filled by script --></div>
+					<div class="playerName"><!-- filled by script --></div>
 					<div id="engineControll">
 						<div id="driveLeft" class="clickable">🢠</div>
 						<span id="fuelAmount">100</span>
@@ -140,15 +156,21 @@
 								<input type="range" orient="vertical" onchange="game.setFirePower(this.value)"
 									onmousemove="game.setFirePower(this.value)" value="0">
 								<svg viewBox="0 0 200 400" preserveAspectRatio="none">
-									<defs>
-										<linearGradient id="grad" x1="50%" y1="100%" x2="50%" y2="0%">
-											<stop offset="0%" style="stop-color:rgb(255,255,255)" />
-											<stop offset="100%" style="stop-color:rgb(255,0,0)" />
-										</linearGradient>
-									</defs>
-									<polygon points="0,0 100,400 200,0" style="fill:url(#grad)" />
+									<polygon points="0,0 100,400 200,0" style="fill:#600" />
 									Sorry, your browser does not support inline SVG.
 								</svg>
+								<div>
+									<svg viewBox="0 0 200 400" preserveAspectRatio="none">
+										<defs>
+											<linearGradient id="grad" x1="50%" y1="100%" x2="50%" y2="0%">
+												<stop offset="0%" style="stop-color:rgb(255,255,255)" />
+												<stop offset="100%" style="stop-color:rgb(255,0,0)" />
+											</linearGradient>
+										</defs>
+										<polygon points="0,0 100,400 200,0" style="fill:url(#grad)" />
+										Sorry, your browser does not support inline SVG.
+									</svg>
+								</div>
 						</div>
 						<div id="firePowerDisplay"></div>
 						<div class="rangeHorizontal" style="width: 4em;height: 0.5em;">
@@ -180,13 +202,13 @@
 						<div id="nextAmmo" class="clickable" onclick="game.nextAmmo()">🢡</div>
 					</div>
 
-					<div id="money">
+					<div class="playerMoney">
 						€
 					</div>
 					<div id="wind">
 						<img src="img/cloud.png">
 						<div id="windDirection">
-							↩<!-- ↪↢ ↣ -->
+							↩
 						</div>
 						<div id="windCurrent">
 							99
