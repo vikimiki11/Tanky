@@ -114,7 +114,7 @@ setInterval(() => {
 
 
 
-	if (Math.random() < game.windCurrent / 12000) generateCloud();
+	if (game && Math.random() < Math.abs(game.windCurrent) / 12000) generateCloud();
 }, 1000 / 60);
 
 const minx = 50;
