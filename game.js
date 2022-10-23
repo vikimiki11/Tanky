@@ -1,7 +1,7 @@
 let selectedTerrain;
 let generateCaves;
 let game;
-const windJump = 0.025;
+const windJump = 0.125;
 const windMax = 50;
 function selectTerrain(terrain/* undefined: try to fatch it, 0:random, 1:mountains, 2: forest, 3:desert */, caves/* undefined: try to fatch it, 0:no, 1:yes */, players = parseInt(document.querySelector("#playerCount").value)) {
 	if(terrain === undefined) {
@@ -41,13 +41,13 @@ class Game {
 		this.terrainSettings = terrain;
 		this.cavesSettings = caves;
 		this._actualPlayerID = -1;
-		this.blockControls = false;
+		this.blockControls = true;
 		this.windSeed = Math.random();
 		this._windStep = 0;
 		this.windCurrent = 0;
 	}
 	set actualPlayerID(id) {
-		if (this.actualPlayer)this.actualPlayer.selected = false;
+		if (this.actualPlayer) this.actualPlayer.selected = false;
 		if (id >= this.players.length) {
 			this._actualPlayerID = 0
 		} else {
@@ -77,9 +77,20 @@ class Game {
 		this.windSeed = Math.random();
 		this.spawnTanks();
 		this.nextPlayer();
-		this.blockControls = true;
 		switchScreen("gameScreen");
 		setTimeout(this.spawnTanks, switchScreen());
+		for (let i = 0; i < 6; i++){
+			generateCloud(Math.floor(Math.random() * 2560));
+		}
+	}
+
+	end() {
+		switchScreen("shopScreen");
+		this.blockControls = true;
+	}
+
+	shopNextPlayer() {
+		this.actualPlayerID++;
 	}
 
 	spawnTanks() {
@@ -93,8 +104,8 @@ class Game {
 		this.windStep = this.windStep + 1;
 		this.actualPlayerID++;
 		let player = this.actualPlayer;
-		game.setAim(player.tank.aim)
-		document.querySelector("#firePowerControll input").value = player.tank.firePower;
+		game.setAim(player.tank.aim);
+		game.setFirePower(player.tank.firePower);
 	}
 
 	setFirePower(power) {
@@ -128,6 +139,7 @@ class Game {
 	}
 
 	fire() {
+		//ToDo:FIRE
 		this.nextPlayer();
 	}
 }

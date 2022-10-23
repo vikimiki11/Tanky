@@ -32,8 +32,8 @@
 						<input type="radio" name="terrain" value="1"        ><label>Hory</label><br>
 						<input type="radio" name="terrain" value="2"		><label>Les</label><br>
 						<input type="radio" name="terrain" value="3"        ><label>Poušť</label><br>
-						<hr>
-						<input type="checkbox"><label>Jeskyně</label><br>
+						<!-- <hr>
+						<input type="checkbox"><label>Jeskyně</label><br> -->
 						<hr>
 						Počet Hráčů: <input type="number" id="playerCount" min="2" max="5" value="2">
 						<button onclick="selectTerrain();nextStartupScreen()">hrát</button>
@@ -62,19 +62,15 @@
 		<div id="shopScreen" style="display:none">
 			<div>
 				<div id="shopTopBar" class="normalizeFont">
-					<div class="playerName"></div>
-					<div class="playerMoney"></div>
+					<div class="playerName"><!-- filled by script --></div>
+					<div class="playerMoney"><!-- filled by script --></div>
 				</div>
 				<div id="leftShopColumn" class="normalizeFont">
-					<div id="ammoShop">
-						<!-- filled by script -->
-					</div>
+					<div id="ammoShop"><!-- filled by script --></div>
 				</div>
 				<div id="rightShopColumn" class="normalizeFont">
-					<div id="gadgetShop">
-						<!-- filled by script -->
-					</div>
-					<button onclick="game.fire()">Next</button>
+					<div id="gadgetShop"><!-- filled by script --></div>
+					<button style="margin-top: 0;"onclick="game.shopNextPlayer()">Next</button>
 				</div>
 				<div class="normalizeFont" style="position:absolute;left:0;top:0;width: 0;height: 0;">
 					<button onclick="switchScreen('startupScreen')">setup</button>
@@ -96,12 +92,12 @@
 					<div class="playerName"><!-- filled by script --></div>
 					<div id="engineControll">
 						<div id="driveLeft" class="clickable">🢠</div>
-						<span id="fuelAmount">100</span>
+						<span id="fuelAmount"><!-- filled by script --></span>
 						<div id="driveRight" class="clickable">🢡</div></div>
 					<div id="gadgets">
 
 
-						<div id="repairKit" class="repairKitDisplayAfter">
+						<div id="repairKit" class="repairKitDisplayAfter" onclick="repairKit()">
 							<img src="img/gadget/repairKit.png">
 						</div>
 
@@ -133,7 +129,7 @@
 						</div>
 
 
-						<div id="fuel" class="fuelDisplayAfter">
+						<div id="fuel" class="fuelDisplayAfter" onclick="fuel()">
 							<img src="img/gadget/fuel.png">
 						</div>
 
@@ -211,7 +207,7 @@
 							↩
 						</div>
 						<div id="windCurrent">
-							99
+							<!-- filled by script -->
 						</div>
 					</div>
 					<div id="info">

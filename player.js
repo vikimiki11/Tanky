@@ -11,7 +11,7 @@ function addPlayer(name, color, AI) {
 	if (maxPlayers > players.length) {
 		document.querySelector("#playerNameInput").value = "";
 		document.querySelector("#playerColorInput").value = "#000000";
-		document.querySelector("#setupPlayer  h2").innerHTML = (players.length + 1) + ". Hráč";
+		document.querySelector("#setupPlayer h2").innerHTML = (players.length + 1) + ". Hráč";
 	} else {
 		game = new Game(players, selectedTerrain, generateCaves);
 		console.log(game);
@@ -67,25 +67,17 @@ class Player {
 			display: none;
 		}
 
-		${this.tank ? `:root{
-			--aim: ${this.tank.aim};
-			--firePower: ${this.tank.firePower};
+		:root{
+			--aim: ${Math.round(this.tank.aim)};
+			--firePower: ${Math.round(this.tank.firePower)};
 			--maxFirePower: ${this.tank.maxFirePower};
+			--money: "${this.money.toLocaleString()}";
+			--color: ${this.color};
+			--name: "${this.name}";
+			--fuel: "${this.tank.fuel}";
 		}
 
-		.playerMoney::before{
-			content: "${this.money.toLocaleString()}";
-		}
-
-		.playerName{
-			color: ${this.color};
-		}
-		.playerName::before{
-			content: "${this.name}";
-		}
-
-		`: ""
-			}`;
+		`;
 		for (let ammo in this.ammo) {
 			document.querySelector("style#playerStyle").innerHTML += `
 		.ammoRow.ammo${ammo} > .ammoAmount::after, .${ammoList[ammo].shortName}DisplayAfter::after{

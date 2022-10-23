@@ -103,10 +103,10 @@ const clouds = [];
 setInterval(() => {
 	let left;
 	for (let i = 0; i < clouds.length; i++) {
-		left = parseFloat(clouds[i].style.left) + game.windCurrent / 20;
-		clouds[i].style.left = left + "em";
+		left = parseFloat(clouds[i][0].style.left) + game.windCurrent / 20 * clouds[i][1];
+		clouds[i][0].style.left = left + "em";
 		if (left < -251 || left > 2561) {
-			cloud = clouds.splice(i, 1)[0];
+			cloud = clouds.splice(i, 1)[0][0];
 			cloud.parentNode.removeChild(cloud);
 			i--;
 		}
@@ -114,7 +114,7 @@ setInterval(() => {
 
 
 
-	if (game && Math.random() < Math.abs(game.windCurrent) / 12000) generateCloud();
+	if (game && Math.random() < Math.abs(game.windCurrent) / 8000) generateCloud();
 }, 1000 / 60);
 
 const minx = 50;
@@ -124,11 +124,12 @@ const maxy = 200;
 function generateCloud(left) {
 	let cloud = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
 	cloud.classList.add("cloud");
+	let speedModifier = Math.random() * 0.5 + 0.5;
 	let width = 250 * Math.random() + 50;
-	left = left || game.windCurrent > 0 ? (-width) : 2560;
+	left = left ? left :game.windCurrent > 0 ? (-width) : 2560;
 	cloud.style.left = left + "em";
 	cloud.style.width = width + "em";
-	cloud.style.top = (50 + Math.random() * 200) + "em";
+	cloud.style.top = (20 + Math.random() * 230) + "em";
 	cloud.setAttribute("preserveAspectRatio", "none");
 	cloud.setAttribute("viewBox", "0 0 400 300");
 	let html = ""/* `
@@ -143,7 +144,7 @@ function generateCloud(left) {
 	<circle cx="${x}" cy="${y}" r="${r}"></circle>`;
 	}
 	cloud.innerHTML = html;
-	clouds.push(cloud);
+	clouds.push([cloud, speedModifier]);
 	document.querySelector("#gamePlane").appendChild(cloud);
 }
 

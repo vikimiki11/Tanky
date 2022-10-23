@@ -4,6 +4,7 @@ class Tank {
 		this.aim = 20;
 		this.firePower = 100;
 		this.maxFirePower = 100;
+		this.fuel = 100;
 		this.x = 0;
 		this.y = 0;
 	}

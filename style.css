@@ -279,6 +279,10 @@ input[type="color"]{
 	left: 12em;
 }
 
+#fuelAmount::after{
+	content: var(--fuel);
+}
+
 #gadgets{
 	font-size: 0.8em;
 	position: absolute;
@@ -396,7 +400,7 @@ input[type="color"]{
 	font-size: 0.75em;
 }
 #firePowerDisplay::after {
-	counter-reset: firePower var(--firePower);
+	counter-reset: firePower var(--firePower, "err.");
 	content: counter(firePower);
 }
 
@@ -407,7 +411,7 @@ input[type="color"]{
 	font-size: 0.75em;
 }
 #aimDisplay::after {
-	counter-reset: aim var(--aim);
+	counter-reset: aim var(--aim, "err.");
 	content: counter(aim);
 }
 
@@ -650,11 +654,11 @@ canvas{
 
 .cloud{
 	position: absolute;
-	opacity: 0.5;
+	/* opacity: 0.5; */
 }
 
 .cloud * {
-	fill: rgb(255, 255, 255);
+	fill: rgb(255, 255, 255, 0.1);
 	stroke-width: 0;
 }
 
@@ -680,4 +684,22 @@ canvas{
 	display: grid;
 	grid-template-columns: 8em 8em;
 	height: 0;
+}
+
+
+
+
+
+
+
+.playerMoney::before {
+	content: var(--money, "err.");
+}
+
+.playerName {
+	color: var(--color, "err.");
+}
+
+.playerName::before {
+	content: var(--name, "err.");
 }
