@@ -45,7 +45,7 @@
 						<label>Jméno: </label><input id="playerNameInput"><br>
 						<hr>
 						<label>AI: </label><input type="checkbox" id="AICheckbox">
-						Color: <input type="color" id="playerColorInput"><br><br>
+						Color: <input type="color" id="playerColorInput" value="#FF0000"><br><br>
 						<button onclick="addPlayer()">Next</button>
 					</div>
 				</div>
@@ -148,27 +148,27 @@
 
 					<div id="shootControll">
 						<div id="firePowerControll" class="rangeVertical">
-								<!-- <div class="slider" style="bottom:0%"></div> -->
-								<input type="range" orient="vertical" onchange="game.setFirePower(this.value)"
-									onmousemove="game.setFirePower(this.value)" value="0">
+							<!-- <div class="slider" style="bottom:0%"></div> -->
+							<input type="range" orient="vertical" onchange="game.setFirePower(this.value)"
+								onmousemove="game.setFirePower(this.value)" value="0">
+							<svg viewBox="0 0 200 400" preserveAspectRatio="none">
+								<polygon points="0,0 100,400 200,0" style="fill:#600" />
+								Sorry, your browser does not support inline SVG.
+							</svg>
+							<div>
 								<svg viewBox="0 0 200 400" preserveAspectRatio="none">
-									<polygon points="0,0 100,400 200,0" style="fill:#600" />
+									<defs>
+										<linearGradient id="grad" x1="50%" y1="100%" x2="50%" y2="0%">
+											<stop offset="0%" style="stop-color:rgb(255,255,255)" />
+											<stop offset="100%" style="stop-color:rgb(255,0,0)" />
+										</linearGradient>
+									</defs>
+									<polygon points="0,0 100,400 200,0" style="fill:url(#grad)" />
 									Sorry, your browser does not support inline SVG.
 								</svg>
-								<div>
-									<svg viewBox="0 0 200 400" preserveAspectRatio="none">
-										<defs>
-											<linearGradient id="grad" x1="50%" y1="100%" x2="50%" y2="0%">
-												<stop offset="0%" style="stop-color:rgb(255,255,255)" />
-												<stop offset="100%" style="stop-color:rgb(255,0,0)" />
-											</linearGradient>
-										</defs>
-										<polygon points="0,0 100,400 200,0" style="fill:url(#grad)" />
-										Sorry, your browser does not support inline SVG.
-									</svg>
-								</div>
+							</div>
 						</div>
-						<div id="firePowerDisplay"></div>
+						<div id="firePowerDisplay"><!-- filled by script --></div>
 						<div class="rangeHorizontal" style="width: 4em;height: 0.5em;">
 							<!-- <div class="slider" style="left:0%"></div> -->
 							<input type="range" id="aimControll" min="0" max="180" value="0" onchange="game.setAim(this.value)"
@@ -185,7 +185,20 @@
 								Sorry, your browser does not support inline SVG.
 							</svg>
 						</div>
-						<div id="aimDisplay"></div>
+						<div id="aimDisplay"><!-- filled by script --></div>
+						<div class="tank">
+							<svg viewBox="0 0 450 175">
+								<!-- bottom part -->
+								<circle cx="50" cy="125" r="50" stroke-width="0" fill="black" />
+								<rect x="50" y="75" width="350" height="100" style="fill:black;stroke-width:0" />
+								<circle cx="400" cy="125" r="50" stroke-width="0" fill="black" />
+						
+								<!-- top part -->
+								<polygon points="75,75 375,75 325,0 125,0" />
+								Sorry, your browser does not support inline SVG.
+							</svg>
+							<div class="cannon"></div>
+						</div>
 						<button id="fireButton" onclick="game.fire()">Fire</button>
 					</div>
 
@@ -204,7 +217,7 @@
 					<div id="wind">
 						<img src="img/cloud.png">
 						<div id="windDirection">
-							↩
+							<!-- filled by script -->
 						</div>
 						<div id="windCurrent">
 							<!-- filled by script -->
@@ -249,6 +262,8 @@
 	</div>
 	<div id="cachedImages">
 		<img src="img/inside.jpg">
+		<img src="img/door.png">
+		<img src="img/roof.png">
 	</div>
 	<script src="libraries/perlin.js"></script>
 	<script src="terrain.js"></script>

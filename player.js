@@ -10,8 +10,8 @@ function addPlayer(name, color, AI) {
 
 	if (maxPlayers > players.length) {
 		document.querySelector("#playerNameInput").value = "";
-		document.querySelector("#playerColorInput").value = "#000000";
-		document.querySelector("#setupPlayer h2").innerHTML = (players.length + 1) + ". Hráč";
+		document.querySelector("#playerColorInput").value = ["#FF0000", "#00FF00", "#0000FF", "#FFFF00", "#FF00FF"][players.length];
+		document.querySelector("#setupPlayer  h2").innerHTML = (players.length + 1) + ". Hráč";
 	} else {
 		game = new Game(players, selectedTerrain, generateCaves);
 		console.log(game);
@@ -75,6 +75,8 @@ class Player {
 			--color: ${this.color};
 			--name: "${this.name}";
 			--fuel: "${this.tank.fuel}";
+			--tankColor: ${this.color};
+			--tankAim: ${this.tank.aim}deg;
 		}
 
 		`;

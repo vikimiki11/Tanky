@@ -8,10 +8,12 @@
 	<title>Document</title>
 	<style>
 		body {
-			background-color: #1bb6d0;
+			margin: 0;
+			background-color: lightblue;
 			font-size: 5em;
+			background-image: url("https://media.istockphoto.com/photos/military-tank-isolated-picture-id1221304307?k=20&m=1221304307&s=612x612&w=0&h=QbKA3Hh8zGSWZCgn-aAC2HUwjgARRBOMi7B077o2DJs=");
 		}
-
+/* 
 		.tree {
 			position: absolute;
 			transform: translate(-50%) translateY(-95%);
@@ -27,8 +29,8 @@
 			position: absolute;
 			top: 0;
 			left: 0;
-		}
-		.rangeHorizontal, .rangeVertical{
+		} */
+/* 		.rangeHorizontal, .rangeVertical{
 			position: relative;
 		}
 		:is(.rangeHorizontal, .rangeVertical) svg{
@@ -81,6 +83,34 @@
 			width: 200% !important;
 			height: 50% !important;
 			margin-top: 150% !important;
+		} */
+
+
+		/* .tank{
+			position:absolute;
+			bottom: 5em;
+			left: 5em;
+			width: 9em;
+			height: 3.5em;
+			--rotate: 80deg;
+			--tankColor: #0F0;
+		}
+		.tank > svg > polygon{
+			fill: var(--tankColor, #F00);
+		}
+		.tank > svg{
+			width: 100%;
+			height: 100%;
+		}
+		.cannon{
+			position: absolute;
+			top: 17.5%;
+			right: 50%;
+			width: 40%;
+			height: 12.5%;
+			transform: translate(5%, -50%) rotate(var(--rotate));
+			transform-origin: 95% 50%;
+			background-color: black;
 		}
 		.tank{
 			position: absolute;
@@ -108,6 +138,32 @@
 			fill: rgb(255, 255, 255);
 			stroke-width: 0;
 		}
+		.tank{
+			position: absolute;
+			left: 1em;
+			bottom: 1em;
+			transform-origin: 50% 100%;
+			transform: rotate(-12deg);
+			--scale: 0.5;
+			height: calc(7em * var(--scale));
+			width: calc(16em * var(--scale));
+		}
+		.tank > svg{
+			height: 100%;
+			position: absolute;
+			left: 0;
+			top: 0;
+		}
+		.cloud{
+			position: absolute;
+			left: 0;
+			top: 0;
+			opacity: 0.5;
+		}
+		.cloud *{
+			fill: rgb(255, 255, 255);
+			stroke-width: 0;
+		} */
 	</style>
 </head>
 
@@ -206,6 +262,19 @@
 				console.timeEnd("cloudGen")
 			}, 1000);
 	</script>-->
+	<div class="tank">
+		<svg viewBox="0 0 450 175">
+			<!-- bottom part -->
+			<circle cx="50" cy="125" r="50" stroke-width="0" fill="black" />
+			<rect x="50" y="75" width="350" height="100" style="fill:black;stroke-width:0" />
+			<circle cx="400" cy="125" r="50" stroke-width="0" fill="black" />
+	
+			<!-- top part -->
+			<polygon points="75,75 375,75 325,0 125,0" />
+			Sorry, your browser does not support inline SVG.
+		</svg>
+		<div class="cannon"></div>
+	</div>
 </body>
 
 </html>

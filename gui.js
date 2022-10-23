@@ -41,6 +41,7 @@ function fullscreen() {
 		document.body.requestFullscreen()
 		switchScreen("shopScreen");
 	}
+	switchScreen("shopScreen");
 }
 
 
@@ -139,7 +140,7 @@ function generateCloud(left) {
 	for (let i = 0; i < 200; i++) {
 		let x = (noise.simplex2(Math.random() * 999, Math.random() * 999) + 1) * (maxx - minx) / 2 + minx;
 		let y = Math.abs(noise.simplex2(Math.random() * 999, Math.random() * 999)) * -1 * (maxy - miny) + maxy + 40;
-		let r = Math.random() * 50 + 10;
+		let r = Math.random() * 30 + 10;
 		html += `
 	<circle cx="${x}" cy="${y}" r="${r}"></circle>`;
 	}
