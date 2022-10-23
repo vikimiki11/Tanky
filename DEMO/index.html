@@ -12,7 +12,7 @@
 			font-size: 5em;
 		}
 
-		/* .tree {
+		.tree {
 			position: absolute;
 			transform: translate(-50%) translateY(-95%);
 		}
@@ -46,7 +46,7 @@
 			box-sizing: border-box;
 		}
 		.rangeVertical > input{
-			transform: rotate(-90deg)  translateY(6em);
+			transform: rotate(-90deg) translateY(6em);
 			transform-origin: left;
 		}
 		.rangeVertical > input::-webkit-slider-thumb{
@@ -81,7 +81,7 @@
 			width: 200% !important;
 			height: 50% !important;
 			margin-top: 150% !important;
-		} */
+		}
 		.tank{
 			position: absolute;
 			left: 1em;
@@ -120,6 +120,23 @@
 		ter = new Terrain(16 * multiplayer, Math.round(9 / 25 * 21 * multiplayer), 2);
 		ter.generate();
 	</script> -->
+
+
+
+	<script>
+			// create worker
+				const myWorker = new Worker("worker.js");
+				myWorker.onmessage = console.log;
+				myWorker.postMessage("ahoj");
+	</script>
+
+
+
+
+
+
+
+
 	<!-- <div class="rangeVertical" style="width: 2em;height: 4em;">
 		<!-- <div class="slider" style="bottom:0%"></div> -->
 		<!-- <input type="range" orient="vertical" onchange="game.setFirePower(this.value)" onmousemove="game.setFirePower(this.value)" value="0">
@@ -163,7 +180,7 @@
 			Sorry, your browser does not support inline SVG.
 		</svg>
 	</div> -->
-	<svg class="cloud" preserveaspectratio="none" viewbox="0 0 400 300">
+	<!-- <svg class="cloud" preserveaspectratio="none" viewbox="0 0 400 300">
 	</svg>
 	<script src="perlin.js"></script>
 	<script>
@@ -188,7 +205,7 @@
 				generateCloud();
 				console.timeEnd("cloudGen")
 			}, 1000);
-	</script>
+	</script>-->
 </body>
 
 </html>
