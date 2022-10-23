@@ -99,13 +99,16 @@ class Game {
 
 	setFirePower(power) {
 		power = Math.min(parseFloat(power), this.actualPlayer.tank.maxFirePower);
-		this.actualPlayer.tank.firePower = parseFloat(power);
+		power = Math.max(power, 0);
+		this.actualPlayer.tank.firePower = power;
 		document.querySelector("#firePowerControll input").value = power;
 		this.actualPlayer.updateCSS();
 	}
 
 	setAim(angle) {
-		this.actualPlayer.tank.aim = parseFloat(angle);
+		angle = Math.min(parseFloat(angle), 180);
+		angle = Math.max(angle, 0);
+		this.actualPlayer.tank.aim = angle;
 		document.querySelector("#aimControll").value = angle;
 		this.actualPlayer.updateCSS();
 	}

@@ -146,3 +146,20 @@ function generateCloud(left) {
 	clouds.push(cloud);
 	document.querySelector("#gamePlane").appendChild(cloud);
 }
+
+const keys = new Array(256);
+document.body.addEventListener("keydown", function (e) {
+	keys[e.keyCode] = true;
+	if (e.keyCode == 16) { game.nextAmmo(); }
+	else if (e.keyCode == 17) game.previousAmmo();
+});
+document.body.addEventListener("keyup", function (e) {
+	keys[e.keyCode] = false;
+});
+setInterval(() => {
+	if (keys[32]) game.actualPlayer.shoot();
+	if (keys[87]) game.setFirePower(game.actualPlayer.tank.firePower + 0.5);
+	if (keys[83]) game.setFirePower(game.actualPlayer.tank.firePower - 0.5);
+	if (keys[69]) game.setAim(game.actualPlayer.tank.aim + 0.5);
+	if (keys[81]) game.setAim(game.actualPlayer.tank.aim - 0.5);
+}, 1000 / 60);
