@@ -2,7 +2,7 @@ class Tank {
 	constructor(player) {
 		this.player = player;
 		this._aim = 20;
-		this.firePower = 10100;
+		this.firePower = 100;
 		this.maxFirePower = 100;
 		this.fuel = 100;
 		this.x = 0;

@@ -39,9 +39,7 @@ function fullscreen() {
 		document.exitFullscreen();
 	} else {
 		document.body.requestFullscreen()
-		switchScreen("shopScreen");
 	}
-	switchScreen("shopScreen");
 }
 
 
@@ -102,6 +100,7 @@ for (let el of document.querySelectorAll("#shopScreen :is(.ammoRow, .gadgetRow)"
 
 const clouds = [];
 setInterval(() => {
+	//Posun Mraků
 	let left;
 	for (let i = 0; i < clouds.length; i++) {
 		left = parseFloat(clouds[i][0].style.left) + game.windCurrent / 20 * clouds[i][1];
@@ -112,9 +111,7 @@ setInterval(() => {
 			i--;
 		}
 	}
-
-
-
+	//Generace Mraků
 	if (game && Math.random() < Math.abs(game.windCurrent) / 8000) generateCloud();
 }, 1000 / 60);
 
@@ -123,28 +120,27 @@ const maxx = 350;
 const miny = 75;
 const maxy = 200;
 function generateCloud(left) {
-	let cloud = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+	let cloud = document.createElement("canvas");
 	cloud.classList.add("cloud");
 	let speedModifier = Math.random() * 0.5 + 0.5;
 	let width = 250 * Math.random() + 50;
-	left = left ? left :game.windCurrent > 0 ? (-width) : 2560;
+	let height = width / 4 * 3;
+	left = left ? left : game.windCurrent > 0 ? (-width) : 2560;
 	cloud.style.left = left + "em";
-	cloud.style.width = width + "em";
+	cloud.style.height = height + "em";
 	cloud.style.top = (20 + Math.random() * 230) + "em";
-	cloud.setAttribute("preserveAspectRatio", "none");
-	cloud.setAttribute("viewBox", "0 0 400 300");
-	let html = ""/* `
-	<circle cx="350" cy="250" r="50"></circle>
-	<circle cx="50" cy="250" r="50"></circle>
-	<rect x="50" y="200" width="300" height="100"></rect>` */;
-	for (let i = 0; i < 200; i++) {
+	cloud.setAttribute("height", "300");
+	cloud.setAttribute("width", "400");
+	var ctx = cloud.getContext("2d");
+	ctx.fillStyle = "rgba(255, 255, 255, 0.05)";
+	for (let i = 0; i < 500; i++) {
 		let x = (noise.simplex2(Math.random() * 999, Math.random() * 999) + 1) * (maxx - minx) / 2 + minx;
 		let y = Math.abs(noise.simplex2(Math.random() * 999, Math.random() * 999)) * -1 * (maxy - miny) + maxy + 40;
-		let r = Math.random() * 30 + 10;
-		html += `
-	<circle cx="${x}" cy="${y}" r="${r}"></circle>`;
+		let r = Math.random() * 20 + 5;
+		ctx.beginPath();
+		ctx.arc(x, y, r, 0, 2 * Math.PI);
+		ctx.fill();
 	}
-	cloud.innerHTML = html;
 	clouds.push([cloud, speedModifier]);
 	document.querySelector("#gamePlane").appendChild(cloud);
 }
@@ -154,11 +150,14 @@ document.body.addEventListener("keydown", function (e) {
 	keys[e.keyCode] = true;
 	if (e.keyCode == 16) { game.nextAmmo(); }
 	else if (e.keyCode == 17) game.previousAmmo();
+	console.log(e.keyCode);
 });
 document.body.addEventListener("keyup", function (e) {
 	keys[e.keyCode] = false;
 });
 setInterval(() => {
+	if (!keys[83] && !keys[87] && (QS = document.querySelector("#firePowerControll input")))game.setFirePower(QS.value);
+	if (!keys[69] && !keys[81] && (QS = document.querySelector("#aimControll")))game.setAim(QS.value);
 	if (keys[32]) game.actualPlayer.shoot();
 	if (keys[87]) game.setFirePower(game.actualPlayer.tank.firePower + 0.5);
 	if (keys[83]) game.setFirePower(game.actualPlayer.tank.firePower - 0.5);

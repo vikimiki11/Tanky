@@ -148,9 +148,7 @@
 
 					<div id="shootControll">
 						<div id="firePowerControll" class="rangeVertical">
-							<!-- <div class="slider" style="bottom:0%"></div> -->
-							<input type="range" orient="vertical" onchange="game.setFirePower(this.value)"
-								onmousemove="game.setFirePower(this.value)" value="0">
+							<input type="range" orient="vertical" value="0">
 							<svg viewBox="0 0 200 400" preserveAspectRatio="none">
 								<polygon points="0,0 100,400 200,0" style="fill:#600" />
 								Sorry, your browser does not support inline SVG.
@@ -170,9 +168,7 @@
 						</div>
 						<div id="firePowerDisplay"><!-- filled by script --></div>
 						<div class="rangeHorizontal" style="width: 4em;height: 0.5em;">
-							<!-- <div class="slider" style="left:0%"></div> -->
-							<input type="range" id="aimControll" min="0" max="180" value="0" onchange="game.setAim(this.value)"
-								onmousemove="game.setAim(this.value)">
+							<input type="range" id="aimControll" min="0" max="180" value="0">
 							<svg viewBox="0 0 400 50" preserveAspectRatio="none">
 								<defs>
 									<linearGradient id="grad1" x1="0%" y1="50%" x2="100%" y2="50%">
@@ -276,12 +272,13 @@
 	<script>
 		let ter;
 	window.onload = function () {
-		setTimeout(()=>{
-			addPlayer("VIKI", undefined, false);
+		/* setTimeout(()=>{
+			addPlayer("VIKI", "#00FF00", false);
 			addPlayer("MIKI", "#FF0000", false);
 		},200)
 		let multiplayer = 160;
-		selectTerrain();/* 
+		selectTerrain(); */
+		/* 
 		ter = new Terrain(16 * multiplayer, Math.round(9 / 25 * 21 * multiplayer), selectedTerrain);
 		ter.generate(); */
 }
