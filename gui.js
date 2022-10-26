@@ -150,14 +150,13 @@ document.body.addEventListener("keydown", function (e) {
 	keys[e.keyCode] = true;
 	if (e.keyCode == 16) { game.nextAmmo(); }
 	else if (e.keyCode == 17) game.previousAmmo();
-	console.log(e.keyCode);
 });
 document.body.addEventListener("keyup", function (e) {
 	keys[e.keyCode] = false;
 });
 setInterval(() => {
-	if (!keys[83] && !keys[87] && (QS = document.querySelector("#firePowerControll input")))game.setFirePower(QS.value);
-	if (!keys[69] && !keys[81] && (QS = document.querySelector("#aimControll")))game.setAim(QS.value);
+	if (!keys[83] && !keys[87] && game && (QS = document.querySelector("#firePowerControll input")))game.setFirePower(QS.value);
+	if (!keys[69] && !keys[81] && game && (QS = document.querySelector("#aimControll")))game.setAim(QS.value);
 	if (keys[32]) game.actualPlayer.shoot();
 	if (keys[87]) game.setFirePower(game.actualPlayer.tank.firePower + 0.5);
 	if (keys[83]) game.setFirePower(game.actualPlayer.tank.firePower - 0.5);

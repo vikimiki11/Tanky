@@ -52,7 +52,7 @@ class Terrain extends Array {
 				this[x][y].generate();
 			}
 		}
-		this.canvasData.grainification2x2();
+		this.canvasData.grainification(1,4, 15);
 		this.canvasData.update();
 		console.timeEnd("generate");
 	}
@@ -175,25 +175,53 @@ class CanvasData {
 			this.data[i] = 0;
 		}
 	}
-	grainification() {
-		const decrease = 7;
-		console.time("grainification");
+
+
+
+
+	grainification1x1(decreaseI) {
+		const decrease = decreaseI || 10;
+		console.time("grainification1x1");
 		for (let i = 0; i < this.data.length; i++) {
 			if (this.data[i] && i % 4 != 3) this.data[i] = this.data[i] * ((Math.random() + decrease - 1) / decrease );
 		}
-		console.timeEnd("grainification");
+		console.timeEnd("grainification1x1");
 	}
-	grainification2x2() {
-		const decrease = 10;
+	grainification2x2(decreaseI) {
+		const decrease = decreaseI || 10;
 		let actualDecrease = 0;
 		console.time("grainification2x2");
 		for (let i = 0; i < this.data.length; i = (i / 4 + 2) % this.width < 2 ? i + (2 + this.width - (i / 4 + 2) % this.width) * 4 : i + 8) {
 			actualDecrease = [((Math.random() + decrease - 1) / decrease), ((Math.random() + decrease - 1) / decrease), ((Math.random() + decrease - 1) / decrease)];
 			for (let j = 0; j <= 6; j = ++j + Number(j == 3)) {
-				this.data[i + j] = this.data[i + j] * actualDecrease[j % 3];
-				this.data[i + this.width * 4 + j] = this.data[i + this.width * 4 + j] * actualDecrease[j % 3];
+				this.data[i + j] = this.data[i + j] * actualDecrease[j % 4];
+				this.data[i + this.width * 4 + j] = this.data[i + this.width * 4 + j] * actualDecrease[j % 4];
 			}
 		}
 		console.timeEnd("grainification2x2");
+	}
+	grainificationNxN(n, decreaseI) {
+		if (n < 0) return console.warn("GrainificationNxN: n must be positive");
+		if (n == 1) return this.grainification1x1(decreaseI);
+		if (n == 2) return this.grainification2x2(decreaseI);
+		const decrease = decreaseI || 10;
+		let actualDecrease = 0;
+		console.time("grainificationNxN(" + n + ")");
+		for (let i = 0; i < this.data.length; i = (i / 4 + 3) % this.width < n ? i + (n + this.width * (n - 1) - (i / 4 + 3) % this.width) * 4 : i + n * 4) {
+			actualDecrease = [((Math.random() + decrease - 1) / decrease), ((Math.random() + decrease - 1) / decrease), ((Math.random() + decrease - 1) / decrease)];
+			for (let j = 0; j < n * 4; j = ++j + Number(j % 4 == 3)) {
+				for (let x = 0; x < n; x++) {
+					this.data[i + j + this.width * 4 * x] = this.data[i + j + this.width * 4 * x] * actualDecrease[j % 4];
+				}
+			}
+		}
+		console.timeEnd("grainificationNxN(" + n + ")");
+	}
+	grainification(start, stop, decreaseI) {
+		console.group("grainification");
+		for(let i = start; i <= stop; i++) {
+			this.grainificationNxN(i, decreaseI);
+		}
+		console.groupEnd("grainification");
 	}
 }
