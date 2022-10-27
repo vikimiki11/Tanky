@@ -28,8 +28,7 @@ body{
 	display: flex;
 	align-items: center;
 	overflow: hidden;
-	font-family: 'Roboto', sans-serif;
-	font-weight: bolder;
+	font-family: fantasy;
 	-webkit-user-drag: none;
 	user-drag: none;
 	-moz-user-select: none;
@@ -723,6 +722,8 @@ canvas{
 
 .playerName {
 	color: var(--color, "err.");
+	-webkit-text-stroke: 0.005em black;
+	font-weight: bold;
 }
 
 .playerName::before {
