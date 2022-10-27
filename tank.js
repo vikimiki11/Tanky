@@ -46,7 +46,14 @@ class Tank {
 	}
 	tick() {
 		let colision;
-		if (!terrain.controlColision(this.x, this.y)[0]) {
+		do {
+			this.y -= 1
+		} while (!terrain.controlColision(this.x, this.y)[0]);
+		do {
+			this.y++;
+		} while (dterrain.controlColision(this.x, this.y)[1]);
+		this.onGround = true;
+		/* if (!terrain.controlColision(this.x, this.y)[0]) {
 			this.y -= 1;
 			this.onGround = false;
 		} else {
@@ -54,7 +61,7 @@ class Tank {
 			do {
 				this.y++;
 			} while ((terrain.controlColision(this.x, this.y)[1]));
-		}
+		} */
 	}
 	get groundContactPlane() {
 		let groundContactPlane = new Array(128);
