@@ -315,7 +315,7 @@ input[type="color"]{
 }
 
 .rangeVertical svg {
-	height: 3em;
+	height: 2.99em;
 }
 
 .rangeVertical>input {
@@ -635,12 +635,14 @@ canvas{
 
 .tank {
 	position: absolute;
-	width: 9em;
-	height: 3.5em;
+	height: calc(25em * var(--scale));
+	width: calc(25em * 9 / 3.5 * var(--scale));
+	transform-origin: 50% 100%;
+	--scale: 1;
 }
 
 .tank>svg>polygon {
-	fill: var(--tankColor, #F00);
+	fill: var(--tankColor, #F0F);
 }
 
 .tank>svg {

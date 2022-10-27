@@ -31,7 +31,7 @@ class Terrain extends Array {
 		this.canvasData.clear();
 	}
 	generate(seed = Math.random()) {
-		console.time("generate");
+		console.time("generate TerrainBlock");
 		this.currentTerrain = this.terrain;
 		this.clear();
 		this.seed = seed;
@@ -52,14 +52,22 @@ class Terrain extends Array {
 				this[x][y].generate();
 			}
 		}
+		console.timeEnd("generate TerrainBlock");
 		this.canvasData.grainification(1,4, 15);
 		this.canvasData.update();
-		console.timeEnd("generate");
 	}
 	aktualizace() {
 		imageData = context.getImageData(0, 0, canvas.width, canvas.height);
 		terrain(imageData.data);
 		context.putImageData(imageData, 0, 0);
+	}
+	controlColision(x, y) {
+		if (this[Math.floor(x)] && this[Math.floor(x)][Math.floor(y)])
+			return [
+				this[Math.floor(x)][Math.floor(y)].isSolid,
+				(this[Math.floor(x)][Math.floor(y) + 1] ? this[Math.floor(x)][Math.floor(y) + 1].isSolid : false)
+			];
+		return false;
 	}
 }
 
@@ -102,10 +110,14 @@ class TerrainBlock {
 		this.color = [0, 0, 0, 0];
 		this.distanceFromGround = 0;
 		this.destroyed = false;
+		this.air = true;
 	}
 	generate() {
+		this.destroyed = false;
+		this.air = true;
 		this.distanceFromGround = this.column.terrainHeight - this.y;
 		if (this.distanceFromGround >= 0 && this.distanceFromGround - this.column.topLevelThickness < 0) {
+			this.air = false;
 			if (this.table.currentTerrain == 1) {
 				this.color = [255, 255, 255, 255];
 			} else if (this.table.currentTerrain == 2) {
@@ -113,6 +125,7 @@ class TerrainBlock {
 			}
 			this.canvasData.setPixel(this.x, this.y, this.color);
 		} else if (this.distanceFromGround >= 0) {
+			this.air = false
 			this.color[3] = 255;
 			if (this.table.currentTerrain == 1) {
 				const scale = 0.02;
@@ -131,7 +144,7 @@ class TerrainBlock {
 			} else if (this.table.currentTerrain == 3) {
 				const scale = 0.005;
 				let n = noise.simplex2(this.x * scale, this.y * scale) * 1.25;
-				this.color = TerrainBlock.desertGradient(this.distanceFromGround/30 + n);
+				this.color = TerrainBlock.desertGradient(this.distanceFromGround / 30 + n);
 			}
 			this.canvasData.setPixel(this.x, this.y, this.color);
 		}
@@ -139,6 +152,9 @@ class TerrainBlock {
 	static desertGradient(pressure) {
 		let shade = Math.cos(pressure)/13 + 12/13;
 		return [230 * shade, 180 * shade, 70 * shade, 255];
+	}
+	get isSolid() {
+		return !(this.air || this.destroyed);
 	}
 }
 

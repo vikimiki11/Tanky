@@ -150,16 +150,29 @@ document.body.addEventListener("keydown", function (e) {
 	keys[e.keyCode] = true;
 	if (e.keyCode == 16) { game.nextAmmo(); }
 	else if (e.keyCode == 17) game.previousAmmo();
+	else if (e.keyCode == 70) fullscreen();
+	else if (e.keyCode == 49) console.log("1 ToDo");
+	else if (e.keyCode == 50) console.log("2 ToDo");
+	else if (e.keyCode == 51) console.log("3 ToDo");
+	else if (e.keyCode == 52) console.log("4 ToDo");
+	else if (e.keyCode == 82) console.log("Repair Kit ToDo");
+	else if (e.keyCode == 88) console.log("X ToDo");
+	else if (e.keyCode == 89) console.log("Y ToDo");
+	else if (e.keyCode == 67) console.log("C ToDo");
+	else if (e.keyCode == 86) console.log("V ToDo");
+	else if (e.keyCode == 32) game.fire();
+
 });
 document.body.addEventListener("keyup", function (e) {
 	keys[e.keyCode] = false;
 });
 setInterval(() => {
-	if (!keys[83] && !keys[87] && game && (QS = document.querySelector("#firePowerControll input")))game.setFirePower(QS.value);
-	if (!keys[69] && !keys[81] && game && (QS = document.querySelector("#aimControll")))game.setAim(QS.value);
-	if (keys[32]) game.actualPlayer.shoot();
+	if (!keys[83] && !keys[87] && game && (QS = document.querySelector("#firePowerControll input")) && parseInt(game.actualPlayer.tank.firePower) != parseInt(QS.value))game.setFirePower(QS.value);
+	if (!keys[69] && !keys[81] && game && (QS = document.querySelector("#aimControll")) && parseFloat(game.actualPlayer.tank.aim) != parseFloat(QS.value))game.setAim(QS.value);
 	if (keys[87]) game.setFirePower(game.actualPlayer.tank.firePower + 0.5);
 	if (keys[83]) game.setFirePower(game.actualPlayer.tank.firePower - 0.5);
-	if (keys[69]) game.setAim(game.actualPlayer.tank.aim + 0.5);
-	if (keys[81]) game.setAim(game.actualPlayer.tank.aim - 0.5);
+	if (keys[69]) game.setAim(game.actualPlayer.tank.aim + 0.01);
+	if (keys[81]) game.setAim(game.actualPlayer.tank.aim - 0.01);
+	if (keys[65] && !keys[68]) game.tankDrive(-1);
+	if (keys[68] && !keys[65]) game.tankDrive(1);
 }, 1000 / 60);

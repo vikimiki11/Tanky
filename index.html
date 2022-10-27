@@ -8,6 +8,8 @@
 	<link rel="stylesheet" type="text/css" href="style.css">
 	<style id="playerStyle">
 	</style>
+	<style id="tankStyle">
+	</style>
 </head>
 <body onresize="changeBaseFontSize()">
 <div id="body">
@@ -165,7 +167,7 @@
 						</div>
 						<div id="firePowerDisplay"><!-- filled by script --></div>
 						<div class="rangeHorizontal" style="width: 4em;height: 0.5em;">
-							<input type="range" id="aimControll" min="0" max="180" value="0">
+							<input type="range" id="aimControll" min="0" max="3.14" step="0.001" value="0">
 							<svg viewBox="0 0 400 50" preserveAspectRatio="none">
 								<defs>
 									<linearGradient id="grad1" x1="0%" y1="50%" x2="100%" y2="50%">
@@ -185,7 +187,6 @@
 								<circle cx="50" cy="125" r="50" stroke-width="0" fill="black" />
 								<rect x="50" y="75" width="350" height="100" style="fill:black;stroke-width:0" />
 								<circle cx="400" cy="125" r="50" stroke-width="0" fill="black" />
-						
 								<!-- top part -->
 								<polygon points="75,75 375,75 325,0 125,0" />
 								Sorry, your browser does not support inline SVG.
@@ -269,15 +270,11 @@
 	<script>
 		let ter;
 	window.onload = function () {
-		/* setTimeout(()=>{
-			addPlayer("VIKI", "#00FF00", false);
-			addPlayer("MIKI", "#FF0000", false);
+		setTimeout(()=>{
+			addPlayer("ŽLUŤOUČKÝ KŮŇ ÚPĚL ĎÁBELKÉ ÓDY", "#00FF00", false);
+			addPlayer("ÚPĚL ĎÁBELKÉ ÓDY BÓŽÝHO DUCHA", "#FF0000", false);
 		},200)
-		let multiplayer = 160;
-		selectTerrain(); */
-		/* 
-		ter = new Terrain(16 * multiplayer, Math.round(9 / 25 * 21 * multiplayer), selectedTerrain);
-		ter.generate(); */
+		selectTerrain();
 }
 	</script>
 </div>

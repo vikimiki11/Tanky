@@ -3,16 +3,16 @@ let generateCaves;
 let game;
 const windJump = 0.125;
 const windMax = 50;
-function selectTerrain(terrain/* undefined: try to fatch it, 0:random, 1:mountains, 2: forest, 3:desert */, caves/* undefined: try to fatch it, 0:no, 1:yes */, players = parseInt(document.querySelector("#playerCount").value)) {
-	if(terrain === undefined) {
+function selectTerrain(terrainType/* undefined: try to fatch it, 0:random, 1:mountains, 2: forest, 3:desert */, caves/* undefined: try to fatch it, 0:no, 1:yes */, players = parseInt(document.querySelector("#playerCount").value)) {
+	if(terrainType === undefined) {
 		for(let element of document.querySelectorAll("input[name='terrain']")) {
 			if(element.checked) {
-				terrain = element.value;
+				terrainType = element.value;
 				break;
 			}
 		}
 	}
-	selectedTerrain = parseInt(terrain);
+	selectedTerrain = parseInt(terrainType);
 
 	const checkboxQS = "#setupBasic > div > input[type=checkbox]"
 	if (caves === undefined && document.querySelector(checkboxQS)) caves = document.querySelector(checkboxQS).checked;
@@ -22,10 +22,8 @@ function selectTerrain(terrain/* undefined: try to fatch it, 0:random, 1:mountai
 
 
 	let multiplayer = 160;
-	ter = new Terrain(16 * multiplayer, Math.round(9 / 25 * 21 * multiplayer), selectedTerrain);
-	ter.generate();
-
-	return [terrain, caves];
+	terrain = new Terrain(16 * multiplayer, Math.round(9 / 25 * 21 * multiplayer), selectedTerrain);
+	terrain.generate();
 }
 
 
@@ -45,6 +43,7 @@ class Game {
 		this.windSeed = Math.random();
 		this._windStep = 0;
 		this.windCurrent = 0;
+		setTimeout(() => { setInterval(() => { game.tick() }, 1000 / 60) },100);
 	}
 	set actualPlayerID(id) {
 		if (this.actualPlayer) this.actualPlayer.selected = false;
@@ -97,15 +96,17 @@ class Game {
 		for (let playerID in this.players) {
 			let player = this.players[playerID];
 			player.tank = new Tank(player);
+			player.tank.spawn();
 		}
+		this.tankCSS();
 	}
 
 	nextPlayer() {
 		this.windStep = this.windStep + 1;
 		this.actualPlayerID++;
 		let player = this.actualPlayer;
-		game.setAim(player.tank.aim);
-		game.setFirePower(player.tank.firePower);
+		this.setAim(player.tank.aim);
+		this.setFirePower(player.tank.firePower);
 	}
 
 	setFirePower(power) {
@@ -114,14 +115,22 @@ class Game {
 		this.actualPlayer.tank.firePower = power;
 		document.querySelector("#firePowerControll input").value = power;
 		this.actualPlayer.updateCSS();
+		this.tankCSS();
 	}
 
 	setAim(angle) {
-		angle = Math.min(parseFloat(angle), 180);
+		angle = Math.min(parseFloat(angle), Math.PI);
 		angle = Math.max(angle, 0);
 		this.actualPlayer.tank.aim = angle;
 		document.querySelector("#aimControll").value = angle;
 		this.actualPlayer.updateCSS();
+		this.tankCSS();
+	}
+
+	tankDrive(x) {
+		/* if (this.blockControls) return; */
+		this.actualPlayer.tank.drive(x);
+		this.tankCSS();
 	}
 
 	nextAmmo() {
@@ -142,5 +151,22 @@ class Game {
 		//ToDo:FIRE
 		this.nextPlayer();
 	}
-}
 
+	tankCSS() {
+		let CSS = "";
+		for (let playerID in this.players) {
+			let player = this.players[playerID];
+			CSS += player.tank.CSS;
+		}
+		document.querySelector("#tankStyle").innerHTML = CSS;
+	}
+
+	tick() {
+		for (let playerID in this.players) {
+			let player = this.players[playerID];
+			player.tank.tick();
+		}
+		this.tankCSS();
+
+	}
+}
