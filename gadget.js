@@ -39,15 +39,15 @@ gadgetList.push(new Gadget("Parachute", "parachute", 8, 20000, 1))
 gadgetList.push(new Gadget("Teleport", "teleport", 8, 20000, 1))
 
 function repairKit() {
-	if (game.actualPlayer.gadget[4] > 0 && game.actualPlayer.tank.maxFirePower < 100) {
-		game.actualPlayer.gadget[4]--;
+	if ((game.actualPlayer.gadget[4] > 0 || infinityGadgetsAndAmmoCheck) && game.actualPlayer.tank.maxFirePower < 100) {
+		if (!infinityGadgetsAndAmmoCheck) game.actualPlayer.gadget[4]--;
 		game.actualPlayer.tank.maxFirePower = Math.min(game.actualPlayer.tank.maxFirePower + 20, 100);
 		game.actualPlayer.updateCSS();
 	}
 }
 function fuel() {
-	if (game.actualPlayer.gadget[5] >= 50) {
-		game.actualPlayer.gadget[5] -= 50;
+	if (game.actualPlayer.gadget[5] >= 50 || infinityGadgetsAndAmmoCheck) {
+		if (!infinityGadgetsAndAmmoCheck) game.actualPlayer.gadget[5] -= 50;
 		game.actualPlayer.tank.fuel += 50;
 		game.actualPlayer.updateCSS();
 	}
@@ -57,8 +57,8 @@ let teleportActive = false;
 const gamePlane = document.querySelector("#gamePlane");
 gamePlane.addEventListener("click", teleportClick);
 function teleport() {
-	if (game.actualPlayer.gadget[6] > 0) {
-		game.actualPlayer.gadget[6]--;
+	if (game.actualPlayer.gadget[6] > 0 || infinityGadgetsAndAmmoCheck) {
+		if (!infinityGadgetsAndAmmoCheck) game.actualPlayer.gadget[6]--;
 		gamePlane.style.cursor = "crosshair";
 		teleportActive = true;
 	}

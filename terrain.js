@@ -51,6 +51,9 @@ class Terrain extends Array {
 			for (let y = 0; y <= this[x].terrainHeight; y++) {
 				this[x][y].generate();
 			}
+			for (let y = this[x].terrainHeight + 1; y < this[x].length; y++) {
+				this[x][y].clean();
+			}
 		}
 		console.timeEnd("generate TerrainBlock");
 		this.canvasData.grainification(1,4, 15);
@@ -148,6 +151,9 @@ class TerrainBlock {
 			}
 			this.canvasData.setPixel(this.x, this.y, this.color);
 		}
+	}
+	clean(){
+		this.air = true;
 	}
 	static desertGradient(pressure) {
 		let shade = Math.cos(pressure)/13 + 12/13;

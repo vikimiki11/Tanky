@@ -51,7 +51,7 @@ class Tank {
 		} while (!terrain.controlColision(this.x, this.y)[0]);
 		do {
 			this.y++;
-		} while (dterrain.controlColision(this.x, this.y)[1]);
+		} while (terrain.controlColision(this.x, this.y)[1]);
 		this.onGround = true;
 		/* if (!terrain.controlColision(this.x, this.y)[0]) {
 			this.y -= 1;
@@ -91,5 +91,24 @@ class Tank {
 		if (this.onGround) {
 			this.x += x;
 		}
+	}
+	get cannonBase() {
+		return [
+			this.x + 25 / 6 * 5 * Math.sin(this.rotate),
+			this.y + 25 / 6 * 5 * Math.cos(this.rotate)
+		];
+	}
+	get cannonAngle() {
+		return this.rotate + this.aim;
+	}
+	get cannonTip() {
+		let base = this.cannonBase;
+		let width = (25 * 9 / 3.5) * 0.4;
+		return [
+			/* this.x + width * -Math.cos(this._aim) * Math.sin(this.rotate),
+			this.y + (25 / 6 * 5 + width * Math.sin(this._aim)) * Math.cos(this.rotate) */
+			base[0] + width * -Math.cos(this.cannonAngle),
+			base[1] + width * Math.sin(this.cannonAngle)
+		];
 	}
 }

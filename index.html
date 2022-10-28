@@ -278,5 +278,12 @@
 } */
 	</script>
 </div>
+<div id="debugMenu" class="normalizeFont">
+	<div>Poznačit pozici děla <input type="checkbox" onchange="debugCannonDraw(this)"></div>
+	<button onclick="terrain.generate()">Generovat nový terén</button>
+	<button onclick="game.nextPlayer()">Další Hráč</button>
+	<div>Nekonečno nábojů a gadgetů <input type="checkbox" onchange="infinityGadgetsAndAmmo()"></div>
+</div>
+<script src="debug.js"></script>
 </body>
 </html>

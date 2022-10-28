@@ -654,7 +654,7 @@ canvas{
 
 .cannon {
 	position: absolute;
-	top: 17.5%;
+	top: 16.6666666%;
 	right: 50%;
 	width: 40%;
 	height: 12.5%;
@@ -730,4 +730,27 @@ canvas{
 
 .playerName::before {
 	content: var(--name, "err.");
+}
+
+
+
+
+
+
+
+
+#debugMenu{
+	position: absolute;
+	top: 100%;
+	left: 0;
+	width: auto;
+	height: auto;
+	max-width: 100%;
+	box-sizing: border-box;
+	background-color: rgba(255, 255, 255, 0.5);
+	padding: 0.25em;
+	display: none;
+}
+#debugMenu > *{
+	margin: 0.125em;
 }
