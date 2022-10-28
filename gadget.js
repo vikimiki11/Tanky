@@ -52,3 +52,22 @@ function fuel() {
 		game.actualPlayer.updateCSS();
 	}
 }
+
+let teleportActive = false;
+const gamePlane = document.querySelector("#gamePlane");
+gamePlane.addEventListener("click", teleportClick);
+function teleport() {
+	if (game.actualPlayer.gadget[6] > 0) {
+		game.actualPlayer.gadget[6]--;
+		gamePlane.style.cursor = "crosshair";
+		teleportActive = true;
+	}
+}
+function teleportClick(e) {
+	if (teleportActive) {
+		game.actualPlayer.tank.x = e.layerX / gamePlane.clientWidth * terrain.width;
+		game.actualPlayer.tank.y = (1 - (e.layerY / gamePlane.clientHeight)) * terrain.height;
+		teleportActive = false;
+		gamePlane.style.cursor = "auto";
+	}
+}
