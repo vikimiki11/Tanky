@@ -31,9 +31,9 @@ class Ammo{
 ammoList = [];
 ammoList.push(new Ammo("Small missile", "smallMissile", "smallMissile.png", Infinity, 0, 10, console.log))
 ammoList.push(new Ammo("Missile", "missile", "missile.png", 0, 1000, 10, console.log))
-ammoList.push(new Ammo("001", "xd", "smallMissile.png", 10, 1000, 10, console.log))
-ammoList.push(new Ammo("002", "xd", "smallMissile.png", 10, 1000, 10, console.log))
-ammoList.push(new Ammo("003", "xd", "smallMissile.png", 10, 1000, 10, console.log))
+ammoList.push(new Ammo("Volcano Bomb", "volcanoBomb", "volcanoBomb.png", 10, 1000, 10, console.log))
+ammoList.push(new Ammo("Shower", "shower", "shower.png", 10, 1000, 10, console.log))
+ammoList.push(new Ammo("Hot Shower", "hotShower", "hotShower.png", 10, 1000, 10, console.log))
 ammoList.push(new Ammo("004", "xd", "smallMissile.png", 10, 1000, 10, console.log))
 ammoList.push(new Ammo("005", "xd", "smallMissile.png", 10, 1000, 10, console.log))
 ammoList.push(new Ammo("006", "xd", "smallMissile.png", 10, 1000, 10, console.log))
