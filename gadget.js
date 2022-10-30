@@ -57,10 +57,11 @@ let teleportActive = false;
 const gamePlane = document.querySelector("#gamePlane");
 gamePlane.addEventListener("click", teleportClick);
 function teleport() {
-	if (game.actualPlayer.gadget[6] > 0 || infinityGadgetsAndAmmoCheck) {
-		if (!infinityGadgetsAndAmmoCheck) game.actualPlayer.gadget[6]--;
+	if (game.actualPlayer.gadget[7] > 0 || infinityGadgetsAndAmmoCheck) {
+		if (!infinityGadgetsAndAmmoCheck) game.actualPlayer.gadget[7]--;
 		gamePlane.style.cursor = "crosshair";
 		teleportActive = true;
+		game.actualPlayer.updateCSS();
 	}
 }
 function teleportClick(e) {

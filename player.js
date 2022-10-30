@@ -74,7 +74,7 @@ class Player {
 			--money: "${this.money.toLocaleString()}";
 			--color: ${this.color};
 			--name: "${this.name}";
-			--fuel: "${this.tank.fuel}";
+			--fuel: "${Math.round(this.tank.fuel)}";
 			--tankColor: ${this.color};
 			--tankAim: ${this.tank.aim}rad;
 		}

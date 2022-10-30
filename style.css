@@ -681,6 +681,9 @@ canvas{
 	height: calc(0.84em / var(--pixelSize));
 	width: calc(1em * var(--aspectRatio) / var(--pixelSize));
 }
+#gamePlane>* {
+	pointer-events: none;
+}
 
 
 .cloud{
@@ -750,6 +753,7 @@ canvas{
 	background-color: rgba(255, 255, 255, 0.5);
 	padding: 0.25em;
 	display: none;
+	flex-wrap: wrap;
 }
 #debugMenu > *{
 	margin: 0.125em;

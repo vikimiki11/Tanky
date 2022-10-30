@@ -5,7 +5,7 @@ class Tank {
 		this.rotate = 0;
 		this.firePower = 100;
 		this.maxFirePower = 100;
-		this.fuel = 100;
+		this.fuel = 200;
 		this.x = Math.random()*2000+200;
 		this.y = 800;
 		this.onGround = false;
@@ -89,7 +89,11 @@ class Tank {
 	}
 	drive(x) {
 		if (this.onGround) {
-			this.x += x;
+			if (this.fuel > 0 || infinityGadgetsAndAmmoCheck) {
+				if (!infinityGadgetsAndAmmoCheck) this.fuel-=0.5;
+				this.x += x;
+				game.actualPlayer.updateCSS();
+			}
 		}
 	}
 	get cannonBase() {
@@ -105,8 +109,6 @@ class Tank {
 		let base = this.cannonBase;
 		let width = (25 * 9 / 3.5) * 0.4;
 		return [
-			/* this.x + width * -Math.cos(this._aim) * Math.sin(this.rotate),
-			this.y + (25 / 6 * 5 + width * Math.sin(this._aim)) * Math.cos(this.rotate) */
 			base[0] + width * -Math.cos(this.cannonAngle),
 			base[1] + width * Math.sin(this.cannonAngle)
 		];
