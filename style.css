@@ -172,8 +172,9 @@ main{
 
 
 #shopScreen{
-	background-image: url("img/inside.jpg");
+	background-image: url("img/shopBackground.png");
 	background-size: cover;
+	image-rendering: pixelated;
 }
 
 #shopScreen > *{
