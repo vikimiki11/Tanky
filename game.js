@@ -77,7 +77,6 @@ class Game {
 		this.spawnTanks();
 		this.nextPlayer();
 		switchScreen("gameScreen");
-		setTimeout(this.spawnTanks, switchScreen());
 		for (let i = 0; i < 6; i++){
 			generateCloud(Math.floor(Math.random() * 2560));
 		}

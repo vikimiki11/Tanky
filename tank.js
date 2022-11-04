@@ -1,14 +1,20 @@
-class Tank {
+var Tank; 
+with (Math) {
+Tank = class Tank {
+	static DriveBaseWidth = 60;
+
+
 	constructor(player) {
 		this.player = player;
-		this._aim = 20 / 180 * Math.PI;
+		this._aim = 20 / 180 * PI;
 		this.rotate = 0;
 		this.firePower = 100;
 		this.maxFirePower = 100;
 		this.fuel = 200;
-		this.x = Math.random()*2000+200;
+		this.x = random()*2000+200;
 		this.y = 800;
 		this.onGround = false;
+		this.inertia = [0, 0];
 	}
 	get aim() {
 		return this._aim;
@@ -45,61 +51,96 @@ class Tank {
 	}`;
 	}
 	tick() {
-		let colision;
-		do {
-			this.y -= 1
-		} while (!terrain.controlColision(this.x, this.y)[0]);
-		do {
-			this.y++;
-		} while (terrain.controlColision(this.x, this.y)[1]);
-		this.onGround = true;
-		/* if (!terrain.controlColision(this.x, this.y)[0]) {
-			this.y -= 1;
+		this.checkOutOfMap();
+		if (!this.onGround)this.x += this.inertia[0];
+		this.y += this.inertia[1];
+		if (!terrain.controlColision(this.x, this.y)[0]) {
+			this.inertia[1] -= 0.1;
 			this.onGround = false;
 		} else {
 			this.onGround = true;
+			this.inertia = [0,0];
 			do {
 				this.y++;
 			} while ((terrain.controlColision(this.x, this.y)[1]));
-		} */
+		}
+		let leftTouches;
+		let maxRounds = 10;
+		do {
+			let groundContact = this.groundContactPlane;
+			leftTouches = 0;
+			for (let i in groundContact.plane) {
+				if (parseInt(i) < Tank.DriveBaseWidth / 2) leftTouches += Number(groundContact.plane[i].touch[0]) + Number(groundContact.plane[i].touch[1]);
+				else leftTouches -= Number(groundContact.plane[i].touch[0]) + Number(groundContact.plane[i].touch[1]);
+			}
+			this.rotate += leftTouches / 1000;
+			maxRounds--;
+		} while (abs(leftTouches)>5 && maxRounds>0);
+	}
+	checkOutOfMap() {
+		if (this.x < 0 + Tank.DriveBaseWidth / 2) {
+			this.x = Tank.DriveBaseWidth / 2 + 1;
+			this.inertia[0] = 0;
+		}else if (this.x > terrain.width - Tank.DriveBaseWidth / 2) {
+			this.x = terrain.width - Tank.DriveBaseWidth / 2 - 1;
+			this.inertia[0] = 0;
+		}
+		if (this.y < 0) {
+			//ToDo: add explosion
+		}
 	}
 	get groundContactPlane() {
-		let groundContactPlane = new Array(128);
-		let distanceDifference = Math.cos(this.rotate);
-		let heightDifference = Math.sin(this.rotate);
+		const DriveBaseWidth = Tank.DriveBaseWidth;
+		const Precision = 128 / 60;
+		let groundContactPlane = new Array(DriveBaseWidth);
+		let distanceDifference = cos(this.rotate);
+		let heightDifference = -sin(this.rotate);
 		let touch = false;
 		let leftTouchGround = false;
 		let rightTouchGround = false;
+		let leftTouchAboveGround = false;
+		let rightTouchAboveGround = false;
 		let x = 0, y = 0;
-		for (let i = -64; i < 64; i++) {
-			x = this.x + i * distanceDifference;
-			y = this.y + i * heightDifference;
+		for (let i = round(DriveBaseWidth * Precision / -2); i < round(DriveBaseWidth * Precision / 2); i++) {
+			x = this.x + (i + 0.5) / Precision * distanceDifference;
+			y = this.y + i / Precision * heightDifference;
 			touch = terrain.controlColision(x, y);
-			if (touch) {
+			if (touch[0]) {
 				if (i < 0) {
 					leftTouchGround = true;
 				} else {
 					rightTouchGround = true;
 				}
 			}
-			groundContactPlane[i + 64] = [touch, x, y];
+			if (touch[1]) {
+				if (i < 0) {
+					leftTouchAboveGround = true;
+				} else {
+					rightTouchAboveGround = true;
+				}
+			}
+			let distance = (i + 0.5) / Precision;
+			groundContactPlane[i] = { touch, x, y, distance };
 		}
-		return [groundContactPlane, leftTouchGround, rightTouchGround, this.player.id];
+		return {plane:groundContactPlane, leftTouchGround, rightTouchGround, leftTouchAboveGround, rightTouchAboveGround};
 
 	}
 	drive(x) {
 		if (this.onGround) {
 			if (this.fuel > 0 || infinityGadgetsAndAmmoCheck) {
-				if (!infinityGadgetsAndAmmoCheck) this.fuel-=0.5;
-				this.x += x;
+				if (!infinityGadgetsAndAmmoCheck) this.fuel -= 0.5;
+				this.inertia[0] = x * cos(this.rotate);
+				this.inertia[1] = x * -sin(this.rotate);
+				this.x += this.inertia[0];
+				this.y += this.inertia[1];
 				game.actualPlayer.updateCSS();
 			}
 		}
 	}
 	get cannonBase() {
 		return [
-			this.x + 25 / 6 * 5 * Math.sin(this.rotate),
-			this.y + 25 / 6 * 5 * Math.cos(this.rotate)
+			this.x + 25 / 6 * 5 * sin(this.rotate),
+			this.y + 25 / 6 * 5 * cos(this.rotate)
 		];
 	}
 	get cannonAngle() {
@@ -109,8 +150,29 @@ class Tank {
 		let base = this.cannonBase;
 		let width = (25 * 9 / 3.5) * 0.4;
 		return [
-			base[0] + width * -Math.cos(this.cannonAngle),
-			base[1] + width * Math.sin(this.cannonAngle)
+			base[0] + width * -cos(this.cannonAngle),
+			base[1] + width * sin(this.cannonAngle)
 		];
 	}
 }
+
+
+
+
+
+
+
+
+
+
+function calculateAngle(x1, y1, x2, y2) {
+	return atan2(y2 - y1, x2 - x1);
+}
+function rotateAroundPoint(x, y, angle, centerx, centery) {
+	let x1 = x - point[0];
+	let y1 = y - point[1];
+	let x2 = x1 * cos(angle) - y1 * sin(angle);
+	let y2 = x1 * sin(angle) + y1 * cos(angle);
+	return [x2 + point[0], y2 + point[1]];
+}
+}//end of with (Math) { line 1
