@@ -24,7 +24,16 @@ function debugCannonDraw() {
 	};
 }
 
-let infinityGadgetsAndAmmoCheck = false;
+let infinityGadgetsAndAmmoCheck = true;
 function infinityGadgetsAndAmmo() {
 	infinityGadgetsAndAmmoCheck = !infinityGadgetsAndAmmoCheck;
 }
+gamePlane.addEventListener("mousemove", showPoinerPosition);
+debugX = 0;
+debugY = 0;
+function showPoinerPosition(e) {
+	debugX = e.layerX / gamePlane.clientWidth * terrain.width;
+	debugY = terrain.height - e.layerY / gamePlane.clientHeight * terrain.height;
+	document.querySelector("#pointerPosition").innerHTML = `X: ${debugX.toFixed(4)} Y: ${debugY.toFixed(4)}`;
+}
+
