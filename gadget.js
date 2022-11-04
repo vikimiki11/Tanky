@@ -67,7 +67,7 @@ function teleport() {
 function teleportClick(e) {
 	if (teleportActive) {
 		game.actualPlayer.tank.x = e.layerX / gamePlane.clientWidth * terrain.width;
-		game.actualPlayer.tank.y = (1 - (e.layerY / gamePlane.clientHeight)) * terrain.height;
+		game.actualPlayer.tank.y = Math.min((1 - (e.layerY / gamePlane.clientHeight)) * terrain.height, 1210 - Tank.DriveBaseWidth);
 		teleportActive = false;
 		gamePlane.style.cursor = "auto";
 	}
