@@ -759,3 +759,6 @@ canvas{
 #debugMenu > *{
 	margin: 0.125em;
 }
+#pointerPosition::before{
+	content: "Pointer position: "
+}
