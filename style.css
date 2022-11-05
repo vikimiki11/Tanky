@@ -680,7 +680,7 @@ canvas{
 	position: absolute;
 	bottom: 0;
 	left: 0;
-	--pixelSize: calc(var(--aspectRatio) / --terrainWidth);
+	--pixelSize: calc(var(--aspectRatio) / var(--terrainWidth));
 	font-size: calc(1em * var(--pixelSize));
 	height: calc(0.84em / var(--pixelSize));
 	width: calc(1em * var(--aspectRatio) / var(--pixelSize));
