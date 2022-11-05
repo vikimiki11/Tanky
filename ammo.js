@@ -43,8 +43,3 @@ ammoList.push(new Ammo("009", "xd", "smallMissile.png", 0, 1000, 10, console.log
 ammoList.push(new Ammo("010", "xd", "smallMissile.png", 0, 1000, 10, console.log))
 ammoList.push(new Ammo("011", "xd", "smallMissile.png", 10, 1000, 10, console.log))
 ammoList.push(new Ammo("012", "xd", "smallMissile.png", 0, 1000, 10, console.log))
-/* ammoList.push(new Ammo("013", "xd", "smallMissile.png", 0, 1000, 10, console.log))
-ammoList.push(new Ammo("014", "xd", "smallMissile.png", 0, 1000, 10, console.log))
-ammoList.push(new Ammo("015", "xd", "smallMissile.png", 10, 1000, 10, console.log))
-ammoList.push(new Ammo("016", "xd", "smallMissile.png", 10, 1000, 10, console.log))
-ammoList.push(new Ammo("017", "xd", "smallMissile.png", 10, 1000, 10, console.log)) */

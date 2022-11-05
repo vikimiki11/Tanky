@@ -105,7 +105,7 @@ setInterval(() => {
 	for (let i = 0; i < clouds.length; i++) {
 		left = parseFloat(clouds[i][0].style.left) + game.windCurrent / 20 * clouds[i][1];
 		clouds[i][0].style.left = left + "em";
-		if (left < -251 || left > 2561) {
+		if (left < -251 || left >= terrain.width) {
 			cloud = clouds.splice(i, 1)[0][0];
 			cloud.parentNode.removeChild(cloud);
 			i--;
@@ -125,7 +125,7 @@ function generateCloud(left) {
 	let speedModifier = Math.random() * 0.5 + 0.5;
 	let width = 250 * Math.random() + 50;
 	let height = width / 4 * 3;
-	left = left ? left : game.windCurrent > 0 ? (-width) : 2560;
+	left = left ? left : game.windCurrent > 0 ? (-width) : terrain.width;
 	cloud.style.left = left + "em";
 	cloud.style.height = height + "em";
 	cloud.style.top = (20 + Math.random() * 230) + "em";

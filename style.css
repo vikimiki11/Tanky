@@ -21,6 +21,9 @@
 	}
 }
 
+:root{
+	--terrainWidth: 2560;
+}
 body{
 	margin: auto;
 	background-color: black;
@@ -677,7 +680,7 @@ canvas{
 	position: absolute;
 	bottom: 0;
 	left: 0;
-	--pixelSize: calc(var(--aspectRatio) / 2560);
+	--pixelSize: calc(var(--aspectRatio) / --terrainWidth);
 	font-size: calc(1em * var(--pixelSize));
 	height: calc(0.84em / var(--pixelSize));
 	width: calc(1em * var(--aspectRatio) / var(--pixelSize));

@@ -37,13 +37,13 @@ class Terrain extends Array {
 		this.seed = seed;
 		noise.seed(seed);
 		for (let x = 0; x < this.width; x++) {
-			if (this.currentTerrain == 1) {
+			if (this.currentTerrain == 1) {//Mountain
 				this[x].terrainHeight = Math.round(((noise.simplex2(x / 800, 100000) + 1) / 4 + 0.2) * this.height);
 				this[x].topLevelThickness = Math.round((noise.simplex2(100000, x / 30) + 2.5) * 5) + (this[x].terrainHeight - 350) / 15;
-			} else if (this.currentTerrain == 2) {
+			} else if (this.currentTerrain == 2) {//Forrest
 				this[x].terrainHeight = Math.round(((noise.simplex2(x / 500, 100000) + 1) / 10 + 0.2) * this.height);
 				this[x].topLevelThickness = Math.round((noise.simplex2(100000, x / 30) + 1.5) * 5);
-			} else if (this.currentTerrain == 3) {
+			} else if (this.currentTerrain == 3) {//Desert
 				this[x].terrainHeight = Math.round(((noise.simplex2(x / 1000, 100000) + 1) / 20 + 0.2) * this.height);
 				this[x].topLevelThickness = 0;
 			}

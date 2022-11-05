@@ -78,7 +78,7 @@ class Game {
 		this.nextPlayer();
 		switchScreen("gameScreen");
 		for (let i = 0; i < 6; i++){
-			generateCloud(Math.floor(Math.random() * 2560));
+			generateCloud(Math.floor(Math.random() * terrain.width));
 		}
 	}
 
