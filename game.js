@@ -3,6 +3,7 @@ let generateCaves;
 let game;
 const windJump = 0.125;
 const windMax = 50;
+let terrain;
 function selectTerrain(terrainType/* undefined: try to fatch it, 0:random, 1:mountains, 2: forest, 3:desert */, caves/* undefined: try to fatch it, 0:no, 1:yes */, players = parseInt(document.querySelector("#playerCount").value)) {
 	if(terrainType === undefined) {
 		for(let element of document.querySelectorAll("input[name='terrain']")) {
@@ -101,11 +102,11 @@ class Game {
 	}
 
 	nextPlayer() {
-		this.windStep = this.windStep + 1;
-		this.actualPlayerID++;
-		let player = this.actualPlayer;
-		this.setAim(player.tank.aim);
-		this.setFirePower(player.tank.firePower);
+		game.windStep = game.windStep + 1;
+		game.actualPlayerID++;
+		let player = game.actualPlayer;
+		game.setAim(player.tank.aim);
+		game.setFirePower(player.tank.firePower);
 	}
 
 	setFirePower(power) {
@@ -148,7 +149,10 @@ class Game {
 
 	fire() {
 		//ToDo:FIRE
-		this.nextPlayer();
+		if (this.actualPlayer.ammo[this.actualPlayer.selectedAmmo] <= 0 && infinityGadgetsAndAmmoCheck) return;
+		this.actualPlayer.ammo[this.actualPlayer.selectedAmmo]--;
+		ammoList[this.actualPlayer.selectedAmmo].fire()
+			.then(this.nextPlayer);
 	}
 
 	tankCSS() {
@@ -166,6 +170,15 @@ class Game {
 			player.tank.tick();
 		}
 		this.tankCSS();
+
+		let projectile = 0;
+		while (projectiles[projectile]) {
+			projectiles[projectile].tick();
+			if (projectiles[projectile].end)
+				projectiles.splice(projectile, 1);
+			else
+				projectile++;
+		}
 
 	}
 }

@@ -65,12 +65,13 @@ class Terrain extends Array {
 		context.putImageData(imageData, 0, 0);
 	}
 	controlColision(x, y) {
+		//ToDo: colision out of game area owo????uwu
 		if (this[Math.floor(x)] && this[Math.floor(x)][Math.floor(y)])
 			return [
 				this[Math.floor(x)][Math.floor(y)].isSolid,
 				(this[Math.floor(x)][Math.floor(y) + 1] ? this[Math.floor(x)][Math.floor(y) + 1].isSolid : false)
 			];
-		return false;
+		return [false, false];
 	}
 }
 

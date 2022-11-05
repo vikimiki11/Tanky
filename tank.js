@@ -144,14 +144,14 @@ Tank = class Tank {
 		];
 	}
 	get cannonAngle() {
-		return this.rotate + this.aim;
+		return this.rotate + this.aim + PI;
 	}
 	get cannonTip() {
 		let base = this.cannonBase;
 		let width = (25 * 9 / 3.5) * 0.4;
 		return [
-			base[0] + width * -cos(this.cannonAngle),
-			base[1] + width * sin(this.cannonAngle)
+			base[0] + width * cos(this.cannonAngle),
+			base[1] + width * -sin(this.cannonAngle)
 		];
 	}
 }

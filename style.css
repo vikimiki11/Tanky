@@ -690,6 +690,20 @@ canvas{
 }
 
 
+
+
+
+
+
+
+.projectile {
+	position: absolute;
+	height: 3em;
+	width: 3em;
+	transform: translate(-50%, -50%);
+}
+
+
 .cloud{
 	position: absolute;
 	/* opacity: 0.5; */
