@@ -669,8 +669,8 @@ canvas{
 
 #gameTopBar .tank{
 	position: absolute;
-	left: 4.75em;
-	bottom: 0.75em;
+	left: 5.75em;
+	bottom: 1em;
 	width: calc(9em / 4.5);
 	height: calc(3.5em / 4.5);
 }

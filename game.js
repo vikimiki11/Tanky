@@ -149,8 +149,8 @@ class Game {
 
 	fire() {
 		//ToDo:FIRE
-		if (this.actualPlayer.ammo[this.actualPlayer.selectedAmmo] <= 0 && infinityGadgetsAndAmmoCheck) return;
-		this.actualPlayer.ammo[this.actualPlayer.selectedAmmo]--;
+		if (this.actualPlayer.ammo[this.actualPlayer.selectedAmmo] <= 0 && !infinityGadgetsAndAmmoCheck) return;
+		if (!infinityGadgetsAndAmmoCheck)this.actualPlayer.ammo[this.actualPlayer.selectedAmmo]--;
 		ammoList[this.actualPlayer.selectedAmmo].fire()
 			.then(this.nextPlayer);
 	}

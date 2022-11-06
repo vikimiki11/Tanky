@@ -41,7 +41,7 @@ gadgetList.push(new Gadget("Teleport", "teleport", 8, 20000, 1))
 function repairKit() {
 	if ((game.actualPlayer.gadget[4] > 0 || infinityGadgetsAndAmmoCheck) && game.actualPlayer.tank.maxFirePower < 100) {
 		if (!infinityGadgetsAndAmmoCheck) game.actualPlayer.gadget[4]--;
-		game.actualPlayer.tank.maxFirePower = Math.min(game.actualPlayer.tank.maxFirePower + 20, 100);
+		game.actualPlayer.tank.maxFirePower = game.actualPlayer.tank.maxFirePower + 20;
 		game.actualPlayer.updateCSS();
 	}
 }

@@ -9,7 +9,7 @@ Tank = class Tank {
 		this._aim = 20 / 180 * PI;
 		this.rotate = 0;
 		this.firePower = 100;
-		this.maxFirePower = 100;
+		this._maxFirePower = 100;
 		this.fuel = 200;
 		this.x = random()*2000+200;
 		this.y = 800;
@@ -23,6 +23,15 @@ Tank = class Tank {
 		this._aim = value;
 		document.querySelector("#aimControll").value = value;
 		this.player.updateCSS();
+	}
+	get maxFirePower() {
+		return this._maxFirePower;
+	}
+	set maxFirePower(value) {
+		this._maxFirePower = value;
+		this._maxfirePower = min(this._maxfirePower, 100);
+		this._maxfirePower = max(this._maxfirePower, 0);
+		this.firePower = min(this._firePower, value);
 	}
 	spawn() {
 		const html = `

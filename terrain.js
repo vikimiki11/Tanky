@@ -156,6 +156,10 @@ class TerrainBlock {
 	clean(){
 		this.air = true;
 	}
+	destroy() {
+		this.destroyed = true;
+		this.canvasData.setPixel(this.x, this.y, [this.color[0]*0.5, this.color[1]*0.5, this.color[2]*0.5, this.color[3]]);
+	}
 	static desertGradient(pressure) {
 		let shade = Math.cos(pressure)/13 + 12/13;
 		return [230 * shade, 180 * shade, 70 * shade, 255];
