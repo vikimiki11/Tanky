@@ -1,5 +1,5 @@
 class Terrain extends Array {
-	constructor(width, height, terrain, seed = Math.random()) {
+	constructor(width, height, terrain, seed = random()) {
 		super();
 		console.time("new terrain");
 		this.width = width;
@@ -18,7 +18,7 @@ class Terrain extends Array {
 		console.timeEnd("new terrain");
 	}
 	get terrain() {
-		if (!this._terrain) return Math.ceil(Math.random() * 3);
+		if (!this._terrain) return ceil(random() * 3);
 		return this._terrain;
 	}
 	set terrain(terrain) {
@@ -30,7 +30,7 @@ class Terrain extends Array {
 	clear() {
 		this.canvasData.clear();
 	}
-	generate(seed = Math.random()) {
+	generate(seed = random()) {
 		console.time("generate TerrainBlock");
 		this.currentTerrain = this.terrain;
 		this.clear();
@@ -38,13 +38,13 @@ class Terrain extends Array {
 		noise.seed(seed);
 		for (let x = 0; x < this.width; x++) {
 			if (this.currentTerrain == 1) {//Mountain
-				this[x].terrainHeight = Math.round(((noise.simplex2(x / 800, 100000) + 1) / 4 + 0.2) * this.height);
-				this[x].topLevelThickness = Math.round((noise.simplex2(100000, x / 30) + 2.5) * 5) + (this[x].terrainHeight - 350) / 15;
+				this[x].terrainHeight = round(((noise.simplex2(x / 800, 100000) + 1) / 4 + 0.2) * this.height);
+				this[x].topLevelThickness = round((noise.simplex2(100000, x / 30) + 2.5) * 5) + (this[x].terrainHeight - 350) / 15;
 			} else if (this.currentTerrain == 2) {//Forrest
-				this[x].terrainHeight = Math.round(((noise.simplex2(x / 500, 100000) + 1) / 10 + 0.2) * this.height);
-				this[x].topLevelThickness = Math.round((noise.simplex2(100000, x / 30) + 1.5) * 5);
+				this[x].terrainHeight = round(((noise.simplex2(x / 500, 100000) + 1) / 10 + 0.2) * this.height);
+				this[x].topLevelThickness = round((noise.simplex2(100000, x / 30) + 1.5) * 5);
 			} else if (this.currentTerrain == 3) {//Desert
-				this[x].terrainHeight = Math.round(((noise.simplex2(x / 1000, 100000) + 1) / 20 + 0.2) * this.height);
+				this[x].terrainHeight = round(((noise.simplex2(x / 1000, 100000) + 1) / 20 + 0.2) * this.height);
 				this[x].topLevelThickness = 0;
 			}
 			this[x].generate();
@@ -66,10 +66,10 @@ class Terrain extends Array {
 	}
 	controlColision(x, y) {
 		//ToDo: colision out of game area owo????uwu
-		if (this[Math.floor(x)] && this[Math.floor(x)][Math.floor(y)])
+		if (this[floor(x)] && this[floor(x)][floor(y)])
 			return [
-				this[Math.floor(x)][Math.floor(y)].isSolid,
-				(this[Math.floor(x)][Math.floor(y) + 1] ? this[Math.floor(x)][Math.floor(y) + 1].isSolid : false)
+				this[floor(x)][floor(y)].isSolid,
+				(this[floor(x)][floor(y) + 1] ? this[floor(x)][floor(y) + 1].isSolid : false)
 			];
 		return [false, false];
 	}
@@ -161,7 +161,7 @@ class TerrainBlock {
 		this.canvasData.setPixel(this.x, this.y, [this.color[0]*0.5, this.color[1]*0.5, this.color[2]*0.5, this.color[3]]);
 	}
 	static desertGradient(pressure) {
-		let shade = Math.cos(pressure)/13 + 12/13;
+		let shade = cos(pressure)/13 + 12/13;
 		return [230 * shade, 180 * shade, 70 * shade, 255];
 	}
 	get isSolid() {
@@ -210,7 +210,7 @@ class CanvasData {
 		const decrease = decreaseI || 10;
 		console.time("grainification1x1");
 		for (let i = 0; i < this.data.length; i++) {
-			if (this.data[i] && i % 4 != 3) this.data[i] = this.data[i] * ((Math.random() + decrease - 1) / decrease );
+			if (this.data[i] && i % 4 != 3) this.data[i] = this.data[i] * ((random() + decrease - 1) / decrease );
 		}
 		console.timeEnd("grainification1x1");
 	}
@@ -219,7 +219,7 @@ class CanvasData {
 		let actualDecrease = 0;
 		console.time("grainification2x2");
 		for (let i = 0; i < this.data.length; i = (i / 4 + 2) % this.width < 2 ? i + (2 + this.width - (i / 4 + 2) % this.width) * 4 : i + 8) {
-			actualDecrease = [((Math.random() + decrease - 1) / decrease), ((Math.random() + decrease - 1) / decrease), ((Math.random() + decrease - 1) / decrease)];
+			actualDecrease = [((random() + decrease - 1) / decrease), ((random() + decrease - 1) / decrease), ((random() + decrease - 1) / decrease)];
 			for (let j = 0; j <= 6; j = ++j + Number(j == 3)) {
 				this.data[i + j] = this.data[i + j] * actualDecrease[j % 4];
 				this.data[i + this.width * 4 + j] = this.data[i + this.width * 4 + j] * actualDecrease[j % 4];
@@ -235,7 +235,7 @@ class CanvasData {
 		let actualDecrease = 0;
 		console.time("grainificationNxN(" + n + ")");
 		for (let i = 0; i < this.data.length; i = (i / 4 + 3) % this.width < n ? i + (n + this.width * (n - 1) - (i / 4 + 3) % this.width) * 4 : i + n * 4) {
-			actualDecrease = [((Math.random() + decrease - 1) / decrease), ((Math.random() + decrease - 1) / decrease), ((Math.random() + decrease - 1) / decrease)];
+			actualDecrease = [((random() + decrease - 1) / decrease), ((random() + decrease - 1) / decrease), ((random() + decrease - 1) / decrease)];
 			for (let j = 0; j < n * 4; j = ++j + Number(j % 4 == 3)) {
 				for (let x = 0; x < n; x++) {
 					this.data[i + j + this.width * 4 * x] = this.data[i + j + this.width * 4 * x] * actualDecrease[j % 4];

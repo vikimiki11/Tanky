@@ -23,7 +23,7 @@ function selectTerrain(terrainType/* undefined: try to fatch it, 0:random, 1:mou
 
 
 	let multiplayer = 160;
-	terrain = new Terrain(16 * multiplayer, Math.round(9 / 25 * 21 * multiplayer), selectedTerrain);
+	terrain = new Terrain(16 * multiplayer, round(9 / 25 * 21 * multiplayer), selectedTerrain);
 	terrain.generate();
 }
 
@@ -41,7 +41,7 @@ class Game {
 		this.cavesSettings = caves;
 		this._actualPlayerID = -1;
 		this.blockControls = true;
-		this.windSeed = Math.random();
+		this.windSeed = random();
 		this._windStep = 0;
 		this.windCurrent = 0;
 		setTimeout(() => { setInterval(() => { game.tick() }, 1000 / 60) },100);
@@ -66,7 +66,7 @@ class Game {
 
 		noise.seed(this.windSeed);
 		this.windCurrent = noise.simplex2(this.windStep * windJump, 1000) * windMax;
-		document.querySelector("#windCurrent").innerHTML = Math.abs(Math.round(this.windCurrent));
+		document.querySelector("#windCurrent").innerHTML = abs(round(this.windCurrent));
 		document.querySelector("#windDirection").innerHTML = this.windCurrent > 0 ? "↪" : "↩";
 	}
 	get windStep() {
@@ -74,12 +74,12 @@ class Game {
 	}
 
 	start() {
-		this.windSeed = Math.random();
+		this.windSeed = random();
 		this.spawnTanks();
 		this.nextPlayer();
 		switchScreen("gameScreen");
 		for (let i = 0; i < 6; i++){
-			generateCloud(Math.floor(Math.random() * terrain.width));
+			generateCloud(floor(random() * terrain.width));
 		}
 	}
 
@@ -107,11 +107,12 @@ class Game {
 		let player = game.actualPlayer;
 		game.setAim(player.tank.aim);
 		game.setFirePower(player.tank.firePower);
+		document.querySelector("#gameTopBar .tank").id = "tank" + player.id;
 	}
 
 	setFirePower(power) {
-		power = Math.min(parseFloat(power), this.actualPlayer.tank.maxFirePower);
-		power = Math.max(power, 0);
+		power = min(parseFloat(power), this.actualPlayer.tank.maxFirePower);
+		power = max(power, 0);
 		this.actualPlayer.tank.firePower = power;
 		document.querySelector("#firePowerControll input").value = power;
 		this.actualPlayer.updateCSS();
@@ -119,8 +120,8 @@ class Game {
 	}
 
 	setAim(angle) {
-		angle = Math.min(parseFloat(angle), Math.PI);
-		angle = Math.max(angle, 0);
+		angle = min(parseFloat(angle), PI);
+		angle = max(angle, 0);
 		this.actualPlayer.tank.aim = angle;
 		document.querySelector("#aimControll").value = angle;
 		this.actualPlayer.updateCSS();

@@ -17,8 +17,8 @@ function debugCannonDraw() {
 		debugCannonDrawInterval = setInterval(() => {
 			cannonTip = game.actualPlayer.tank.cannonTip;
 			cannonBase = game.actualPlayer.tank.cannonBase;
-			terrain.canvasData.setPixel(Math.round(cannonTip[0]), Math.round(cannonTip[1]), [255, 0, 0, 255]);
-			terrain.canvasData.setPixel(Math.round(cannonBase[0]), Math.round(cannonBase[1]), [0, 255, 0, 255]);
+			terrain.canvasData.setPixel(round(cannonTip[0]), round(cannonTip[1]), [255, 0, 0, 255]);
+			terrain.canvasData.setPixel(round(cannonBase[0]), round(cannonBase[1]), [0, 255, 0, 255]);
 			terrain.canvasData.update();
 		}, 100)
 	};

@@ -1,6 +1,4 @@
-var Tank; 
-with (Math) {
-Tank = class Tank {
+class Tank {
 	static DriveBaseWidth = 60;
 
 
@@ -164,24 +162,3 @@ Tank = class Tank {
 		];
 	}
 }
-
-
-
-
-
-
-
-
-
-
-function calculateAngle(x1, y1, x2, y2) {
-	return atan2(y2 - y1, x2 - x1);
-}
-function rotateAroundPoint(x, y, angle, centerx, centery) {
-	let x1 = x - point[0];
-	let y1 = y - point[1];
-	let x2 = x1 * cos(angle) - y1 * sin(angle);
-	let y2 = x1 * sin(angle) + y1 * cos(angle);
-	return [x2 + point[0], y2 + point[1]];
-}
-}//end of with (Math) { line 1

@@ -112,7 +112,7 @@ setInterval(() => {
 		}
 	}
 	//Generace Mraků
-	if (game && Math.random() < Math.abs(game.windCurrent) / 8000) generateCloud();
+	if (game && random() < abs(game.windCurrent) / 8000) generateCloud();
 }, 1000 / 60);
 
 const minx = 50;
@@ -122,23 +122,23 @@ const maxy = 200;
 function generateCloud(left) {
 	let cloud = document.createElement("canvas");
 	cloud.classList.add("cloud");
-	let speedModifier = Math.random() * 0.5 + 0.5;
-	let width = 250 * Math.random() + 50;
+	let speedModifier = random() * 0.5 + 0.5;
+	let width = 250 * random() + 50;
 	let height = width / 4 * 3;
 	left = left ? left : game.windCurrent > 0 ? (-width) : terrain.width;
 	cloud.style.left = left + "em";
 	cloud.style.height = height + "em";
-	cloud.style.top = (20 + Math.random() * 230) + "em";
+	cloud.style.top = (20 + random() * 230) + "em";
 	cloud.setAttribute("height", "300");
 	cloud.setAttribute("width", "400");
 	var ctx = cloud.getContext("2d");
 	ctx.fillStyle = "rgba(255, 255, 255, 0.05)";
 	for (let i = 0; i < 500; i++) {
-		let x = (noise.simplex2(Math.random() * 999, Math.random() * 999) + 1) * (maxx - minx) / 2 + minx;
-		let y = Math.abs(noise.simplex2(Math.random() * 999, Math.random() * 999)) * -1 * (maxy - miny) + maxy + 40;
-		let r = Math.random() * 20 + 5;
+		let x = (noise.simplex2(random() * 999, random() * 999) + 1) * (maxx - minx) / 2 + minx;
+		let y = abs(noise.simplex2(random() * 999, random() * 999)) * -1 * (maxy - miny) + maxy + 40;
+		let r = random() * 20 + 5;
 		ctx.beginPath();
-		ctx.arc(x, y, r, 0, 2 * Math.PI);
+		ctx.arc(x, y, r, 0, 2 * PI);
 		ctx.fill();
 	}
 	clouds.push([cloud, speedModifier]);
