@@ -3,6 +3,7 @@ class Ammo{
 	constructor(name, shortName, img, defaultAmount, cost, buyAmount, fire) {
 		this.id = ammoIDCounter++;
 		this.name = name;
+		this.shortName = shortName;
 		this.img = "img/ammo/" + img;
 		this.defaultAmount = defaultAmount;
 		this.cost = cost;
@@ -33,7 +34,7 @@ ammoList.push(new Ammo("Small missile", "smallMissile", "smallMissile.png", Infi
 	() => { return simpleAmmo(undefined, new Vector(), 30, 50) }
 ));
 
-ammoList.push(new Ammo("Missile", "missile", "missile.png", 0, 1000, 10,
+ammoList.push(new Ammo("Missile", "missile", "missile.png", 10, 1000, 10,
 	() => { return simpleAmmo(undefined, new Vector(), 30, 100) }
 ));
 
@@ -78,15 +79,33 @@ ammoList.push(new Ammo("Hot Shower", "hotShower", "hotShower.png", 10, 1000, 10,
 		return Promise.allSettled(promises);
 	}
 ));
-ammoList.push(new Ammo("004", "xd", "smallMissile.png", 10, 1000, 10, console.log));
-ammoList.push(new Ammo("005", "xd", "smallMissile.png", 10, 1000, 10, console.log));
-ammoList.push(new Ammo("006", "xd", "smallMissile.png", 10, 1000, 10, console.log));
-ammoList.push(new Ammo("007", "xd", "smallMissile.png", 0, 1000, 10, console.log));
-ammoList.push(new Ammo("008", "xd", "smallMissile.png", 0, 1000, 10, console.log));
-ammoList.push(new Ammo("009", "xd", "smallMissile.png", 0, 1000, 10, console.log));
-ammoList.push(new Ammo("010", "xd", "smallMissile.png", 0, 1000, 10, console.log));
-ammoList.push(new Ammo("011", "xd", "smallMissile.png", 10, 1000, 10, console.log));
-ammoList.push(new Ammo("012", "xd", "smallMissile.png", 0, 1000, 10, console.log));
+ammoList.push(new Ammo("004", "xd", "smallMissile.png", 10, 1000, 10,
+	() => { return simpleAmmo(undefined, new Vector(), 30, 50) }
+));
+ammoList.push(new Ammo("005", "xd", "smallMissile.png", 10, 1000, 10,
+	() => { return simpleAmmo(undefined, new Vector(), 30, 50) }
+));
+ammoList.push(new Ammo("006", "xd", "smallMissile.png", 10, 1000, 10,
+	() => { return simpleAmmo(undefined, new Vector(), 30, 50) }
+));
+ammoList.push(new Ammo("007", "xd", "smallMissile.png", 10, 1000, 10,
+	() => { return simpleAmmo(undefined, new Vector(), 30, 50) }
+));
+ammoList.push(new Ammo("008", "xd", "smallMissile.png", 10, 1000, 10,
+	() => { return simpleAmmo(undefined, new Vector(), 30, 50) }
+));
+ammoList.push(new Ammo("009", "xd", "smallMissile.png", 10, 1000, 10,
+	() => { return simpleAmmo(undefined, new Vector(), 30, 50) }
+));
+ammoList.push(new Ammo("010", "xd", "smallMissile.png", 10, 1000, 10,
+	() => { return simpleAmmo(undefined, new Vector(), 30, 50) }
+));
+ammoList.push(new Ammo("011", "xd", "smallMissile.png", 10, 1000, 10,
+	() => { return simpleAmmo(undefined, new Vector(), 30, 50) }
+));
+ammoList.push(new Ammo("012", "xd", "smallMissile.png", 10, 1000, 10,
+	() => { return simpleAmmo(undefined, new Vector(), 30, 50) }
+));
 
 const DefaultAmmoSpeed = 10;
 function fireProjectile(xy, vector) {
@@ -101,6 +120,7 @@ function explosion(xy, radius, damage) {
 	xy = [round(xy[0]), round(xy[1])];
 	return new Promise((resolve) => {
 		setTimeout(resolve, 2000);
+		//ToDo: add explosion animation
 		setTimeout(() => {
 
 			console.time("explosion");
@@ -123,7 +143,7 @@ function explosion(xy, radius, damage) {
 					if (distance <= radius) {
 						tank.maxFirePower = tank.maxFirePower - damage * (1 - distance / radius);
 						if (tank.maxFirePower <= 0) {
-							/* tank.destroy(); */
+							//ToDo: tank.destroy();
 						}
 					}
 				}

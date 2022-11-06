@@ -11,17 +11,17 @@ class Vector {
 		this.y = y;
 	}
 	set angle(angle) {
-		let oldVector = XYToVector([this.x, this.y]);
-		this.x = Math.cos(angle) * oldVector[1];
-		this.y = -Math.sin(angle) * oldVector[1];
+		let length = this.length;
+		this.x = Math.cos(angle) * length;
+		this.y = -Math.sin(angle) * length;
 	}
 	get angle() {
 		return Math.atan2(-this.y, this.x);
 	}
 	set length(length) {
-		let oldVector = XYToVector([this.x, this.y]);
-		this.x = Math.cos(oldVector[0]) * length;
-		this.y = -Math.sin(oldVector[0]) * length;
+		let angle = this.angle;
+		this.x = Math.cos(angle) * length;
+		this.y = -Math.sin(angle) * length;
 	}
 	get length() {
 		return pythagoras([0, 0], [this.x, this.y]);
