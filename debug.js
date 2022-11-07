@@ -28,6 +28,7 @@ let infinityGadgetsAndAmmoCheck = true;
 function infinityGadgetsAndAmmo() {
 	infinityGadgetsAndAmmoCheck = !infinityGadgetsAndAmmoCheck;
 }
+
 gamePlane.addEventListener("mousemove", showPoinerPosition);
 debugX = 0;
 debugY = 0;
@@ -37,3 +38,8 @@ function showPoinerPosition(e) {
 	document.querySelector("#pointerPosition").innerHTML = `X: ${debugX.toFixed(4)} Y: ${debugY.toFixed(4)}`;
 }
 
+
+let ignoreBlockControl = false;
+function ignoreBlockControlToggle() {
+	ignoreBlockControl = !ignoreBlockControl;
+}

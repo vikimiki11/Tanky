@@ -113,7 +113,7 @@ class Game {
 	}
 
 	setFirePower(power) {
-		if (this.blockControls) return;
+		if (game.blockControls && !ignoreBlockControl) return;
 		power = min(parseFloat(power), this.actualPlayer.tank.maxFirePower);
 		power = max(power, 0);
 		this.actualPlayer.tank.firePower = power;
@@ -123,7 +123,7 @@ class Game {
 	}
 
 	setAim(angle) {
-		if (this.blockControls) return;
+		if (game.blockControls && !ignoreBlockControl) return;
 		angle = min(parseFloat(angle), PI);
 		angle = max(angle, 0);
 		this.actualPlayer.tank.aim = angle;
@@ -133,7 +133,7 @@ class Game {
 	}
 
 	tankDrive(x) {
-		if (this.blockControls) return;
+		if (this.blockControls && !ignoreBlockControl) return;
 		this.actualPlayer.tank.drive(x);
 		this.tankCSS();
 	}
@@ -153,7 +153,7 @@ class Game {
 	}
 
 	fire() {
-		if (this.blockControls) return;
+		if (game.blockControls && !ignoreBlockControl) return;
 		this.blockControls = true;
 		if (this.actualPlayer.ammo[this.actualPlayer.selectedAmmo] <= 0 && !infinityGadgetsAndAmmoCheck) return;
 		if (!infinityGadgetsAndAmmoCheck)this.actualPlayer.ammo[this.actualPlayer.selectedAmmo]--;
