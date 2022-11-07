@@ -103,8 +103,8 @@ ammoList.push(new Ammo("010", "xd", "smallMissile.png", 10, 1000, 10,
 ammoList.push(new Ammo("011", "xd", "smallMissile.png", 10, 1000, 10,
 	() => { return simpleAmmo(undefined, new Vector(), 30, 50) }
 ));
-ammoList.push(new Ammo("012", "xd", "smallMissile.png", 10, 1000, 10,
-	() => { return simpleAmmo(undefined, new Vector(), 30, 50) }
+ammoList.push(new Ammo("069", "xd", "mashroom.png", 10, 1000, 10,
+	() => { return simpleAmmo(undefined, new Vector(), 1000, 1000) }
 ));
 
 const DefaultAmmoSpeed = 10;
@@ -119,8 +119,8 @@ function fireProjectile(xy, vector) {
 function explosion(xy, radius, damage) {
 	xy = [round(xy[0]), round(xy[1])];
 	return new Promise((resolve) => {
-		setTimeout(resolve, 2000);
-		//ToDo: add explosion animation
+		setTimeout(resolve, 1000);
+		explosionAnimation(xy, radius)
 		setTimeout(() => {
 
 			console.time("explosion");
@@ -150,10 +150,35 @@ function explosion(xy, radius, damage) {
 			}
 
 			console.timeEnd("explosion");
-		}, 1000);
+		}, 500);
 	});
 }
 
+explosionID = 0;
+function explosionAnimation(xy, radius) {
+	let explosion = document.createElementNS('http://www.w3.org/2000/svg', 'svg');;
+	explosion.setAttribute("viewBox", "0 0 100 100");
+	explosion.setAttribute("class", "explosion");
+	explosion.style.left = xy[0] + "em";
+	explosion.style.bottom = xy[1] + "em";
+	explosion.style.width = radius * 2 + "em";
+	explosion.style.height = radius * 2 + "em";
+	explosion.innerHTML = `<defs>
+			<radialGradient id="explosion${explosionID}" fr="50%">
+				<stop offset="0%" stop-color="#FFFFFF"></stop>
+				<stop offset="20%" stop-color="#FFFF00"></stop>
+				<stop offset="100%" stop-color="#FF0000"></stop>
+				<animate attributeName="fr" dur="1500ms" from="1%" to="50%"/>
+			</radialGradient>
+		</defs>
+		<circle cx="50" cy="50" r="50" fill="url(#explosion${explosionID})">
+			<animate attributeType="XML" attributeName="r" from="0" to="50" dur="500ms"/>
+		</circle>
+		Sorry, your browser does not support inline SVG.`;
+	gamePlane.appendChild(explosion);
+	setTimeout((DOM) => { DOM.remove() }, 1000, explosion);
+	explosionID++;
+}
 
 function simpleAmmo(xy, vector, radius, damage) {
 	return new Promise((resolve) => {

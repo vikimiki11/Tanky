@@ -503,6 +503,7 @@ input[type="color"]{
 	border: 0.1em solid black;
 	padding: 0.2em 0.1em 0.2em 0.1em;
 	font-size: 0.8em;
+	image-rendering: pixelated;
 }
 
 #gameScreen .ammoCost, #gameScreen .ammoBuyAmount{
@@ -706,7 +707,31 @@ canvas{
 
 .cloud{
 	position: absolute;
-	/* opacity: 0.5; */
+}
+
+
+.explosion {
+	position: absolute;
+	transform: translate(-50%, 50%);
+	animation: explosion 2s normal;
+}
+
+@keyframes explosion {
+	0% {
+		opacity: 1;
+	}
+
+	25% {
+		opacity: 1;
+	}
+
+	50% {
+		opacity: 0;
+	}
+
+	100% {
+		opacity: 0;
+	}
 }
 
 
