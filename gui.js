@@ -82,7 +82,6 @@ for (let el of document.querySelectorAll("#allAmmo .ammoRow")) {
 
 for (let el of document.querySelectorAll("#shopScreen :is(.ammoRow, .gadgetRow)")) {
 	el.addEventListener("click", function () {
-		//ToDo: Buy Ammo function
 		type = el.getAttribute("ammo") ? "ammo" : "gadget";
 		products = type == "ammo" ? ammoList : gadgetList;
 		inventory = type == "ammo" ? game.actualPlayer.ammo : game.actualPlayer.gadget;

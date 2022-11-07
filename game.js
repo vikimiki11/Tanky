@@ -78,6 +78,7 @@ class Game {
 		this.spawnTanks();
 		this.nextPlayer();
 		switchScreen("gameScreen");
+		setTimeout(() => { game.blockControls = false }, switchScreen());
 		for (let i = 0; i < 6; i++){
 			generateCloud(floor(random() * terrain.width));
 		}
@@ -102,6 +103,7 @@ class Game {
 	}
 
 	nextPlayer() {
+		game.blockControls = false
 		game.windStep = game.windStep + 1;
 		game.actualPlayerID++;
 		let player = game.actualPlayer;
@@ -111,6 +113,7 @@ class Game {
 	}
 
 	setFirePower(power) {
+		if (this.blockControls) return;
 		power = min(parseFloat(power), this.actualPlayer.tank.maxFirePower);
 		power = max(power, 0);
 		this.actualPlayer.tank.firePower = power;
@@ -120,6 +123,7 @@ class Game {
 	}
 
 	setAim(angle) {
+		if (this.blockControls) return;
 		angle = min(parseFloat(angle), PI);
 		angle = max(angle, 0);
 		this.actualPlayer.tank.aim = angle;
@@ -129,7 +133,7 @@ class Game {
 	}
 
 	tankDrive(x) {
-		/* if (this.blockControls) return; */
+		if (this.blockControls) return;
 		this.actualPlayer.tank.drive(x);
 		this.tankCSS();
 	}
@@ -149,7 +153,8 @@ class Game {
 	}
 
 	fire() {
-		//ToDo:FIRE
+		if (this.blockControls) return;
+		this.blockControls = true;
 		if (this.actualPlayer.ammo[this.actualPlayer.selectedAmmo] <= 0 && !infinityGadgetsAndAmmoCheck) return;
 		if (!infinityGadgetsAndAmmoCheck)this.actualPlayer.ammo[this.actualPlayer.selectedAmmo]--;
 		ammoList[this.actualPlayer.selectedAmmo].fire()

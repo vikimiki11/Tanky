@@ -39,6 +39,7 @@ gadgetList.push(new Gadget("Parachute", "parachute", 8, 20000, 1))
 gadgetList.push(new Gadget("Teleport", "teleport", 8, 20000, 1))
 
 function repairKit() {
+	if (game.blockControls) return;
 	if ((game.actualPlayer.gadget[4] > 0 || infinityGadgetsAndAmmoCheck) && game.actualPlayer.tank.maxFirePower < 100) {
 		if (!infinityGadgetsAndAmmoCheck) game.actualPlayer.gadget[4]--;
 		game.actualPlayer.tank.maxFirePower = game.actualPlayer.tank.maxFirePower + 20;
@@ -46,6 +47,7 @@ function repairKit() {
 	}
 }
 function fuel() {
+	if (game.blockControls) return;
 	if (game.actualPlayer.gadget[5] >= 50 || infinityGadgetsAndAmmoCheck) {
 		if (!infinityGadgetsAndAmmoCheck) game.actualPlayer.gadget[5] -= 50;
 		game.actualPlayer.tank.fuel += 50;
@@ -58,6 +60,7 @@ const gamePlane = document.querySelector("#gamePlane");
 gamePlane.addEventListener("click", teleportClick);
 function teleport() {
 	if (!teleportActive && (game.actualPlayer.gadget[7] > 0 || infinityGadgetsAndAmmoCheck)) {
+		game.blockControls = true;
 		if (!infinityGadgetsAndAmmoCheck) game.actualPlayer.gadget[7]--;
 		gamePlane.style.cursor = "crosshair";
 		teleportActive = true;
@@ -66,6 +69,7 @@ function teleport() {
 }
 function teleportClick(e) {
 	if (teleportActive) {
+		game.blockControls = false;
 		game.actualPlayer.tank.x = e.layerX / gamePlane.clientWidth * terrain.width;
 		game.actualPlayer.tank.y = min((1 - (e.layerY / gamePlane.clientHeight)) * terrain.height, terrain.height - Tank.DriveBaseWidth);
 		teleportActive = false;
