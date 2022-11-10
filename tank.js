@@ -27,9 +27,7 @@ class Tank {
 	}
 	set maxFirePower(value) {
 		this._maxFirePower = value;
-		this._maxfirePower = min(this._maxfirePower, 100);
-		this._maxfirePower = max(this._maxfirePower, 0);
-		this.firePower = min(this._firePower, value);
+		this.firePower = min(this.firePower, value);
 	}
 	spawn() {
 		const html = `

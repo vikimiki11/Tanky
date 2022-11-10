@@ -44,6 +44,7 @@ class Game {
 		this.windSeed = random();
 		this._windStep = 0;
 		this.windCurrent = 0;
+		this.lastPlayerID = 0;
 		setTimeout(() => { setInterval(() => { game.tick() }, 1000 / 60) },100);
 	}
 	set actualPlayerID(id) {
@@ -74,9 +75,9 @@ class Game {
 	}
 
 	start() {
-		this.windSeed = random();
-		this.spawnTanks();
-		this.nextPlayer();
+		game.windSeed = random();
+		game.spawnTanks();
+		game.nextPlayer();
 		switchScreen("gameScreen");
 		setTimeout(() => { game.blockControls = false }, switchScreen());
 		for (let i = 0; i < 6; i++){
@@ -86,11 +87,12 @@ class Game {
 
 	end() {
 		switchScreen("shopScreen");
-		this.blockControls = true;
+		game.blockControls = true;
 	}
 
 	shopNextPlayer() {
-		this.actualPlayerID++;
+		if (game.lastPlayerID == (++game.actualPlayerID))
+			game.start();
 	}
 
 	spawnTanks() {
@@ -103,10 +105,18 @@ class Game {
 	}
 
 	nextPlayer() {
+		let player;
+		game.lastPlayerID = game.actualPlayerID;
+		do {
+			game.actualPlayerID++;
+			player = game.actualPlayer;
+			if (game.actualPlayerID == game.lastPlayerID) {
+				game.end();
+				break;
+			}
+		}while(player.tank.maxFirePower <= 0);
 		game.blockControls = false
 		game.windStep = game.windStep + 1;
-		game.actualPlayerID++;
-		let player = game.actualPlayer;
 		game.setAim(player.tank.aim);
 		game.setFirePower(player.tank.firePower);
 		document.querySelector("#gameTopBar .tank").id = "tank" + player.id;
