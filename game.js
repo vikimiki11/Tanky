@@ -75,9 +75,9 @@ class Game {
 	}
 
 	start() {
-		game.windSeed = random();
-		game.spawnTanks();
-		game.nextPlayer();
+		this.windSeed = random();
+		this.spawnTanks();
+		this.nextPlayer();
 		switchScreen("gameScreen");
 		setTimeout(() => { game.blockControls = false }, switchScreen());
 		for (let i = 0; i < 6; i++){
@@ -87,12 +87,14 @@ class Game {
 
 	end() {
 		switchScreen("shopScreen");
-		game.blockControls = true;
+		this.blockControls = true;
+		setTimeout(() => { terrain.generate() }, 2000)
 	}
 
 	shopNextPlayer() {
-		if (game.lastPlayerID == (++game.actualPlayerID))
-			game.start();
+		this.actualPlayerID++;
+		if (this.lastPlayerID == this.actualPlayerID)
+			this.start();
 	}
 
 	spawnTanks() {
@@ -105,25 +107,26 @@ class Game {
 	}
 
 	nextPlayer() {
-		let player;
-		game.lastPlayerID = game.actualPlayerID;
-		do {
-			game.actualPlayerID++;
-			player = game.actualPlayer;
-			if (game.actualPlayerID == game.lastPlayerID) {
-				game.end();
-				break;
-			}
-		}while(player.tank.maxFirePower <= 0);
-		game.blockControls = false
-		game.windStep = game.windStep + 1;
-		game.setAim(player.tank.aim);
-		game.setFirePower(player.tank.firePower);
+		this.lastPlayerID = this.actualPlayerID;
+		let alivePlayersCount = 0;
+		for (let p in this.players) {
+			if (this.players[p].tank.maxFirePower > 0) alivePlayersCount++; 
+		}
+		if (alivePlayersCount <= 1) {
+			this.end();
+		} else {
+			this.actualPlayerID++;
+		}
+		let player = this.actualPlayer;
+		this.blockControls = false
+		this.windStep = this.windStep + 1;
+		this.setAim(player.tank.aim);
+		this.setFirePower(player.tank.firePower);
 		document.querySelector("#gameTopBar .tank").id = "tank" + player.id;
 	}
 
 	setFirePower(power) {
-		if (game.blockControls && !ignoreBlockControl) return;
+		if (this.blockControls && !ignoreBlockControl) return;
 		power = min(parseFloat(power), this.actualPlayer.tank.maxFirePower);
 		power = max(power, 0);
 		this.actualPlayer.tank.firePower = power;
@@ -133,7 +136,7 @@ class Game {
 	}
 
 	setAim(angle) {
-		if (game.blockControls && !ignoreBlockControl) return;
+		if (this.blockControls && !ignoreBlockControl) return;
 		angle = min(parseFloat(angle), PI);
 		angle = max(angle, 0);
 		this.actualPlayer.tank.aim = angle;
@@ -163,12 +166,12 @@ class Game {
 	}
 
 	fire() {
-		if (game.blockControls && !ignoreBlockControl) return;
+		if (this.blockControls && !ignoreBlockControl) return;
 		this.blockControls = true;
 		if (this.actualPlayer.ammo[this.actualPlayer.selectedAmmo] <= 0 && !infinityGadgetsAndAmmoCheck) return;
 		if (!infinityGadgetsAndAmmoCheck)this.actualPlayer.ammo[this.actualPlayer.selectedAmmo]--;
 		ammoList[this.actualPlayer.selectedAmmo].fire()
-			.then(this.nextPlayer);
+			.then(() => { this.nextPlayer() });
 	}
 
 	tankCSS() {
