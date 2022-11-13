@@ -166,8 +166,8 @@ document.body.addEventListener("keyup", function (e) {
 	keys[e.keyCode] = false;
 });
 setInterval(() => {
-	if (!keys[83] && !keys[87] && game && (QS = document.querySelector("#firePowerControll input")) && parseInt(game.actualPlayer.tank.firePower) != parseInt(QS.value))game.setFirePower(QS.value);
-	if (!keys[69] && !keys[81] && game && (QS = document.querySelector("#aimControll")) && parseFloat(game.actualPlayer.tank.aim) != parseFloat(QS.value))game.setAim(QS.value);
+	if (!keys[83] && !keys[87] && game && (QS = document.querySelector("#firePowerControl input")) && parseInt(game.actualPlayer.tank.firePower) != parseInt(QS.value))game.setFirePower(QS.value);
+	if (!keys[69] && !keys[81] && game && (QS = document.querySelector("#aimControl")) && parseFloat(game.actualPlayer.tank.aim) != parseFloat(QS.value))game.setAim(QS.value);
 	if (keys[87]) game?.setFirePower(game.actualPlayer.tank.firePower + 0.5);
 	if (keys[83]) game?.setFirePower(game.actualPlayer.tank.firePower - 0.5);
 	if (keys[69]) game?.setAim(game.actualPlayer.tank.aim + 0.01);

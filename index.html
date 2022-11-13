@@ -85,7 +85,7 @@
 			<div class="normalizeFont">
 				<div id="gameTopBar">
 					<div class="playerName"><!-- filled by script --></div>
-					<div id="engineControll">
+					<div id="engineControl">
 						<div id="driveLeft" class="clickable">🢠</div>
 						<span id="fuelAmount"><!-- filled by script --></span>
 						<div id="driveRight" class="clickable">🢡</div></div>
@@ -141,8 +141,8 @@
 
 					</div>
 
-					<div id="shootControll">
-						<div id="firePowerControll" class="rangeVertical">
+					<div id="shootControl">
+						<div id="firePowerControl" class="rangeVertical">
 							<input type="range" orient="vertical" value="0">
 							<svg viewBox="0 0 200 400" preserveAspectRatio="none">
 								<polygon points="0,0 100,400 200,0" style="fill:#600" />
@@ -163,7 +163,7 @@
 						</div>
 						<div id="firePowerDisplay"><!-- filled by script --></div>
 						<div class="rangeHorizontal" style="width: 4em;height: 0.5em;">
-							<input type="range" id="aimControll" min="0" max="3.14" step="0.001" value="0">
+							<input type="range" id="aimControl" min="0" max="3.14" step="0.001" value="0">
 							<svg viewBox="0 0 400 50" preserveAspectRatio="none">
 								<defs>
 									<linearGradient id="grad1" x1="0%" y1="50%" x2="100%" y2="50%">
@@ -285,7 +285,7 @@
 	<div id="pointerPosition"></div>
 	<button onclick="if(game) game.actualPlayer.money += 1000000; game.actualPlayer.updateCSS()">Přidat 1 000 000€</button>
 	<div>Malováníčko <input type="checkbox" onchange="enablePaint(this)"><input id="brushSize" type="range" min="3" max="100"></div>
-	<div><button onclick="setAirSpeed()">Nastavit Rychlost Vzduchu</button> <input id="airSpeed" type="number" min="-50" max="50"></div>
+	<div><button onclick="setAirSpeed()">Nastavit Rychlost Vzduchu</button> <input id="airSpeed" type="number" min="-50" max="50" placeholder="max 49"></div>
 </div>
 <script src="debug.js"></script>
 </body>

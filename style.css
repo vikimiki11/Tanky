@@ -273,7 +273,7 @@ input[type="color"]{
 	border-bottom: 0.11em rgb(160 160 160) solid;
 }
 
-#engineControll{
+#engineControl{
 	font-size: 0.8em;
 	position: absolute;
 	top: 0.5em;
@@ -294,7 +294,7 @@ input[type="color"]{
 	width: 15em;
 }
 
-#shootControll{
+#shootControl{
 	position: absolute;
 	left: 16em;
 	height: 100%;
@@ -371,7 +371,7 @@ input[type="color"]{
 	margin-top: 150% !important;
 }
 
-#firePowerControll{
+#firePowerControl{
 	font-size: 1em;
 	position: absolute;
 	left: 0.5em;
@@ -379,7 +379,7 @@ input[type="color"]{
 	width: 1.5em;
 	height: 3em;
 }
-#firePowerControll>div{
+#firePowerControl>div{
 	position: absolute;
 	left: 0;
 	bottom: 0;

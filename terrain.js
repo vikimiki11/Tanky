@@ -64,8 +64,8 @@ class Terrain extends Array {
 		terrain(imageData.data);
 		context.putImageData(imageData, 0, 0);
 	}
-	controlColision(x, y) {
-		//ToDo: colision out of game area owo????uwu
+	controlCollision(x, y) {
+		//ToDo: collision out of game area owo????uwu
 		if (this[floor(x)] && this[floor(x)][floor(y)])
 			return [
 				this[floor(x)][floor(y)].isSolid,
@@ -216,18 +216,18 @@ class CanvasData {
 		this.width = width;
 		this.height = height;
 	}
-	coordinatsToIndex(x, y) {
+	coordinatesToIndex(x, y) {
 		return (x + (this.height - 1 - y) * this.width) * 4;
 	}
 	setPixel(x, y, color) {
-		const startIndex = this.coordinatsToIndex(x, y);
+		const startIndex = this.coordinatesToIndex(x, y);
 		this.data[startIndex] = color[0];
 		this.data[startIndex + 1] = color[1];
 		this.data[startIndex + 2] = color[2];
 		this.data[startIndex + 3] = color[3];
 	}
 	getPixel(x, y) {
-		const startIndex = this.coordinatsToIndex(x, y);
+		const startIndex = this.coordinatesToIndex(x, y);
 		return [this.data[startIndex], this.data[startIndex + 1], this.data[startIndex + 2], this.data[startIndex + 3]];
 	}
 	update() {

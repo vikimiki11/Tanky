@@ -1,6 +1,8 @@
 class Tank {
-	static DriveBaseWidth = 60;
-
+	static DriveBaseWidth = 65;
+	static TankHeight = 25;
+	static TankHeadWidth = 25 / 175 * 250;
+	static TankHeadHeight = 25 / 175 * 75;
 
 	constructor(player) {
 		this.player = player;
@@ -19,7 +21,7 @@ class Tank {
 	}
 	set aim(value) {
 		this._aim = value;
-		document.querySelector("#aimControll").value = value;
+		document.querySelector("#aimControl").value = value;
 		this.player.updateCSS();
 	}
 	get maxFirePower() {
@@ -59,7 +61,7 @@ class Tank {
 		this.checkOutOfMap();
 		if (!this.onGround)this.x += this.inertia[0];
 		this.y += this.inertia[1];
-		if (!terrain.controlColision(this.x, this.y)[0]) {
+		if (!terrain.controlCollision(this.x, this.y)[0]) {
 			this.inertia[1] -= 0.1;
 			this.onGround = false;
 		} else {
@@ -67,7 +69,7 @@ class Tank {
 			this.inertia = [0,0];
 			do {
 				this.y++;
-			} while ((terrain.controlColision(this.x, this.y)[1]));
+			} while ((terrain.controlCollision(this.x, this.y)[1]));
 		}
 		let leftTouches;
 		let maxRounds = 10;
@@ -109,7 +111,7 @@ class Tank {
 		for (let i = round(DriveBaseWidth * Precision / -2); i < round(DriveBaseWidth * Precision / 2); i++) {
 			x = this.x + (i + 0.5) / Precision * distanceDifference;
 			y = this.y + i / Precision * heightDifference;
-			touch = terrain.controlColision(x, y);
+			touch = terrain.controlCollision(x, y);
 			if (touch[0]) {
 				if (i < 0) {
 					leftTouchGround = true;
@@ -158,5 +160,21 @@ class Tank {
 			base[0] + width * cos(this.cannonAngle),
 			base[1] + width * -sin(this.cannonAngle)
 		];
+	}
+	controlCollision(x, y) {
+		let dx = x - this.x;
+		let dy = y - this.y;
+		let distance = sqrt(dx * dx + dy * dy);
+		if (distance > Tank.DriveBaseWidth) return false;
+
+		//vypočítání pozice vůči tanku
+		let rotatedX = dx * cos(this.rotate) + dy * -sin(this.rotate);
+		let rotatedY = dx * sin(this.rotate) + dy * cos(this.rotate);
+		if (rotatedY > 0 && rotatedY < Tank.TankHeight) {
+			if (abs(rotatedX) < Tank.TankHeadWidth / 2) return true;
+			if (rotatedY < Tank.TankHeight - Tank.TankHeadHeight &&
+				abs(rotatedX) < Tank.DriveBaseWidth / 2) return true;
+		}
+		return false;
 	}
 }

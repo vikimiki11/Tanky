@@ -7,11 +7,13 @@ Shield
 <br />
 Vylepšení
 <br />
-hitboxy tanků
-<br />
 Dodělat pozadí do shopu
 <br />
 pozadí v setupu
+<br />
+fall damage
+<br />
+padáky
 # Upravit
 Pohyb(teď je dost šizený)
 <br />

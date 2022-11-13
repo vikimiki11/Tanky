@@ -184,8 +184,8 @@ function simpleAmmo(xy, vector, radius, damage) {
 
 let projectiles = [];
 let projectileIDCounter = 0;
-const airResistancePerSeccond = 0.85;
-const airResistancePerTick = pow(airResistancePerSeccond, 1 / 60);
+const airResistancePerSecond = 0.85;
+const airResistancePerTick = pow(airResistancePerSecond, 1 / 60);
 const Gravity = 0.05;
 class Projectile{
 	constructor(xy, vector, landed, outOfBounds) {
@@ -219,7 +219,7 @@ class Projectile{
 		this.y += this.vector.y;
 		this.DOM.style.left = this.x + "em";
 		this.DOM.style.bottom = this.y + "em";
-		if (terrain.controlColision(this.x, this.y)[0]) {
+		if (terrain.controlCollision(this.x, this.y)[0] || game.checkForTankCollision(this.x, this.y)) {
 			this.landed([this.x, this.y, this.vector]);
 			this.DOM.remove();
 			this.end = true;

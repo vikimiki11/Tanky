@@ -4,7 +4,7 @@ let game;
 const windJump = 0.125;
 const windMax = 50;
 let terrain;
-function selectTerrain(terrainType/* undefined: try to fatch it, 0:random, 1:mountains, 2: forest, 3:desert */, caves/* undefined: try to fatch it, 0:no, 1:yes */, players = parseInt(document.querySelector("#playerCount").value)) {
+function selectTerrain(terrainType/* undefined: try to fetch it, 0:random, 1:mountains, 2: forest, 3:desert */, caves/* undefined: try to fetch it, 0:no, 1:yes */, players = parseInt(document.querySelector("#playerCount").value)) {
 	if(terrainType === undefined) {
 		for(let element of document.querySelectorAll("input[name='terrain']")) {
 			if(element.checked) {
@@ -130,7 +130,7 @@ class Game {
 		power = min(parseFloat(power), this.actualPlayer.tank.maxFirePower);
 		power = max(power, 0);
 		this.actualPlayer.tank.firePower = power;
-		document.querySelector("#firePowerControll input").value = power;
+		document.querySelector("#firePowerControl input").value = power;
 		this.actualPlayer.updateCSS();
 		this.tankCSS();
 	}
@@ -140,7 +140,7 @@ class Game {
 		angle = min(parseFloat(angle), PI);
 		angle = max(angle, 0);
 		this.actualPlayer.tank.aim = angle;
-		document.querySelector("#aimControll").value = angle;
+		document.querySelector("#aimControl").value = angle;
 		this.actualPlayer.updateCSS();
 		this.tankCSS();
 	}
@@ -199,5 +199,14 @@ class Game {
 				projectile++;
 		}
 
+	}
+
+	checkForTankCollision(x, y) {
+		let tankCollision = false;
+		for (let i = 0; i < game.players.length; i++) {
+			tankCollision = game.players[i].tank.controlCollision(x, y);
+			if (tankCollision) break;
+		}
+		return tankCollision;
 	}
 }
