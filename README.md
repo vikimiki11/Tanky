@@ -9,14 +9,17 @@ Vylepšení
 <br />
 hitboxy tanků
 <br />
-
+Dodělat pozadí do shopu
+<br />
+pozadí v setupu
 # Upravit
 Pohyb(teď je dost šizený)
 <br />
 Změnit generování lesů a hor (poušť je už lit♥)
 <br />
 Startovní pozice tanků(teď je jednoduše nahodná pozice)
-
+<br />
+mráček
 # Možná???
 Jeskyně
 <br />

@@ -43,3 +43,32 @@ let ignoreBlockControl = false;
 function ignoreBlockControlToggle() {
 	ignoreBlockControl = !ignoreBlockControl;
 }
+
+
+let paintEnable = false;
+let brushSize = document.querySelector("#brushSize");
+function enablePaint() {
+	paintEnable = !paintEnable;
+};
+gamePlane.addEventListener("mousemove", paint);
+function paint(e) {
+	if (paintEnable) {
+		e.preventDefault();
+		let x = e.layerX / gamePlane.clientWidth * terrain.width;
+		let y = terrain.height - e.layerY / gamePlane.clientHeight * terrain.height;
+		let leftButton = Boolean(e.buttons % 2);
+		let rightButton = Boolean(floor(e.buttons / 2));
+		let xy = [round(x), round(y)];
+		let radius = parseInt(brushSize.value);
+		if (leftButton) terrain.destroyTerrain(xy, radius);
+		if (rightButton) terrain.buildTerrain(xy, radius);
+	}
+}
+gamePlane.addEventListener("contextmenu", (e) => { if (paintEnable)e.preventDefault() });
+
+function setAirSpeed() {
+	value = parseInt(document.querySelector("#airSpeed").value);
+	while (abs(value) < 50 && round(game.windCurrent) != value) {
+		game.windStep++;
+	}
+}

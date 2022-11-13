@@ -73,6 +73,36 @@ class Terrain extends Array {
 			];
 		return [false, false];
 	}
+
+	destroyTerrain(xy, radius) {
+		console.time("explosion");
+		terrain[xy[0]][xy[1]].destroy();
+		for (let y = 1; y <= radius; y++) {
+			let startx = sqrt(radius ** 2 - y ** 2);
+			for (let x = round(startx); x >= 0; x--) {
+				if (terrain[xy[0] + y] && !terrain[xy[0] + y][xy[1] + x]?.air) terrain[xy[0] + y][xy[1] + x]?.destroy();
+				if (terrain[xy[0] - x] && !terrain[xy[0] - x][xy[1] + y]?.air) terrain[xy[0] - x][xy[1] + y]?.destroy();
+				if (terrain[xy[0] - y] && !terrain[xy[0] - y][xy[1] - x]?.air) terrain[xy[0] - y][xy[1] - x]?.destroy();
+				if (terrain[xy[0] + x] && !terrain[xy[0] + x][xy[1] - y]?.air) terrain[xy[0] + x][xy[1] - y]?.destroy();
+			}
+		}
+		terrain.canvasData.update();
+
+		console.timeEnd("explosion");
+	}
+	buildTerrain(xy, radius, color) {
+		if (terrain[xy[0]])terrain[xy[0]][xy[1]]?.build(color);
+		for (let y = 1; y <= radius; y++) {
+			let startx = sqrt(radius ** 2 - y ** 2);
+			for (let x = round(startx); x >= 0; x--) {
+				if (terrain[xy[0] + y]) terrain[xy[0] + y][xy[1] + x]?.build(color);
+				if (terrain[xy[0] - x]) terrain[xy[0] - x][xy[1] + y]?.build(color);
+				if (terrain[xy[0] - y]) terrain[xy[0] - y][xy[1] - x]?.build(color);
+				if (terrain[xy[0] + x]) terrain[xy[0] + x][xy[1] - y]?.build(color);
+			}
+		}
+		terrain.canvasData.update();
+	}
 }
 
 
@@ -159,6 +189,12 @@ class TerrainBlock {
 	destroy() {
 		this.destroyed = true;
 		this.canvasData.setPixel(this.x, this.y, [this.color[0]*0.5, this.color[1]*0.5, this.color[2]*0.5, this.color[3]]);
+	}
+	build(color) {
+		this.color = color || (this.air ? [255, 255, 255, 255] : this.color);
+		this.air = false;
+		this.destroyed = false;
+		this.canvasData.setPixel(this.x, this.y, this.color);
 	}
 	static desertGradient(pressure) {
 		let shade = cos(pressure)/13 + 12/13;
