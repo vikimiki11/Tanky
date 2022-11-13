@@ -128,10 +128,10 @@ function explosion(xy, radius, damage) {
 			for (let y = 1; y <= radius; y++){
 				let startx = sqrt(radius**2 - y**2);
 				for (let x = round(startx); x >= 0; x--){
-					if (terrain[xy[0] + y]) terrain[xy[0] + y][xy[1] + x]?.destroy();
-					if (terrain[xy[0] - x]) terrain[xy[0] - x][xy[1] + y]?.destroy();
-					if (terrain[xy[0] - y]) terrain[xy[0] - y][xy[1] - x]?.destroy();
-					if (terrain[xy[0] + x]) terrain[xy[0] + x][xy[1] - y]?.destroy();
+					if (terrain[xy[0] + y] && !terrain[xy[0] + y][xy[1] + x]?.air) terrain[xy[0] + y][xy[1] + x]?.destroy();
+					if (terrain[xy[0] - x] && !terrain[xy[0] - x][xy[1] + y]?.air) terrain[xy[0] - x][xy[1] + y]?.destroy();
+					if (terrain[xy[0] - y] && !terrain[xy[0] - y][xy[1] - x]?.air) terrain[xy[0] - y][xy[1] - x]?.destroy();
+					if (terrain[xy[0] + x] && !terrain[xy[0] + x][xy[1] - y]?.air) terrain[xy[0] + x][xy[1] - y]?.destroy();
 				}
 			}
 			terrain.canvasData.update();
