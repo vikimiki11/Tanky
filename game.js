@@ -91,7 +91,8 @@ class Game {
 		this.inGame = false;
 		switchScreen("shopScreen");
 		this.blockControls = true;
-		setTimeout(() => { terrain.generate() }, 2000)
+		setTimeout(() => { removeProjectiles(); }, 1000);
+		setTimeout(() => { terrain.generate(); }, 2000);
 	}
 
 	shopNextPlayer() {

@@ -181,14 +181,19 @@ function simpleAmmo(xy, vector, radius, damage) {
 	});
 }
 
-
+function removeProjectiles() {
+	for(let i = 0; i < projectiles.length; i++) {
+		projectiles[i].DOM.remove();
+	}
+	projectiles = [];
+}
 let projectiles = [];
 let projectileIDCounter = 0;
 const airResistancePerSecond = 0.85;
 const airResistancePerTick = pow(airResistancePerSecond, 1 / 60);
 const Gravity = 0.05;
 class Projectile{
-	constructor(xy, vector, landed, outOfBounds) {
+	constructor(xy, vector, landed = () => { }, outOfBounds = () => { }) {
 		this.x = xy[0];
 		this.y = xy[1];
 		this.vector = vector;
@@ -223,10 +228,12 @@ class Projectile{
 			this.landed([this.x, this.y, this.vector]);
 			this.DOM.remove();
 			this.end = true;
+			return true;
 		}
 		if(this.y < 0) {
 			this.outOfBounds();
 			this.end = true;
+			return true;
 		}
 		if (Number.isNaN(this.vector.x)) {
 			console.warn("Projectile: NaN in speed at tick " + this.tickCounter);
@@ -235,7 +242,8 @@ class Projectile{
 			this.x = -100;
 			this.y = -100;
 		}
-			this.tickCounter++;
+		this.tickCounter++;
+		return false;
 	}
 }
 

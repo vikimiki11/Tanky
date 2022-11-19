@@ -183,4 +183,12 @@ class Tank {
 		document.querySelector("#gamePlane #tank" + this.player.id)?.remove();
 		this.player.tank = null;
 	}
+	getCurrentProjectileLandLocation() {
+		let aimVector = new Vector();
+		aimVector.angle = this.cannonAngle;
+		aimVector.length = this.firePower / 100 * DefaultAmmoSpeed;
+		let projectile = new Projectile(this.cannonTip, aimVector);
+		while (!projectile.tick()) { }
+		return [projectile.x, projectile.y, projectile.vector];
+	}
 }
