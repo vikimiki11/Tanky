@@ -164,12 +164,13 @@ class Tank {
 	controlCollision(x, y) {
 		let dx = x - this.x;
 		let dy = y - this.y;
-		let distance = sqrt(dx * dx + dy * dy);
+		let distance = pythagoras([dx, dy]);
 		if (distance > Tank.DriveBaseWidth) return false;
 
 		//vypočítání pozice vůči tanku
 		let rotatedX = dx * cos(this.rotate) + dy * -sin(this.rotate);
 		let rotatedY = dx * sin(this.rotate) + dy * cos(this.rotate);
+
 		if (rotatedY > 0 && rotatedY < Tank.TankHeight) {
 			if (abs(rotatedX) < Tank.TankHeadWidth / 2) return true;
 			if (rotatedY < Tank.TankHeight - Tank.TankHeadHeight &&

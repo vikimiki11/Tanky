@@ -1,7 +1,7 @@
 window.addEventListener("resize", changeBaseFontSize);
 changeBaseFontSize();
 function changeBaseFontSize() {
-	var baseFontSize = Math.min(window.innerWidth / 16, window.innerHeight / 9)*9;
+	var baseFontSize = min(window.innerWidth / 16, window.innerHeight / 9)*9;
 	document.body.style.fontSize = baseFontSize + "px";
 }
 

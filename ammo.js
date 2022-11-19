@@ -123,7 +123,7 @@ function explosion(xy, radius, damage) {
 		explosionAnimation(xy, radius)
 		setTimeout(() => {
 
-			console.time("explosion");
+			if (radius >= 200) console.time("explosion");
 			terrain.destroyTerrain(xy, radius);
 
 			for (let i = 0; i < game.players.length; i++) {
@@ -139,7 +139,7 @@ function explosion(xy, radius, damage) {
 				}
 			}
 
-			console.timeEnd("explosion");
+			if (radius >= 200) console.timeEnd("explosion");
 		}, 500);
 	});
 }

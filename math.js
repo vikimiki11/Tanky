@@ -24,7 +24,10 @@ class Vector {
 		this.y = -Math.sin(angle) * length;
 	}
 	get length() {
-		return pythagoras([0, 0], [this.x, this.y]);
+		return pythagoras([this.x, this.y]);
+	}
+	get copy() {
+		return new Vector(this.x, this.y);
 	}
 }
 
@@ -49,18 +52,19 @@ let sin = Math.sin,
 
 
 function XYToVector(xy) {
-	return [Math.atan2(-xy[1], xy[0]), Math.sqrt(xy[0] ** 2 + xy[1] ** 2)];
+	return [atan2(-xy[1], xy[0]), pythagoras([xy[0], xy[1]])];
 }
 
 function vectorToXY(vector) {
-	return [Math.cos(vector[0]) * vector[1], -Math.sin(vector[0]) * vector[1]];
+	return [cos(vector[0]) * vector[1], -sin(vector[0]) * vector[1]];
 }
 
 
 
 
 function pythagoras(xy, xy2) {
-	return Math.sqrt((xy[0] - xy2[0]) ** 2 + (xy[1] - xy2[1]) ** 2);
+	xy2 = xy2 || [0, 0];
+	return sqrt((xy[0] - xy2[0]) ** 2 + (xy[1] - xy2[1]) ** 2);
 }
 
 

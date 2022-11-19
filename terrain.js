@@ -59,11 +59,6 @@ class Terrain extends Array {
 		this.canvasData.grainification(1,4, 15);
 		this.canvasData.update();
 	}
-	aktualizace() {
-		imageData = context.getImageData(0, 0, canvas.width, canvas.height);
-		terrain(imageData.data);
-		context.putImageData(imageData, 0, 0);
-	}
 	controlCollision(x, y) {
 		//ToDo: collision out of game area owo????uwu
 		if (this[floor(x)] && this[floor(x)][floor(y)])
@@ -75,7 +70,8 @@ class Terrain extends Array {
 	}
 
 	destroyTerrain(xy, radius) {
-		console.time("explosion");
+		if (radius >= 200) console.time("destroyTerrain");
+
 		terrain[xy[0]][xy[1]].destroy();
 		for (let y = 1; y <= radius; y++) {
 			let startx = sqrt(radius ** 2 - y ** 2);
@@ -88,7 +84,7 @@ class Terrain extends Array {
 		}
 		terrain.canvasData.update();
 
-		console.timeEnd("explosion");
+		if (radius >= 200) console.timeEnd("destroyTerrain");
 	}
 	buildTerrain(xy, radius, color) {
 		if (terrain[xy[0]])terrain[xy[0]][xy[1]]?.build(color);
@@ -281,7 +277,7 @@ class CanvasData {
 		console.timeEnd("grainificationNxN(" + n + ")");
 	}
 	grainification(start, stop, decreaseI) {
-		console.group("grainification");
+		console.groupCollapsed("grainification");
 		for(let i = start; i <= stop; i++) {
 			this.grainificationNxN(i, decreaseI);
 		}
