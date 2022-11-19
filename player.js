@@ -68,15 +68,15 @@ class Player {
 		}
 
 		:root{
-			--aim: ${round(this.tank.aim*180/PI)};
+${this.tank ?`			--aim: ${round(this.tank.aim * 180 / PI)};
 			--firePower: ${round(this.tank.firePower)};
 			--maxFirePower: ${this.tank.maxFirePower};
+			--fuel: "${round(this.tank.fuel)}";
+			--tankAim: ${this.tank.aim}rad;`:""}
 			--money: "${this.money.toLocaleString()}";
 			--color: ${this.color};
 			--name: "${this.name}";
-			--fuel: "${round(this.tank.fuel)}";
 			--tankColor: ${this.color};
-			--tankAim: ${this.tank.aim}rad;
 		}
 
 		`;

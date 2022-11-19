@@ -133,7 +133,7 @@ function explosion(xy, radius, damage) {
 					if (distance <= radius) {
 						tank.maxFirePower = tank.maxFirePower - damage * (1 - distance / radius);
 						if (tank.maxFirePower <= 0) {
-							//ToDo: tank.destroy();
+							tank.destroy();
 						}
 					}
 				}

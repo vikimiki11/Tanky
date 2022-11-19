@@ -177,4 +177,9 @@ class Tank {
 		}
 		return false;
 	}
+	destroy() {
+		explosionAnimation([this.cannonBase[0], this.cannonBase[1]], 100);
+		document.querySelector("#gamePlane #tank" + this.player.id)?.remove();
+		this.player.tank = null;
+	}
 }

@@ -45,6 +45,7 @@ class Game {
 		this._windStep = 0;
 		this.windCurrent = 0;
 		this.lastPlayerID = 0;
+		this.inGame = false;
 		setTimeout(() => { setInterval(() => { game.tick() }, 1000 / 60) },100);
 	}
 	set actualPlayerID(id) {
@@ -75,6 +76,7 @@ class Game {
 	}
 
 	start() {
+		this.inGame = true;
 		this.windSeed = random();
 		this.spawnTanks();
 		this.nextPlayer();
@@ -86,6 +88,7 @@ class Game {
 	}
 
 	end() {
+		this.inGame = false;
 		switchScreen("shopScreen");
 		this.blockControls = true;
 		setTimeout(() => { terrain.generate() }, 2000)
@@ -107,22 +110,24 @@ class Game {
 	}
 
 	nextPlayer() {
-		this.lastPlayerID = this.actualPlayerID;
-		let alivePlayersCount = 0;
-		for (let p in this.players) {
-			if (this.players[p].tank.maxFirePower > 0) alivePlayersCount++; 
+		if (this.inGame) {
+			this.lastPlayerID = this.actualPlayerID;
+			let alivePlayersCount = 0;
+			for (let p in this.players) {
+				if (this.players[p].tank) alivePlayersCount++;
+			}
+			if (alivePlayersCount <= 1) {
+				this.end();
+			} else {
+				this.actualPlayerID++;
+			}
+			let player = this.actualPlayer;
+			this.blockControls = false
+			this.windStep = this.windStep + 1;
+			this.setAim(player.tank?.aim);
+			this.setFirePower(player.tank?.firePower);
+			document.querySelector("#gameTopBar .tank").id = "tank" + player.id;
 		}
-		if (alivePlayersCount <= 1) {
-			this.end();
-		} else {
-			this.actualPlayerID++;
-		}
-		let player = this.actualPlayer;
-		this.blockControls = false
-		this.windStep = this.windStep + 1;
-		this.setAim(player.tank.aim);
-		this.setFirePower(player.tank.firePower);
-		document.querySelector("#gameTopBar .tank").id = "tank" + player.id;
 	}
 
 	setFirePower(power) {
@@ -178,7 +183,7 @@ class Game {
 		let CSS = "";
 		for (let playerID in this.players) {
 			let player = this.players[playerID];
-			CSS += player.tank.CSS;
+			CSS += player.tank?.CSS;
 		}
 		document.querySelector("#tankStyle").innerHTML = CSS;
 	}
@@ -186,7 +191,7 @@ class Game {
 	tick() {
 		for (let playerID in this.players) {
 			let player = this.players[playerID];
-			player.tank.tick();
+			player.tank?.tick();
 		}
 		this.tankCSS();
 
@@ -204,7 +209,7 @@ class Game {
 	checkForTankCollision(x, y) {
 		let tankCollision = false;
 		for (let i = 0; i < game.players.length; i++) {
-			tankCollision = game.players[i].tank.controlCollision(x, y);
+			tankCollision = game.players[i].tank?.controlCollision(x, y);
 			if (tankCollision) break;
 		}
 		return tankCollision;
