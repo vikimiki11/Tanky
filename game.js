@@ -120,7 +120,9 @@ class Game {
 			if (alivePlayersCount <= 1) {
 				this.end();
 			} else {
-				this.actualPlayerID++;
+				do {
+					this.actualPlayerID++;
+				} while (!this.actualPlayer.tank);
 			}
 			let player = this.actualPlayer;
 			this.blockControls = false
@@ -184,7 +186,7 @@ class Game {
 		let CSS = "";
 		for (let playerID in this.players) {
 			let player = this.players[playerID];
-			CSS += player.tank?.CSS;
+			CSS += player.tank?player.tank.CSS:"";
 		}
 		document.querySelector("#tankStyle").innerHTML = CSS;
 	}
