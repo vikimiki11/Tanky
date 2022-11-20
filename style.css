@@ -546,6 +546,20 @@ input[type="color"]{
 	right: -3em;
 	top: -0.5em;
 }
+#scoreDisplay{
+	display: grid;
+	position: absolute;
+	right: 0;
+	top: 100%;
+	grid-template-columns: 7em 5em;
+}
+#scoreDisplay > *{
+	text-align: end;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	-webkit-text-stroke: 0.02em black;
+}
 
 
 

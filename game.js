@@ -91,6 +91,10 @@ class Game {
 		this.inGame = false;
 		switchScreen("shopScreen");
 		this.blockControls = true;
+		for (let p in this.players) {
+			this.players[p].money += 5000;
+			if (this.players[p].tank) this.players[p].money += 5000;
+		}
 		setTimeout(() => { removeProjectiles(); }, 1000);
 		setTimeout(() => { terrain.generate(); }, 2000);
 	}
@@ -107,7 +111,7 @@ class Game {
 			player.tank = new Tank(player);
 			player.tank.spawn();
 		}
-		this.tankCSS();
+		this.globalCSS();
 	}
 
 	nextPlayer() {
@@ -119,13 +123,14 @@ class Game {
 			}
 			if (alivePlayersCount <= 1) {
 				this.end();
+				return;
 			} else {
 				do {
 					this.actualPlayerID++;
 				} while (!this.actualPlayer.tank);
 			}
 			let player = this.actualPlayer;
-			this.blockControls = false
+			this.blockControls = false;
 			this.windStep = this.windStep + 1;
 			this.setAim(player.tank?.aim);
 			this.setFirePower(player.tank?.firePower);
@@ -135,12 +140,12 @@ class Game {
 
 	setFirePower(power) {
 		if (this.blockControls && !ignoreBlockControl) return;
-		power = min(parseFloat(power), this.actualPlayer.tank.maxFirePower);
+		power = min(parseFloat(power), this.actualPlayer.tank?.maxFirePower);
 		power = max(power, 0);
 		this.actualPlayer.tank.firePower = power;
 		document.querySelector("#firePowerControl input").value = power;
 		this.actualPlayer.updateCSS();
-		this.tankCSS();
+		this.globalCSS();
 	}
 
 	setAim(angle) {
@@ -150,13 +155,13 @@ class Game {
 		this.actualPlayer.tank.aim = angle;
 		document.querySelector("#aimControl").value = angle;
 		this.actualPlayer.updateCSS();
-		this.tankCSS();
+		this.globalCSS();
 	}
 
 	tankDrive(x) {
 		if (this.blockControls && !ignoreBlockControl) return;
 		this.actualPlayer.tank.drive(x);
-		this.tankCSS();
+		this.globalCSS();
 	}
 
 	nextAmmo() {
@@ -182,13 +187,14 @@ class Game {
 			.then(() => { this.nextPlayer() });
 	}
 
-	tankCSS() {
+	globalCSS() {
 		let CSS = "";
 		for (let playerID in this.players) {
 			let player = this.players[playerID];
-			CSS += player.tank?player.tank.CSS:"";
+			CSS += player.tank ? player.tank.CSS : "";
+			CSS += player.globalCSS;
 		}
-		document.querySelector("#tankStyle").innerHTML = CSS;
+		document.querySelector("#globalStyle").innerHTML = CSS;
 	}
 
 	tick() {
@@ -196,7 +202,7 @@ class Game {
 			let player = this.players[playerID];
 			player.tank?.tick();
 		}
-		this.tankCSS();
+		this.globalCSS();
 
 		let projectile = 0;
 		while (projectiles[projectile]) {

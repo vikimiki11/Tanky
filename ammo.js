@@ -126,19 +126,26 @@ function explosion(xy, radius, damage) {
 			if (radius >= 200) console.time("explosion");
 			terrain.destroyTerrain(xy, radius);
 
+			let score = 0;
 			for (let i = 0; i < game.players.length; i++) {
 				let tank = game.players[i].tank;
 				if (tank) {
 					let distance = pythagoras(xy, [tank.x, tank.y]);
 					if (distance <= radius) {
+						let maxFirePowerBeforeTakingDamage = tank.maxFirePower;
 						tank.maxFirePower = tank.maxFirePower - damage * (1 - distance / radius);
+						if (game.actualPlayer != tank.player) score += maxFirePowerBeforeTakingDamage - tank.maxFirePower;
 						if (tank.maxFirePower <= 0) {
+							if (game.actualPlayer != tank.player) score += 50;
 							tank.destroy();
 						}
 					}
 				}
 			}
-
+			game.actualPlayer.score += score * 10;
+			game.actualPlayer.money += score * 50;
+			game.actualPlayer.updateCSS();
+			game.globalCSS();
 			if (radius >= 200) console.timeEnd("explosion");
 		}, 500);
 	});
@@ -146,7 +153,7 @@ function explosion(xy, radius, damage) {
 
 explosionID = 0;
 function explosionAnimation(xy, radius) {
-	let explosion = document.createElementNS('http://www.w3.org/2000/svg', 'svg');;
+	let explosion = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
 	explosion.setAttribute("viewBox", "0 0 100 100");
 	explosion.setAttribute("class", "explosion");
 	explosion.style.left = xy[0] + "em";
@@ -205,7 +212,7 @@ class Projectile{
 		this.tickCounter = 0;
 	}
 	createGamePlaneObject() {
-		let projectile = document.createElementNS('http://www.w3.org/2000/svg', 'svg');;
+		let projectile = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
 		projectile.setAttribute("viewBox", "0 0 50 50");
 		projectile.setAttribute("class", "projectile");
 		projectile.setAttribute("id", "projectile" + this.id);

@@ -78,7 +78,7 @@ function setAirSpeed() {
 }
 
 setInterval(() => {
-	let pos = game?.actualPlayer?.tank.getCurrentProjectileLandLocation() || [0, 0,{x:0,y:0}];
+	let pos = game?.actualPlayer?.tank?.getCurrentProjectileLandLocation() || [0, 0,{x:0,y:0}];
 	document.querySelector("#debugAim").innerHTML = pos ? `
 	X: ${pos[0].toFixed(2)} Y: ${pos[1].toFixed(2)} Vector: X: ${pos[2].x.toFixed(2)} Y: ${pos[2].y.toFixed(2)}` : "";
 }, 1000);

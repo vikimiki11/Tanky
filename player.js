@@ -7,7 +7,9 @@ function addPlayer(name, color, AI) {
 	if (AI === undefined) AI = document.querySelector("#AICheckbox").checked;
 
 	players.push(new Player(players.length, name, color, AI));
-
+	document.querySelector("#scoreDisplay").innerHTML += `
+	<div id="score${players.length - 1}">${name}</div>
+	<div class="score" id="score${players.length - 1}"></div>`;
 	if (maxPlayers > players.length) {
 		document.querySelector("#playerNameInput").value = "";
 		document.querySelector("#playerColorInput").value = ["#FF0000", "#00FF00", "#0000FF", "#FFFF00", "#FF00FF"][players.length];
@@ -27,7 +29,8 @@ class Player {
 		this.name = name;
 		this.color = color;
 		this.AI = AI;
-		this.money = 1000000;
+		this.money = 0;
+		this.score = 0;
 		this.tank = null;
 		this._selected = false;
 		this._selectedAmmo = 0;
@@ -73,7 +76,7 @@ ${this.tank ?`			--aim: ${round(this.tank.aim * 180 / PI)};
 			--maxFirePower: ${this.tank.maxFirePower};
 			--fuel: "${round(this.tank.fuel)}";
 			--tankAim: ${this.tank.aim}rad;`:""}
-			--money: "${this.money.toLocaleString()}";
+			--money: "${floor(this.money).toLocaleString() }";
 			--color: ${this.color};
 			--name: "${this.name}";
 			--tankColor: ${this.color};
@@ -92,5 +95,13 @@ ${this.tank ?`			--aim: ${round(this.tank.aim * 180 / PI)};
 			content: "${this.gadget[gadget] == "Infinity" ? "Inf." : this.gadget[gadget]}";
 		}`;
 		}
+	}
+	get globalCSS() {
+		return `.score#score${this.id}::after{
+			content: "${round(this.score)}";
+		}
+		#score${this.id}{
+			color: ${this.color};
+		}`;
 	}
 }

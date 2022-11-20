@@ -8,7 +8,7 @@
 	<link rel="stylesheet" type="text/css" href="style.css">
 	<style id="playerStyle">
 	</style>
-	<style id="tankStyle">
+	<style id="globalStyle">
 	</style>
 </head>
 <body onresize="changeBaseFontSize()">
@@ -226,8 +226,9 @@
 							Vše lze také udělat v horním menu
 						</div>
 					</div>
-					<!-- <button onclick="switchScreen('startupScreen')">setup</button>
-					<button onclick="switchScreen('shopScreen')">shop</button> -->
+					<div id="scoreDisplay">
+						<!-- filled by script -->
+					</div>
 				</div>
 			</div>
 			<canvas></canvas>

@@ -106,7 +106,7 @@ setInterval(() => {
 		clouds[i][0].style.left = left + "em";
 		if (left < -251 || left >= terrain.width) {
 			cloud = clouds.splice(i, 1)[0][0];
-			cloud.parentNode.removeChild(cloud);
+			cloud.parentNode?.removeChild(cloud);
 			i--;
 		}
 	}
@@ -166,12 +166,12 @@ document.body.addEventListener("keyup", function (e) {
 	keys[e.keyCode] = false;
 });
 setInterval(() => {
-	if (!keys[83] && !keys[87] && game && (QS = document.querySelector("#firePowerControl input")) && parseInt(game.actualPlayer.tank.firePower) != parseInt(QS.value))game.setFirePower(QS.value);
-	if (!keys[69] && !keys[81] && game && (QS = document.querySelector("#aimControl")) && parseFloat(game.actualPlayer.tank.aim) != parseFloat(QS.value))game.setAim(QS.value);
-	if (keys[87]) game?.setFirePower(game.actualPlayer.tank.firePower + 0.5);
-	if (keys[83]) game?.setFirePower(game.actualPlayer.tank.firePower - 0.5);
-	if (keys[69]) game?.setAim(game.actualPlayer.tank.aim + 0.01);
-	if (keys[81]) game?.setAim(game.actualPlayer.tank.aim - 0.01);
+	if (!keys[83] && !keys[87] && game && game?.actualPlayer.tank && (QS = document.querySelector("#firePowerControl input")) && parseInt(game.actualPlayer.tank.firePower) != parseInt(QS.value))game.setFirePower(QS.value);
+	if (!keys[69] && !keys[81] && game && game?.actualPlayer.tank && (QS = document.querySelector("#aimControl")) && parseFloat(game.actualPlayer.tank.aim) != parseFloat(QS.value))game.setAim(QS.value);
+	if (keys[87]) game?.setFirePower(game.actualPlayer.tank?.firePower + 0.5);
+	if (keys[83]) game?.setFirePower(game.actualPlayer.tank?.firePower - 0.5);
+	if (keys[69]) game?.setAim(game.actualPlayer.tank?.aim + 0.01);
+	if (keys[81]) game?.setAim(game.actualPlayer.tank?.aim - 0.01);
 	if (keys[65] && !keys[68]) game?.tankDrive(-1);
 	if (keys[68] && !keys[65]) game?.tankDrive(1);
 }, 1000 / 60);

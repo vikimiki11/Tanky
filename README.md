@@ -1,8 +1,6 @@
 # Věci na dodělání
 AI
 <br />
-Skóre + peníze
-<br />
 Shield
 <br />
 Vylepšení
@@ -14,6 +12,7 @@ pozadí v setupu
 fall damage
 <br />
 padáky
+
 # Upravit
 Pohyb(teď je dost šizený)
 <br />
@@ -22,6 +21,7 @@ Změnit generování lesů a hor (poušť je už lit♥)
 Startovní pozice tanků(teď je jednoduše nahodná pozice)
 <br />
 mráček
+
 # Možná???
 Jeskyně
 <br />
