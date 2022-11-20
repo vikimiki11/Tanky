@@ -14,6 +14,7 @@ function addPlayer(name, color, AI) {
 		document.querySelector("#playerNameInput").value = "";
 		document.querySelector("#playerColorInput").value = ["#FF0000", "#00FF00", "#0000FF", "#FFFF00", "#FF00FF"][players.length];
 		document.querySelector("#setupPlayer  h2").innerHTML = (players.length + 1) + ". Hráč";
+		document.querySelector("#AICheckbox").checked = false;
 	} else {
 		game = new Game(players, selectedTerrain, generateCaves);
 		console.log(game);

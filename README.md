@@ -1,11 +1,7 @@
 # Věci na dodělání
-AI
-<br />
 Shield
 <br />
 Vylepšení
-<br />
-Dodělat pozadí do shopu
 <br />
 pozadí v setupu
 <br />
@@ -14,6 +10,10 @@ fall damage
 padáky
 
 # Upravit
+AI(více úrovní + úprava)
+<br />
+Dodělat pozadí do shopu
+<br />
 Pohyb(teď je dost šizený)
 <br />
 Změnit generování lesů a hor (poušť je už lit♥)

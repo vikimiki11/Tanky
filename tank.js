@@ -24,6 +24,9 @@ class Tank {
 		document.querySelector("#aimControl").value = value;
 		this.player.updateCSS();
 	}
+	set aimFast(value) {
+		this._aim = value;
+	}
 	get maxFirePower() {
 		return this._maxFirePower;
 	}
@@ -187,7 +190,7 @@ class Tank {
 		let aimVector = new Vector();
 		aimVector.angle = this.cannonAngle;
 		aimVector.length = this.firePower / 100 * DefaultAmmoSpeed;
-		let projectile = new Projectile(this.cannonTip, aimVector);
+		let projectile = new Projectile(this.cannonTip, aimVector, undefined, undefined, true);
 		while (!projectile.tick()) { }
 		return [projectile.x, projectile.y, projectile.vector];
 	}

@@ -81,7 +81,6 @@ class Game {
 		this.spawnTanks();
 		this.nextPlayer();
 		switchScreen("gameScreen");
-		setTimeout(() => { game.blockControls = false }, switchScreen());
 		for (let i = 0; i < 6; i++){
 			generateCloud(floor(random() * terrain.width));
 		}
@@ -95,6 +94,7 @@ class Game {
 			this.players[p].money += 5000;
 			if (this.players[p].tank) this.players[p].money += 5000;
 		}
+		this.globalCSS();
 		setTimeout(() => { removeProjectiles(); }, 1000);
 		setTimeout(() => { terrain.generate(); }, 2000);
 	}
@@ -103,6 +103,11 @@ class Game {
 		this.actualPlayerID++;
 		if (this.lastPlayerID == this.actualPlayerID)
 			this.start();
+		else {
+			if (this.actualPlayer.AI) {
+				
+			}
+		}
 	}
 
 	spawnTanks() {
@@ -130,11 +135,35 @@ class Game {
 				} while (!this.actualPlayer.tank);
 			}
 			let player = this.actualPlayer;
-			this.blockControls = false;
 			this.windStep = this.windStep + 1;
 			this.setAim(player.tank?.aim);
 			this.setFirePower(player.tank?.firePower);
 			document.querySelector("#gameTopBar .tank").id = "tank" + player.id;
+			if (player.AI) {
+				setTimeout(() => { game.blockControls = true }, switchScreen());
+				setTimeout(() => {
+					this.blockControls = false;
+					let bestAngle = 0;
+					let bestDistance = Infinity;
+					for (let angle = 0; angle <= PI; angle += PI / 180) {
+						player.tank.aimFast = angle;
+						let landLocation = player.tank.getCurrentProjectileLandLocation();
+						for (let p = 0; p < game.players.length; p++) {
+							if (game.players[p] != player && game.players[p].tank) {
+								let distance = pythagoras(landLocation, [game.players[p].tank.x, game.players[p].tank.y]);
+								if (distance < bestDistance) {
+									bestDistance = distance;
+									bestAngle = angle;
+								}
+							}
+						}
+					}
+					this.setAim(bestAngle);
+					this.fire();
+				}, 3000);
+			} else {
+				setTimeout(() => { game.blockControls = false }, switchScreen());
+			}
 		}
 	}
 
@@ -165,6 +194,7 @@ class Game {
 	}
 
 	nextAmmo() {
+		if (this.blockControls && !ignoreBlockControl) return;
 		do {
 			this.actualPlayer.selectedAmmo++;
 			if (this.actualPlayer.selectedAmmo >= ammoList.length) this.actualPlayer.selectedAmmo = 0;
@@ -172,6 +202,7 @@ class Game {
 	}
 
 	previousAmmo() {
+		if (this.blockControls && !ignoreBlockControl) return;
 		do {
 			this.actualPlayer.selectedAmmo--;
 			if (this.actualPlayer.selectedAmmo < 0) this.actualPlayer.selectedAmmo = ammoList.length - 1;

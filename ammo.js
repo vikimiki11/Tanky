@@ -200,14 +200,15 @@ const airResistancePerSecond = 0.85;
 const airResistancePerTick = pow(airResistancePerSecond, 1 / 60);
 const Gravity = 0.05;
 class Projectile{
-	constructor(xy, vector, landed = () => { }, outOfBounds = () => { }) {
+	constructor(xy, vector, landed = () => { }, outOfBounds = () => { }, noDOM) {
 		this.x = xy[0];
 		this.y = xy[1];
 		this.vector = vector;
 		this.landed = landed;
 		this.outOfBounds = outOfBounds;
 		this.id = projectileIDCounter++;
-		this.DOM = this.createGamePlaneObject();
+		this.noDOM = noDOM;
+		if(!noDOM) this.DOM = this.createGamePlaneObject();
 		this.end = false;
 		this.tickCounter = 0;
 	}
@@ -222,18 +223,19 @@ class Projectile{
 		gamePlane.appendChild(projectile);
 		return projectile;
 	}
-	tick() {
+	tick(noDOM) {
+		noDOM = noDOM || this.noDOM;
 		this.vector.x *= airResistancePerTick;
 		this.vector.y *= airResistancePerTick;
 		this.vector.y -= Gravity;
 		this.vector.x += game.windCurrent / 3000;
 		this.x += this.vector.x;
 		this.y += this.vector.y;
-		this.DOM.style.left = this.x + "em";
-		this.DOM.style.bottom = this.y + "em";
+		if (!noDOM) this.DOM.style.left = this.x + "em";
+		if (!noDOM) this.DOM.style.bottom = this.y + "em";
 		if (terrain.controlCollision(this.x, this.y)[0] || game.checkForTankCollision(this.x, this.y)) {
 			this.landed([this.x, this.y, this.vector]);
-			this.DOM.remove();
+			if (!noDOM) this.DOM.remove();
 			this.end = true;
 			return true;
 		}
@@ -241,13 +243,6 @@ class Projectile{
 			this.outOfBounds();
 			this.end = true;
 			return true;
-		}
-		if (Number.isNaN(this.vector.x)) {
-			console.warn("Projectile: NaN in speed at tick " + this.tickCounter);
-			this.vector.x = 0;
-			this.vector.y = 0;
-			this.x = -100;
-			this.y = -100;
 		}
 		this.tickCounter++;
 		return false;
