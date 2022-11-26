@@ -11,10 +11,11 @@ class Tank {
 		this.firePower = 100;
 		this._maxFirePower = 100;
 		this.fuel = 200;
-		this.x = random()*2000+200;
+		this.x = random() * 2000 + 200;
 		this.y = 800;
 		this.onGround = false;
 		this.inertia = [0, 0];
+		this.shield = 0;
 	}
 	get aim() {
 		return this._aim;
@@ -54,6 +55,7 @@ class Tank {
 		Sorry, your browser does not support inline SVG.
 	</svg>
 	<div class="cannon"></div>
+	<div class="tankShield"></div>
 </div>`
 		document.querySelector("#gamePlane").innerHTML += html;
 	}
@@ -65,6 +67,7 @@ class Tank {
 		transform: translate(-50%, 0) rotate(${this.rotate}rad);
 		left: ${this.x}em;
 		bottom: ${this.y}em;
+		--shieldColor: ${shieldGradient(this.shield)};
 	}`;
 	}
 	tick() {

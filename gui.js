@@ -73,7 +73,8 @@ for (let gadget of gadgetList) {
 
 for (let el of document.querySelectorAll("#allAmmo .ammoRow")) {
 	el.addEventListener("click", function () {
-		game.actualPlayer.selectedAmmo = el.getAttribute("ammo");
+		if (!game.blockControls)
+			game.actualPlayer.selectedAmmo = el.getAttribute("ammo");
 	});
 }
 

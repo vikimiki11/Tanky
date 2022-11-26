@@ -77,3 +77,24 @@ function teleportClick(e) {
 		gamePlane.style.cursor = "auto";
 	}
 }
+
+const shieldColorLevels = [0, 100, 200, 400, 800];
+function shield(level) {
+	if ((game.blockControls && !ignoreBlockControl) || game.actualPlayer.tank.shield >= shieldColorLevels[shieldColorLevels.length - 1]) return;
+	if (!teleportActive && (game.actualPlayer.gadget[level - 1] > 0 || infinityGadgetsAndAmmoCheck)) {
+		if (!infinityGadgetsAndAmmoCheck) game.actualPlayer.gadget[level - 1]-= 1;
+		game.actualPlayer.tank.shield += shieldColorLevels[level];
+		game.actualPlayer.tank.shield = Math.min(game.actualPlayer.tank.shield, shieldColorLevels[shieldColorLevels.length - 1]);
+		game.actualPlayer.updateCSS();
+	}
+}
+function shieldGradient(shieldHP) {
+	const colors = [[255, 255, 0, 0], [255, 255, 0, 255], [0, 187, 255, 255], [0, 0, 255, 255], [128, 0, 128, 255]];
+	let level = 0;
+	while (shieldHP > shieldColorLevels[level + 1]) level++;
+	let distanceFromColor = (shieldHP - shieldColorLevels[level]) / (shieldColorLevels[level + 1] - shieldColorLevels[level]);
+	let color = [...colors[level]];
+	for (let i = 0; i < 4; i++)
+		color[i] = Math.round(color[i] + (colors[level + 1][i] - color[i]) * distanceFromColor);
+	return "rgba(" + color.join(", ") + ")";
+}

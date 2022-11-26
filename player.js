@@ -2,26 +2,28 @@ let players = [];
 let maxPlayers;
 
 function addPlayer(name, color, AI) {
-	if (name === undefined) name = document.querySelector("#playerNameInput").value;
-	if (color === undefined) color = document.querySelector("#playerColorInput").value;
-	if (AI === undefined) AI = document.querySelector("#AICheckbox").checked;
+	if (!game) {
+		if (name === undefined) name = document.querySelector("#playerNameInput").value;
+		if (color === undefined) color = document.querySelector("#playerColorInput").value;
+		if (AI === undefined) AI = document.querySelector("#AICheckbox").checked;
 
-	players.push(new Player(players.length, name, color, AI));
-	document.querySelector("#scoreDisplay").innerHTML += `
+		players.push(new Player(players.length, name, color, AI));
+		document.querySelector("#scoreDisplay").innerHTML += `
 	<div id="score${players.length - 1}">${name}</div>
 	<div class="score" id="score${players.length - 1}"></div>`;
-	if (maxPlayers > players.length) {
-		document.querySelector("#playerNameInput").value = "";
-		document.querySelector("#playerColorInput").value = ["#FF0000", "#00FF00", "#0000FF", "#FFFF00", "#FF00FF"][players.length];
-		document.querySelector("#setupPlayer  h2").innerHTML = (players.length + 1) + ". Hráč";
-		document.querySelector("#AICheckbox").checked = false;
-	} else {
-		game = new Game(players, selectedTerrain, generateCaves);
-		console.log(game);
-		game.start()
-	}
+		if (maxPlayers > players.length) {
+			document.querySelector("#playerNameInput").value = "";
+			document.querySelector("#playerColorInput").value = ["#FF0000", "#00FF00", "#0000FF", "#FFFF00", "#FF00FF"][players.length];
+			document.querySelector("#setupPlayer  h2").innerHTML = (players.length + 1) + ". Hráč";
+			document.querySelector("#AICheckbox").checked = false;
+		} else {
+			game = new Game(players, selectedTerrain, generateCaves);
+			console.log(game);
+			game.start()
+		}
 
-	return players[players.length - 1];
+		return players[players.length - 1];
+	}
 }
 
 class Player {

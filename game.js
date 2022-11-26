@@ -79,8 +79,8 @@ class Game {
 		this.inGame = true;
 		this.windSeed = random();
 		this.spawnTanks();
-		this.nextPlayer();
 		switchScreen("gameScreen");
+		this.nextPlayer();
 		for (let i = 0; i < 6; i++){
 			generateCloud(floor(random() * terrain.width));
 		}
@@ -95,8 +95,11 @@ class Game {
 			if (this.players[p].tank) this.players[p].money += 5000;
 		}
 		this.globalCSS();
-		setTimeout(() => { removeProjectiles(); }, 1000);
-		setTimeout(() => { terrain.generate(); }, 2000);
+		setTimeout(() => {
+			document.querySelector("#gamePlane .tank")?.remove();
+			removeProjectiles();
+			terrain.generate();
+		}, switchScreen());
 	}
 
 	shopNextPlayer() {
@@ -136,11 +139,14 @@ class Game {
 			}
 			let player = this.actualPlayer;
 			this.windStep = this.windStep + 1;
+
+			this.blockControls = false;
 			this.setAim(player.tank?.aim);
 			this.setFirePower(player.tank?.firePower);
+			this.blockControls = true;
+			
 			document.querySelector("#gameTopBar .tank").id = "tank" + player.id;
 			if (player.AI) {
-				setTimeout(() => { game.blockControls = true }, switchScreen());
 				setTimeout(() => {
 					this.blockControls = false;
 					let bestAngle = 0;
@@ -160,7 +166,7 @@ class Game {
 					}
 					this.setAim(bestAngle);
 					this.fire();
-				}, 3000);
+				}, 3000 + max(switchScreen(), 0));
 			} else {
 				setTimeout(() => { game.blockControls = false }, switchScreen());
 			}

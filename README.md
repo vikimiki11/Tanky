@@ -1,15 +1,11 @@
-# Věci na dodělání
-Shield
-<br />
-Vylepšení
-<br />
+# Věci na udělání
 pozadí v setupu
 <br />
 fall damage
 <br />
 padáky
 
-# Upravit
+# Upravit / Dodělat
 AI(více úrovní + úprava)
 <br />
 Dodělat pozadí do shopu
@@ -25,10 +21,12 @@ mráček
 # Možná???
 Jeskyně
 <br />
-Možná lepší obrázek tanku UWU (skiny a microtransakce ♥)
+Možná lepší obrázek tanku UWU
 <br />
 Zvuky
 <br />
 Stylování pro více prohlížečů + mobil???
 <br />
-Generování stromů(do lesa by se hodily stromy(ale jen možná♥))
+Generování stromů(do lesa by se hodily stromy)
+<br />
+Vylepšení tanku
