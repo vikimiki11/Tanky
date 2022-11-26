@@ -34,6 +34,13 @@ class Tank {
 		this._maxFirePower = value;
 		this.firePower = min(this.firePower, value);
 	}
+	damage(damage) {
+		this.shield -= damage;
+		if (this.shield < 0) {
+			this._maxFirePower += this.shield;
+			this.shield = 0;
+		}
+	}
 	spawn() {
 		const html = `
 <div class="tank" id="tank${this.player.id}">

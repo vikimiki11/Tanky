@@ -130,11 +130,11 @@ function explosion(xy, radius, damage) {
 			for (let i = 0; i < game.players.length; i++) {
 				let tank = game.players[i].tank;
 				if (tank) {
-					let distance = pythagoras(xy, [tank.x, tank.y]);
+					let distance = pythagoras(xy, tank.cannonBase) - 20;
 					if (distance <= radius) {
-						let maxFirePowerBeforeTakingDamage = tank.maxFirePower;
-						tank.maxFirePower = tank.maxFirePower - damage * (1 - distance / radius);
-						if (game.actualPlayer != tank.player) score += maxFirePowerBeforeTakingDamage - tank.maxFirePower;
+						let damageToTank = damage * (1 - distance / radius);
+						tank.damage(damageToTank);
+						if (game.actualPlayer != tank.player) score += damageToTank;
 						if (tank.maxFirePower <= 0) {
 							if (game.actualPlayer != tank.player) score += 50;
 							tank.destroy();
