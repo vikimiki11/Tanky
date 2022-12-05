@@ -106,7 +106,8 @@ class Tank {
 			this.inertia[0] = 0;
 		}
 		if (this.y < 0) {
-			//ToDo: add explosion
+			this._maxFirePower = 0;
+			this.destroy();
 		}
 	}
 	get groundContactPlane() {
@@ -195,6 +196,9 @@ class Tank {
 		explosionAnimation([this.cannonBase[0], this.cannonBase[1]], 100);
 		document.querySelector("#gamePlane #tank" + this.player.id)?.remove();
 		this.player.tank = null;
+		if (this.player == game.actualPlayer && !game.blockControls) {
+			game.nextPlayer();
+		}
 	}
 	getCurrentProjectileLandLocation() {
 		let aimVector = new Vector();

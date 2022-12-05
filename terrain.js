@@ -56,7 +56,7 @@ class Terrain extends Array {
 			}
 		}
 		console.timeEnd("generate TerrainBlock");
-		this.canvasData.grainification(1,4, 15);
+		this.canvasData.grainification(1, 4, 15);
 		this.canvasData.update();
 	}
 	controlCollision(x, y) {

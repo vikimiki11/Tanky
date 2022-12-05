@@ -1,32 +1,23 @@
 # Věci na udělání
-pozadí v setupu
-<br />
-fall damage
-<br />
-padáky
+
+pozadí v setupu\
+fall damage\
+padáky\
 
 # Upravit / Dodělat
-AI(více úrovní + úprava)
-<br />
-Dodělat pozadí do shopu
-<br />
-Pohyb(teď je dost šizený)
-<br />
-Změnit generování lesů a hor (poušť je už lit♥)
-<br />
-Startovní pozice tanků(teď je jednoduše nahodná pozice)
-<br />
-mráček
+
+AI(více úrovní + úprava)\
+Dodělat pozadí do shopu\
+Pohyb(teď je dost šizený)\
+Změnit generování lesů a hor (poušť je už lit♥)\
+Startovní pozice tanků(teď je jednoduše nahodná pozice)\
+mráček\
 
 # Možná???
-Jeskyně
-<br />
-Možná lepší obrázek tanku UWU
-<br />
-Zvuky
-<br />
-Stylování pro více prohlížečů + mobil???
-<br />
-Generování stromů(do lesa by se hodily stromy)
-<br />
-Vylepšení tanku
+
+Jeskyně\
+Možná lepší obrázek tanku UWU\
+Zvuky\
+Stylování pro více prohlížečů + mobil???\
+Generování stromů(do lesa by se hodily stromy)\
+Vylepšení tanku\
