@@ -1,6 +1,7 @@
 # Věci na udělání
 
 pozadí v setupu\
+dveře\
 fall damage\
 padáky\
 

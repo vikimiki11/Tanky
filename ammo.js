@@ -107,7 +107,13 @@ ammoList.push(new Ammo("069", "xd", "mashroom.png", 10, 1000, 10,
 	() => { return simpleAmmo(undefined, new Vector(), 1000, 1000) }
 ));
 
-const DefaultAmmoSpeed = 10;
+ammoDictionary = {};
+for (let ammo of ammoList) {
+	ammoDictionary[ammo.shortName] = ammo;
+}
+
+
+const DefaultAmmoSpeed = 12.5;
 function fireProjectile(xy, vector) {
 	xy = xy || game.actualPlayer.tank.cannonTip;
 	vector = vector || new Vector();

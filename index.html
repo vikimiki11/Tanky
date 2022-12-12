@@ -43,10 +43,19 @@
 						<h2 id="">1. Hráč</h2>
 						<label>Jméno: </label><input id="playerNameInput"><br>
 						<hr>
-						<label>AI: </label><input type="checkbox" id="AICheckbox">
+						<label>AI: </label><input type="checkbox" id="AICheckbox" onchange="this.setAttribute('value' ,this.checked)">
 						Color: <input type="color" id="playerColorInput" value="#FF0000"><br><br>
 						<button onclick="addPlayer()">Next</button>
 					</div>
+				</div>
+				<div id="AIDificulty" class="setupMenu">
+					<form class="normalizeFont">
+						<input type="radio" name="AIDificulty" value="5"        >: Lehčí AI<br>
+						<input type="radio" name="AIDificulty" value="4"        >: Lehké AI<br>
+						<input type="radio" name="AIDificulty" value="3" checked>: Střední AI<br>
+						<input type="radio" name="AIDificulty" value="2"        >: Těžké AI<br>
+						<input type="radio" name="AIDificulty" value="1"        >: Težší AI
+					</form>
 				</div>
 			</div>
 		</div>
@@ -265,17 +274,21 @@
 	<script src="ammo.js"></script>
 	<script src="gui.js"></script>
 	<script src="game.js"></script>
+	<script src="AI.js"></script>
 	<script src="player.js"></script>
 	<script src="tank.js"></script>
 	<script>
 		let ter;
-/* 	window.onload = function () {
+	window.onload = function () {
 		setTimeout(()=>{
-			addPlayer("ŽLUŤOUČKÝ KŮŇ ÚPĚL ĎÁBELKÉ ÓDY", "#00FF00", false);
-			addPlayer("ÚPĚL ĎÁBELKÉ ÓDY BÓŽÝHO DUCHA", "#FF0000", false);
+			addPlayer("AI1", "#FF0000", 5);
+			addPlayer("AI2", "#00FF00", 4);
+			addPlayer("AI3", "#0000FF", 3);
+			addPlayer("AI4", "#FFFF00", 2);
+			addPlayer("AI5", "#00FFFF", 1);
 		},200)
-		selectTerrain();
-} */
+		selectTerrain(undefined, undefined, 5);
+}
 	</script>
 </div>
 <div id="debugMenu" class="normalizeFont">

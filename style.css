@@ -201,6 +201,14 @@ main{
 	min-width: 0.3em;
 }
 
+#AIDificulty{
+	left: 1.1em;
+	display: none;
+}
+
+#startupScreen:has(#AICheckbox[value=true]) #AIDificulty{
+	display: block;
+}
 
 button{
 	height: 1.5em;

@@ -84,6 +84,9 @@ class Game {
 		for (let i = 0; i < 6; i++){
 			generateCloud(floor(random() * terrain.width));
 		}
+		for (let player in this.players) {
+			this.players[player].firstRound = true;
+		}
 	}
 
 	end() {
@@ -108,7 +111,8 @@ class Game {
 			this.start();
 		else {
 			if (this.actualPlayer.AI) {
-				
+				AI.autoShop(this.actualPlayer.AI);
+				this.shopNextPlayer();
 			}
 		}
 	}
@@ -137,36 +141,18 @@ class Game {
 					this.actualPlayerID++;
 				} while (!this.actualPlayer.tank);
 			}
-			let player = this.actualPlayer;
 			this.windStep = this.windStep + 1;
 
 			this.blockControls = false;
-			this.setAim(player.tank?.aim);
-			this.setFirePower(player.tank?.firePower);
+			this.setAim(this.actualPlayer.tank?.aim);
+			this.setFirePower(this.actualPlayer.tank?.firePower);
 			this.blockControls = true;
 			
-			document.querySelector("#gameTopBar .tank").id = "tank" + player.id;
-			if (player.AI) {
-				setTimeout(() => {
-					this.blockControls = false;
-					let bestAngle = 0;
-					let bestDistance = Infinity;
-					for (let angle = 0; angle <= PI; angle += PI / 180) {
-						player.tank.aimFast = angle;
-						let landLocation = player.tank.getCurrentProjectileLandLocation();
-						for (let p = 0; p < game.players.length; p++) {
-							if (game.players[p] != player && game.players[p].tank) {
-								let distance = pythagoras(landLocation, [game.players[p].tank.x, game.players[p].tank.y]);
-								if (distance < bestDistance) {
-									bestDistance = distance;
-									bestAngle = angle;
-								}
-							}
-						}
-					}
-					this.setAim(bestAngle);
-					this.fire();
-				}, 3000 + max(switchScreen(), 0));
+			document.querySelector("#gameTopBar .tank").id = "tank" + this.actualPlayer.id;
+			if (this.actualPlayer.AI) {
+				setTimeout((AILevel) => {
+					AI.autoAim(AILevel);
+				}, 3000 + max(switchScreen(), 0), this.actualPlayer.AI);
 			} else {
 				setTimeout(() => { game.blockControls = false }, switchScreen());
 			}
@@ -222,6 +208,7 @@ class Game {
 		if (!infinityGadgetsAndAmmoCheck)this.actualPlayer.ammo[this.actualPlayer.selectedAmmo]--;
 		ammoList[this.actualPlayer.selectedAmmo].fire()
 			.then(() => { this.nextPlayer() });
+		this.actualPlayer.firstRound = false;
 	}
 
 	globalCSS() {

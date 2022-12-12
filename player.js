@@ -5,7 +5,15 @@ function addPlayer(name, color, AI) {
 	if (!game) {
 		if (name === undefined) name = document.querySelector("#playerNameInput").value;
 		if (color === undefined) color = document.querySelector("#playerColorInput").value;
-		if (AI === undefined) AI = document.querySelector("#AICheckbox").checked;
+		if (AI === undefined) {
+			for (let element of document.querySelectorAll("input[name='AIDificulty']")) {
+				if (element.checked) {
+					AI = parseInt(element.value);
+					break;
+				}
+			}
+			AI = document.querySelector("#AICheckbox").checked ? AI : false;
+		}
 
 		players.push(new Player(players.length, name, color, AI));
 		document.querySelector("#scoreDisplay").innerHTML += `
@@ -16,6 +24,7 @@ function addPlayer(name, color, AI) {
 			document.querySelector("#playerColorInput").value = ["#FF0000", "#00FF00", "#0000FF", "#FFFF00", "#FF00FF"][players.length];
 			document.querySelector("#setupPlayer  h2").innerHTML = (players.length + 1) + ". Hráč";
 			document.querySelector("#AICheckbox").checked = false;
+			document.querySelector("#AICheckbox").value = "false";
 		} else {
 			game = new Game(players, selectedTerrain, generateCaves);
 			console.log(game);
@@ -45,6 +54,7 @@ class Player {
 		for (let gadget of gadgetList) {
 			this.gadget.push(gadget.defaultAmount);
 		}
+		this.firstRound = false;
 	}
 
 	get selected() {

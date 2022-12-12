@@ -38,6 +38,11 @@ gadgetList.push(new Gadget("Fuel", "fuel", 200, 2000, 50))
 gadgetList.push(new Gadget("Parachute", "parachute", 8, 20000, 1))
 gadgetList.push(new Gadget("Teleport", "teleport", 8, 20000, 1))
 
+gadgetDictionary = {};
+for (let gadget of gadgetList) {
+	gadgetDictionary[gadget.shortName] = gadget;
+}
+
 function repairKit() {
 	if (game.blockControls && !ignoreBlockControl) return;
 	if ((game.actualPlayer.gadget[4] > 0 || infinityGadgetsAndAmmoCheck) && game.actualPlayer.tank.maxFirePower < 100) {
@@ -89,7 +94,7 @@ function shield(level) {
 	}
 }
 function shieldGradient(shieldHP) {
-	const colors = [[255, 255, 0, 0], [255, 255, 0, 255], [0, 187, 255, 255], [0, 0, 255, 255], [128, 0, 128, 255]];
+	const colors = [[255, 255, 0, 0], [255, 255, 0, 200], [0, 187, 255, 200], [0, 0, 255, 200], [128, 0, 128, 200]];
 	let level = 0;
 	while (shieldHP > shieldColorLevels[level + 1]) level++;
 	let distanceFromColor = (shieldHP - shieldColorLevels[level]) / (shieldColorLevels[level + 1] - shieldColorLevels[level]);
