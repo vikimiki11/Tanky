@@ -72,7 +72,7 @@ class Terrain extends Array {
 	destroyTerrain(xy, radius) {
 		if (radius >= 200) console.time("destroyTerrain");
 
-		terrain[xy[0]][xy[1]].destroy();
+		if (!this[xy[0]][xy[1]]?.air) terrain[xy[0]][xy[1]]?.destroy();
 		for (let y = 1; y <= radius; y++) {
 			let startx = sqrt(radius ** 2 - y ** 2);
 			for (let x = round(startx); x >= 0; x--) {

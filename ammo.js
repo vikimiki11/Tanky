@@ -240,18 +240,22 @@ class Projectile{
 		if (!noDOM) this.DOM.style.left = this.x + "em";
 		if (!noDOM) this.DOM.style.bottom = this.y + "em";
 		if (terrain.controlCollision(this.x, this.y)[0] || game.checkForTankCollision(this.x, this.y)) {
+			this.destroy(noDOM);
 			this.landed([this.x, this.y, this.vector]);
-			if (!noDOM) this.DOM.remove();
 			this.end = true;
 			return true;
 		}
-		if(this.y < 0) {
+		if (this.y < 0) {
+			this.destroy(noDOM);
 			this.outOfBounds();
 			this.end = true;
 			return true;
 		}
 		this.tickCounter++;
 		return false;
+	}
+	destroy(noDOM) {
+		if (!noDOM) this.DOM.remove();
 	}
 }
 
