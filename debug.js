@@ -36,9 +36,10 @@ function showPointerPosition(e) {
 	if (debug) {
 		debugX = e.layerX / gamePlane.clientWidth * terrain.width;
 		debugY = terrain.height - e.layerY / gamePlane.clientHeight * terrain.height;
-		terrainCollision = terrain.controlCollision(debugX, debugY)[0];
+		distanceFromGround = terrain.distanceFromGround(round(debugX), round(debugY));
 		tankCollision = game.checkForTankCollision(debugX, debugY);
-		document.querySelector("#pointerPosition").innerHTML = `Terrain C.: ${terrainCollision} Tank C.: ${tankCollision} X: ${debugX.toFixed(4)} Y: ${debugY.toFixed(4)}`;
+
+		document.querySelector("#pointerPosition").innerHTML = `Terrain Dis.: ${distanceFromGround} Tank Col.: ${tankCollision} X: ${debugX.toFixed(4)} Y: ${debugY.toFixed(4)}`;
 	}
 }
 

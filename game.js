@@ -236,7 +236,6 @@ class Game {
 			else
 				projectile++;
 		}
-
 	}
 
 	checkForTankCollision(x, y) {

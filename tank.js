@@ -41,6 +41,7 @@ class Tank {
 			this._maxFirePower += this.shield;
 			this.shield = 0;
 		}
+		game.globalCSS();
 	}
 	spawn() {
 		const html = `
@@ -72,30 +73,50 @@ class Tank {
 	}
 	tick() {
 		this.checkOutOfMap();
-		if (!this.onGround)this.x += this.inertia[0];
-		this.y += this.inertia[1];
-		if (!terrain.controlCollision(this.x, this.y)[0]) {
-			this.inertia[1] -= 0.1;
-			this.onGround = false;
-		} else {
-			this.onGround = true;
-			this.inertia = [0,0];
-			do {
-				this.y++;
-			} while ((terrain.controlCollision(this.x, this.y)[1]));
-		}
-		let leftTouches;
-		let maxRounds = 10;
-		do {
-			let groundContact = this.groundContactPlane;
-			leftTouches = 0;
-			for (let i in groundContact.plane) {
-				if (parseInt(i) < Tank.DriveBaseWidth / 2) leftTouches += Number(groundContact.plane[i].touch[0]) + Number(groundContact.plane[i].touch[1]);
-				else leftTouches -= Number(groundContact.plane[i].touch[0]) + Number(groundContact.plane[i].touch[1]);
+		let groundContact = this.groundContactPlane;
+		function move(tank) {
+			if (groundContact.left.under || groundContact.right.under) {
+				tank.y += cos(tank.rotate);
+				tank.x += sin(tank.rotate);
+				groundContact = tank.groundContactPlane;
+				console.debug("move");
+				return move(tank);
 			}
-			this.rotate += leftTouches / 1000;
-			maxRounds--;
-		} while (abs(leftTouches)>5 && maxRounds>0);
+
+
+
+
+			if (groundContact.left.on || groundContact.right.on) {
+				tank.onGround = true;
+			} else {
+				tank.onGround = false;
+				return;
+			}
+
+
+
+			
+			if (!(groundContact.left.on && groundContact.right.on)) {
+				let side = groundContact.left.on ? -1 : 1;
+				let i = 0;
+				while (groundContact.plane[i].distanceFromGround != 0)
+					i += side;
+				/* let anchorPoint = groundContact.plane[i];
+				let newPosition = rotateAroundPoint(tank.x, tank.y, -0.01 * side, anchorPoint.x, anchorPoint.y);
+				tank.x = newPosition[0];
+				tank.y = newPosition[1]; */
+				tank.rotate += -0.05 * side;
+			}
+		}
+		move(this);
+		if (!this.onGround) {
+			this.inertia[1] -= 0.1;
+		} else {
+			this.inertia[0] = 0;
+			this.inertia[1] = 0;
+		}
+		this.x += this.inertia[0];
+		this.y += this.inertia[1];
 	}
 	checkOutOfMap() {
 		if (this.x < 0 + Tank.DriveBaseWidth / 2) {
@@ -112,38 +133,38 @@ class Tank {
 	}
 	get groundContactPlane() {
 		const DriveBaseWidth = Tank.DriveBaseWidth;
-		const Precision = 128 / 60;
+		const Precision = 128 / 65;
 		let groundContactPlane = new Array(DriveBaseWidth);
 		let distanceDifference = cos(this.rotate);
 		let heightDifference = -sin(this.rotate);
-		let touch = false;
-		let leftTouchGround = false;
-		let rightTouchGround = false;
-		let leftTouchAboveGround = false;
-		let rightTouchAboveGround = false;
+		let left = { under:false, on:false, above:false };
+		let right = { under: false, on: false, above: false };
 		let x = 0, y = 0;
 		for (let i = round(DriveBaseWidth * Precision / -2); i < round(DriveBaseWidth * Precision / 2); i++) {
 			x = this.x + (i + 0.5) / Precision * distanceDifference;
 			y = this.y + i / Precision * heightDifference;
-			touch = terrain.controlCollision(x, y);
-			if (touch[0]) {
-				if (i < 0) {
-					leftTouchGround = true;
-				} else {
-					rightTouchGround = true;
-				}
+			let distanceFromGround = terrain.distanceFromGround(x, y);
+			let direction;
+			if (i < 0) {
+				direction = left;
+			} else {
+				direction = right;
 			}
-			if (touch[1]) {
-				if (i < 0) {
-					leftTouchAboveGround = true;
-				} else {
-					rightTouchAboveGround = true;
-				}
+			if (distanceFromGround > 0) {
+				direction.under = true;
+			} else if (distanceFromGround == 0) {
+				direction.on = true;
+			} else {
+				direction.above = true;
 			}
 			let distance = (i + 0.5) / Precision;
-			groundContactPlane[i] = { touch, x, y, distance };
+			groundContactPlane[i] = { distanceFromGround, x, y, distance, position: i };
 		}
-		return {plane:groundContactPlane, leftTouchGround, rightTouchGround, leftTouchAboveGround, rightTouchAboveGround};
+		left.wholeUnder = !left.on && !left.above;
+		right.wholeUnder = !right.on && !right.above;
+		left.wholeAbove	= !left.on && !left.under;
+		right.wholeAbove = !right.on && !right.under;
+		return {plane:groundContactPlane, left, right};
 
 	}
 	drive(x) {

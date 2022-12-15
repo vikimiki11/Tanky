@@ -60,13 +60,18 @@ class Terrain extends Array {
 		this.canvasData.update();
 	}
 	controlCollision(x, y) {
-		//ToDo: collision out of game area owo????uwu
 		if (this[floor(x)] && this[floor(x)][floor(y)])
-			return [
-				this[floor(x)][floor(y)].isSolid,
-				(this[floor(x)][floor(y) + 1] ? this[floor(x)][floor(y) + 1].isSolid : false)
-			];
-		return [false, false];
+			return this[floor(x)][floor(y)].isSolid;
+		return false;
+	}
+	distanceFromGround(x, y) {
+		let groundX = x;
+		let groundY = y;
+		let bottom;
+		while ((!(bottom = this.controlCollision(groundX, groundY)) || this.controlCollision(groundX, groundY + 1)) && !(groundY > this.height) && !(groundY < -Tank.DriveBaseWidth)) {
+			groundY += bottom ? 1 : -1;
+		}
+		return groundY - y;
 	}
 
 	destroyTerrain(xy, radius) {

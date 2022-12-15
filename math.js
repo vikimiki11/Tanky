@@ -75,9 +75,9 @@ function calculateAngle(x1, y1, x2, y2) {
 }
 
 function rotateAroundPoint(x, y, angle, centerx, centery) {
-	let x1 = x - point[0];
-	let y1 = y - point[1];
-	let x2 = x1 * cos(angle) - y1 * sin(angle);
-	let y2 = x1 * sin(angle) + y1 * cos(angle);
-	return [x2 + point[0], y2 + point[1]];
+	let dx = x - centerx;
+	let dy = y - centery;
+	vector = new Vector(dx, dy);
+	vector.angle += angle;
+	return [vector.x + centerx, vector.y + centery];
 }
