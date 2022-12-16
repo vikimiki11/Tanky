@@ -24,7 +24,7 @@ function debugCannonDraw() {
 	};
 }
 
-let infinityGadgetsAndAmmoCheck = true;
+let infinityGadgetsAndAmmoCheck = false;
 function infinityGadgetsAndAmmo() {
 	infinityGadgetsAndAmmoCheck = !infinityGadgetsAndAmmoCheck;
 }

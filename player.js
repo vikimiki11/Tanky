@@ -44,7 +44,7 @@ class Player {
 		this.money = 0;
 		this.score = 0;
 		this.tank = null;
-		this._selected = false;
+		this.selected = false;
 		this._selectedAmmo = 0;
 		this.ammo = [];
 		for (let ammo of ammoList) {
@@ -57,22 +57,11 @@ class Player {
 		this.firstRound = false;
 	}
 
-	get selected() {
-		return this._selected;
-	}
-	set selected(value) {
-		this._selected = value;
-		if (value) this.updateCSS();
-	}
-
 	get selectedAmmo() {
 		return this._selectedAmmo;
 	}
 	set selectedAmmo(value) {
 		this._selectedAmmo = parseInt(value);
-		if (this.selected) {
-			this.updateCSS();
-		}
 	}
 	updateCSS() {
 		document.querySelector("style#playerStyle").innerHTML = `		#selectedAmmo .ammo${this.selectedAmmo} {

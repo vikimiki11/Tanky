@@ -24,7 +24,6 @@ class Tank {
 	set aim(value) {
 		this._aim = value;
 		document.querySelector("#aimControl").value = value;
-		this.player.updateCSS();
 	}
 	set aimFast(value) {
 		this._aim = value;
@@ -42,7 +41,6 @@ class Tank {
 			this._maxFirePower += this.shield;
 			this.shield = 0;
 		}
-		game.globalCSS();
 	}
 	spawn() {
 		const html = `
@@ -99,7 +97,6 @@ class Tank {
 					let speed = pythagoras(tank.inertia);
 					let damage = Math.max(0, (speed - 3) * 10);
 					tank.damage(damage);
-					game.actualPlayer.updateCSS();
 				}
 				tank.parachute = false;
 			} else {
@@ -196,7 +193,6 @@ class Tank {
 				this.inertia[1] = x * -sin(this.rotate);
 				this.x += this.inertia[0];
 				this.y += this.inertia[1];
-				game.actualPlayer.updateCSS();
 			}
 		}
 	}

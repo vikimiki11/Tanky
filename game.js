@@ -101,7 +101,6 @@ class Game {
 			AI.autoShop(this.actualPlayer.AI);
 			this.shopNextPlayer();
 		}
-		this.globalCSS();
 		setTimeout(() => {
 			document.querySelector("#gamePlane .tank")?.remove();
 			removeProjectiles();
@@ -127,7 +126,6 @@ class Game {
 			player.tank = new Tank(player);
 			player.tank.spawn();
 		}
-		this.globalCSS();
 	}
 
 	nextPlayer() {
@@ -169,8 +167,6 @@ class Game {
 		power = max(power, 0);
 		this.actualPlayer.tank.firePower = power;
 		document.querySelector("#firePowerControl input").value = power;
-		this.actualPlayer.updateCSS();
-		this.globalCSS();
 	}
 
 	setAim(angle) {
@@ -179,14 +175,11 @@ class Game {
 		angle = max(angle, 0);
 		this.actualPlayer.tank.aim = angle;
 		document.querySelector("#aimControl").value = angle;
-		this.actualPlayer.updateCSS();
-		this.globalCSS();
 	}
 
 	tankDrive(x) {
 		if (this.blockControls && !ignoreBlockControl) return;
 		this.actualPlayer.tank.drive(x);
-		this.globalCSS();
 	}
 
 	nextAmmo() {
@@ -231,6 +224,7 @@ class Game {
 			player.tank?.tick();
 		}
 		this.globalCSS();
+		this.actualPlayer.updateCSS();
 
 		let projectile = 0;
 		while (projectiles[projectile]) {

@@ -150,8 +150,6 @@ function explosion(xy, radius, damage) {
 			}
 			game.actualPlayer.score += score * 10;
 			game.actualPlayer.money += score * 50;
-			game.actualPlayer.updateCSS();
-			game.globalCSS();
 			if (radius >= 200) console.timeEnd("explosion");
 		}, 500);
 	});

@@ -91,7 +91,6 @@ for (let el of document.querySelectorAll("#shopScreen :is(.ammoRow, .gadgetRow)"
 			game.actualPlayer.money -= products[id].cost;
 			inventory[id] += products[id].buyAmount;
 		}
-		game.actualPlayer.updateCSS();
 	});
 }
 

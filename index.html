@@ -295,10 +295,10 @@
 	<div>Poznačit pozici děla <input type="checkbox" onchange="debugCannonDraw(this)"></div>
 	<button onclick="terrain?.generate()">Generovat nový terén</button>
 	<button onclick="game?.nextPlayer()">Další Hráč</button>
-	<div>Nekonečno nábojů a gadgetů: <input type="checkbox" onchange="infinityGadgetsAndAmmo()" checked></div>
+	<div>Nekonečno nábojů a gadgetů: <input type="checkbox" onchange="infinityGadgetsAndAmmo()"></div>
 	<div>Blokování ovládání: <input type="checkbox" onchange="ignoreBlockControlToggle()"></div>
 	<div id="pointerPosition"></div>
-	<button onclick="if(game) game.actualPlayer.money += 1000000; game.actualPlayer.updateCSS()">Přidat 1 000 000€</button>
+	<button onclick="if(game) game.actualPlayer.money += 1000000">Přidat 1 000 000€</button>
 	<div>Malováníčko <input type="checkbox" onchange="enablePaint(this)"><input id="brushSize" type="range" min="3" max="100"></div>
 	<div><button onclick="setAirSpeed()">Nastavit Rychlost Vzduchu</button> <input id="airSpeed" type="number" min="-50" max="50" placeholder="max 49"></div>
 	<div>Míření: <span id="debugAim"></span></div>

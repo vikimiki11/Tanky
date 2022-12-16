@@ -48,7 +48,6 @@ function repairKit() {
 	if ((game.actualPlayer.gadget[4] > 0 || infinityGadgetsAndAmmoCheck) && game.actualPlayer.tank.maxFirePower < 100) {
 		if (!infinityGadgetsAndAmmoCheck) game.actualPlayer.gadget[4]--;
 		game.actualPlayer.tank.maxFirePower = game.actualPlayer.tank.maxFirePower + 20;
-		game.actualPlayer.updateCSS();
 	}
 }
 function fuel() {
@@ -56,7 +55,6 @@ function fuel() {
 	if (game.actualPlayer.gadget[5] >= 50 || infinityGadgetsAndAmmoCheck) {
 		if (!infinityGadgetsAndAmmoCheck) game.actualPlayer.gadget[5] -= 50;
 		game.actualPlayer.tank.fuel += 50;
-		game.actualPlayer.updateCSS();
 	}
 }
 
@@ -70,7 +68,6 @@ function teleport() {
 		if (!infinityGadgetsAndAmmoCheck) game.actualPlayer.gadget[7]--;
 		gamePlane.style.cursor = "crosshair";
 		teleportActive = true;
-		game.actualPlayer.updateCSS();
 	}
 }
 function teleportClick(e) {
@@ -90,7 +87,6 @@ function shield(level) {
 		if (!infinityGadgetsAndAmmoCheck) game.actualPlayer.gadget[level - 1]-= 1;
 		game.actualPlayer.tank.shield += shieldColorLevels[level];
 		game.actualPlayer.tank.shield = Math.min(game.actualPlayer.tank.shield, shieldColorLevels[shieldColorLevels.length - 1]);
-		game.actualPlayer.updateCSS();
 	}
 }
 function shieldGradient(shieldHP) {
@@ -108,6 +104,5 @@ function useParachute(tank) {
 	if (tank.player.gadget[gadgetDictionary["parachute"].id] > 0 || infinityGadgetsAndAmmoCheck) {
 		if (!infinityGadgetsAndAmmoCheck) tank.player.gadget[gadgetDictionary["parachute"].id]--;
 		tank.parachute = true;
-		game.globalCSS();
 	}
 }

@@ -87,7 +87,6 @@ class AI{
 			player.money -= products[id].cost;
 			inventory[id] += products[id].buyAmount;
 		}
-		player.updateCSS();
 	}
 	static holdNumberOfProducts(name, numberToHold) {
 		let player = game.actualPlayer;
