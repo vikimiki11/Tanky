@@ -16,6 +16,7 @@ class Tank {
 		this.onGround = false;
 		this.inertia = [0, 0];
 		this.shield = 0;
+		this.parachute = true;
 	}
 	get aim() {
 		return this._aim;
@@ -46,6 +47,7 @@ class Tank {
 	spawn() {
 		const html = `
 <div class="tank" id="tank${this.player.id}">
+	<img src="img/gadget/parachute.png" class="parachute">
 	<svg viewBox="0 0 450 175">
 		<!-- bottom part -->
 		<circle cx="50" cy="125" r="50" stroke-width="0" fill="black" />
@@ -69,6 +71,11 @@ class Tank {
 		left: ${this.x}em;
 		bottom: ${this.y}em;
 		--shieldColor: ${shieldGradient(this.shield)};
+	}
+	${this.parachute ?
+	`#tank${this.player.id} .parachute{
+		display: block;
+	}`: ""
 	}`;
 	}
 	tick() {
@@ -88,8 +95,18 @@ class Tank {
 
 			if (groundContact.left.on || groundContact.right.on) {
 				tank.onGround = true;
+				if (!tank.parachute) {
+					let speed = pythagoras(tank.inertia);
+					let damage = Math.max(0, (speed - 3) * 10);
+					tank.damage(damage);
+					game.actualPlayer.updateCSS();
+				}
+				tank.parachute = false;
 			} else {
 				tank.onGround = false;
+				let speed = pythagoras(tank.inertia);
+				if (speed > 3 && !tank.parachute) useParachute(tank);
+				if (tank.parachute) tank.inertia[1] = -3;
 				return;
 			}
 
@@ -117,6 +134,10 @@ class Tank {
 		}
 		this.x += this.inertia[0];
 		this.y += this.inertia[1];
+		if (this.parachute) {
+			this.rotate *= 0.98;
+			this.inertia[0] += game.windCurrent / 6000;
+		}
 	}
 	checkOutOfMap() {
 		if (this.x < 0 + Tank.DriveBaseWidth / 2) {

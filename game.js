@@ -97,6 +97,10 @@ class Game {
 			this.players[p].money += 5000;
 			if (this.players[p].tank) this.players[p].money += 5000;
 		}
+		if (this.actualPlayer.AI) {
+			AI.autoShop(this.actualPlayer.AI);
+			this.shopNextPlayer();
+		}
 		this.globalCSS();
 		setTimeout(() => {
 			document.querySelector("#gamePlane .tank")?.remove();

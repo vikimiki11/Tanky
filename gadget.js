@@ -103,3 +103,11 @@ function shieldGradient(shieldHP) {
 		color[i] = Math.round(color[i] + (colors[level + 1][i] - color[i]) * distanceFromColor);
 	return "rgba(" + color.join(", ") + ")";
 }
+
+function useParachute(tank) {
+	if (tank.player.gadget[gadgetDictionary["parachute"].id] > 0 || infinityGadgetsAndAmmoCheck) {
+		if (!infinityGadgetsAndAmmoCheck) tank.player.gadget[gadgetDictionary["parachute"].id]--;
+		tank.parachute = true;
+		game.globalCSS();
+	}
+}

@@ -647,6 +647,15 @@ svg.superShield>circle {
 	background-color: rgba(255, 240, 240, 0.64);
 }
 
+.parachute{
+	display: none;
+	position: absolute;
+	left: 50%;
+	bottom: 50%;
+	transform: translate(-50%, 0);
+	width: 100%;
+	image-rendering: pixelated;
+}
 
 
 

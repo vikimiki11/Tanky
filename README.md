@@ -2,8 +2,6 @@
 
 pozadí v setupu\
 dveře\
-fall damage\
-padáky\
 Vylepšení tanku\
 
 # Upravit / Dodělat
@@ -16,6 +14,7 @@ mráček\
 
 # Možná???
 
+hitbox shieldu\
 AI(doupravyt úrovně)\
 Jeskyně\
 Možná lepší obrázek tanku UWU\
