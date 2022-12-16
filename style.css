@@ -116,6 +116,7 @@ main{
 	flex-wrap: nowrap;
 	align-items: center;
 	z-index: 999999;
+	image-rendering: pixelated;
 }
 
 #topPartSwitchScreen{

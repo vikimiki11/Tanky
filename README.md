@@ -1,7 +1,6 @@
 # Věci na udělání
 
 pozadí v setupu\
-dveře\
 Vylepšení tanku\
 
 # Upravit / Dodělat
