@@ -9,7 +9,6 @@ Dodělat pozadí do shopu\
 Pohyb(teď je dost šizený)\
 Změnit generování lesů a hor (poušť je už lit♥)\
 Startovní pozice tanků(teď je jednoduše nahodná pozice)\
-mráček\
 
 # Možná???
 
