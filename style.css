@@ -561,6 +561,7 @@ input[type="color"]{
 	right: 0;
 	top: 100%;
 	grid-template-columns: 7em 5em;
+	pointer-events: none;
 }
 #scoreDisplay > *{
 	text-align: end;
