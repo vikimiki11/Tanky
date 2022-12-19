@@ -113,13 +113,14 @@ class Tank {
 			if (!(groundContact.left.on && groundContact.right.on)) {
 				let side = groundContact.left.on ? -1 : 1;
 				let i = 0;
-				while (groundContact.plane[i].distanceFromGround != 0)
+				while (groundContact.plane[i]?.distanceFromGround != 0)
 					i += side;
-				/* let anchorPoint = groundContact.plane[i];
-				let newPosition = rotateAroundPoint(tank.x, tank.y, -0.01 * side, anchorPoint.x, anchorPoint.y);
+				let angleToRotate = -side * 0.05
+				let anchorPoint = groundContact.plane[i];
+				let newPosition = rotateAroundPoint(tank.x, tank.y, angleToRotate, anchorPoint.x, anchorPoint.y);
 				tank.x = newPosition[0];
-				tank.y = newPosition[1]; */
-				tank.rotate += -0.05 * side;
+				tank.y = newPosition[1];
+				tank.rotate += angleToRotate;
 			}
 		}
 		move(this);
@@ -182,10 +183,11 @@ class Tank {
 		right.wholeUnder = !right.on && !right.above;
 		left.wholeAbove	= !left.on && !left.under;
 		right.wholeAbove = !right.on && !right.under;
-		return {plane:groundContactPlane, left, right};
+		return {plane:groundContactPlane, left, right, Precision};
 
 	}
 	drive(x) {
+		if (game.blockControls && !ignoreBlockControl) return;
 		if (this.onGround) {
 			if (this.fuel > 0 || infinityGadgetsAndAmmoCheck) {
 				if (!infinityGadgetsAndAmmoCheck) this.fuel -= 0.5;
@@ -245,5 +247,28 @@ class Tank {
 		let projectile = new Projectile(this.cannonTip, aimVector, undefined, undefined, true);
 		while (!projectile.tick()) { }
 		return [projectile.x, projectile.y, projectile.vector];
+	}
+	fire() {
+		if (game.blockControls && !ignoreBlockControl) return;
+		game.blockControls = true;
+		if (this.player.ammo[this.player.selectedAmmo] <= 0 && !infinityGadgetsAndAmmoCheck) return;
+		if (!infinityGadgetsAndAmmoCheck) this.player.ammo[this.player.selectedAmmo]--;
+		ammoList[this.player.selectedAmmo].fire()
+			.then(() => { game.nextPlayer() });
+		this.player.firstRound = false;
+	}
+	setFirePower(power) {
+		if (game.blockControls && !ignoreBlockControl) return;
+		power = min(parseFloat(power), this.maxFirePower);
+		power = max(power, 0);
+		this.firePower = power;
+		document.querySelector("#firePowerControl input").value = power;
+	}
+	setAim(angle) {
+		if (game.blockControls && !ignoreBlockControl) return;
+		angle = min(parseFloat(angle), PI);
+		angle = max(angle, 0);
+		this.aim = angle;
+		document.querySelector("#aimControl").value = angle;
 	}
 }

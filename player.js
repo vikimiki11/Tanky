@@ -106,4 +106,20 @@ ${this.tank ?`			--aim: ${round(this.tank.aim * 180 / PI)};
 			color: ${this.color};
 		}`;
 	}
+
+	nextAmmo() {
+		if (game.blockControls && !ignoreBlockControl) return;
+		do {
+			this.selectedAmmo++;
+			if (this.selectedAmmo >= ammoList.length) this.selectedAmmo = 0;
+		} while (this.ammo[this.selectedAmmo] <= 0);
+	}
+
+	previousAmmo() {
+		if (game.blockControls && !ignoreBlockControl) return;
+		do {
+			this.selectedAmmo--;
+			if (this.selectedAmmo < 0) this.selectedAmmo = ammoList.length - 1;
+		} while (this.ammo[this.selectedAmmo] <= 0);
+	}
 }

@@ -35,7 +35,9 @@ class Vector {
 
 
 let sin = Math.sin,
+	asin = Math.asin,
 	cos = Math.cos,
+	acos = Math.acos,
 	atan2 = Math.atan2,
 	sqrt = Math.sqrt,
 	PI = Math.PI,

@@ -120,14 +120,6 @@ class Game {
 		}
 	}
 
-	spawnTanks() {
-		for (let playerID in this.players) {
-			let player = this.players[playerID];
-			player.tank = new Tank(player);
-			player.tank.spawn();
-		}
-	}
-
 	nextPlayer() {
 		if (this.inGame) {
 			this.lastPlayerID = this.actualPlayerID;
@@ -149,7 +141,7 @@ class Game {
 			this.setAim(this.actualPlayer.tank?.aim);
 			this.setFirePower(this.actualPlayer.tank?.firePower);
 			this.blockControls = true;
-			
+
 			document.querySelector("#gameTopBar .tank").id = "tank" + this.actualPlayer.id;
 			if (this.actualPlayer.AI) {
 				setTimeout((AILevel) => {
@@ -159,53 +151,6 @@ class Game {
 				setTimeout(() => { game.blockControls = false }, switchScreen());
 			}
 		}
-	}
-
-	setFirePower(power) {
-		if (this.blockControls && !ignoreBlockControl) return;
-		power = min(parseFloat(power), this.actualPlayer.tank?.maxFirePower);
-		power = max(power, 0);
-		this.actualPlayer.tank.firePower = power;
-		document.querySelector("#firePowerControl input").value = power;
-	}
-
-	setAim(angle) {
-		if (this.blockControls && !ignoreBlockControl) return;
-		angle = min(parseFloat(angle), PI);
-		angle = max(angle, 0);
-		this.actualPlayer.tank.aim = angle;
-		document.querySelector("#aimControl").value = angle;
-	}
-
-	tankDrive(x) {
-		if (this.blockControls && !ignoreBlockControl) return;
-		this.actualPlayer.tank.drive(x);
-	}
-
-	nextAmmo() {
-		if (this.blockControls && !ignoreBlockControl) return;
-		do {
-			this.actualPlayer.selectedAmmo++;
-			if (this.actualPlayer.selectedAmmo >= ammoList.length) this.actualPlayer.selectedAmmo = 0;
-		} while (this.actualPlayer.ammo[this.actualPlayer.selectedAmmo] <= 0);
-	}
-
-	previousAmmo() {
-		if (this.blockControls && !ignoreBlockControl) return;
-		do {
-			this.actualPlayer.selectedAmmo--;
-			if (this.actualPlayer.selectedAmmo < 0) this.actualPlayer.selectedAmmo = ammoList.length - 1;
-		} while (this.actualPlayer.ammo[this.actualPlayer.selectedAmmo] <= 0);
-	}
-
-	fire() {
-		if (this.blockControls && !ignoreBlockControl) return;
-		this.blockControls = true;
-		if (this.actualPlayer.ammo[this.actualPlayer.selectedAmmo] <= 0 && !infinityGadgetsAndAmmoCheck) return;
-		if (!infinityGadgetsAndAmmoCheck)this.actualPlayer.ammo[this.actualPlayer.selectedAmmo]--;
-		ammoList[this.actualPlayer.selectedAmmo].fire()
-			.then(() => { this.nextPlayer() });
-		this.actualPlayer.firstRound = false;
 	}
 
 	globalCSS() {
@@ -223,8 +168,6 @@ class Game {
 			let player = this.players[playerID];
 			player.tank?.tick();
 		}
-		this.globalCSS();
-		this.actualPlayer.updateCSS();
 
 		let projectile = 0;
 		while (projectiles[projectile]) {
@@ -234,14 +177,40 @@ class Game {
 			else
 				projectile++;
 		}
+
+		this.globalCSS();
+		this.actualPlayer.updateCSS();
 	}
 
-	checkForTankCollision(x, y) {
-		let tankCollision = false;
-		for (let i = 0; i < game.players.length; i++) {
-			tankCollision = game.players[i].tank?.controlCollision(x, y);
-			if (tankCollision) break;
+	spawnTanks() {
+		for (let playerID in this.players) {
+			let player = this.players[playerID];
+			player.tank = new Tank(player);
+			player.tank.spawn();
 		}
-		return tankCollision;
+	}
+
+	nextAmmo() {
+		this.actualPlayer.nextAmmo();
+	}
+
+	previousAmmo() {
+		this.actualPlayer.previousAmmo();
+	}
+
+	fire() {
+		this.actualPlayer.tank?.fire();
+	}
+
+	setFirePower(power) {
+		this.actualPlayer.tank?.setFirePower(power);
+	}
+
+	setAim(angle) {
+		this.actualPlayer.tank?.setAim(angle);
+	} 	
+
+	tankDrive(x) {
+		this.actualPlayer.tank?.drive(x);
 	}
 }

@@ -1,5 +1,5 @@
 class AI{
-	static aimPrecision = [null, 0, 1, 1, 2, 2];
+	static aimPrecision = [null, 0, 2, 2, 3, 3];
 	static autoAim(AILevel = 1) {
 		game.blockControls = false;
 
@@ -47,7 +47,7 @@ class AI{
 				}
 			}
 		}
-		game.setAim(bestAngle + ((Math.random() - 0.5) / 25 * this.aimPrecision[AILevel] ));
+		game.setAim(bestAngle + ((Math.random() - 0.5) / 33 * this.aimPrecision[AILevel] ));
 		game.fire();
 	}
 	static autoShop(AILevel = 1) {

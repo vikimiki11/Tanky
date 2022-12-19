@@ -104,6 +104,14 @@ class Terrain extends Array {
 		}
 		terrain.canvasData.update();
 	}
+	checkForTankCollision(x, y) {
+		let tankCollision = false;
+		for (let i = 0; i < game.players.length; i++) {
+			tankCollision = game.players[i].tank?.controlCollision(x, y);
+			if (tankCollision) break;
+		}
+		return tankCollision;
+	}
 }
 
 

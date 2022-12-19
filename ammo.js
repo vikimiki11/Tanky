@@ -237,7 +237,7 @@ class Projectile{
 		this.y += this.vector.y;
 		if (!noDOM) this.DOM.style.left = this.x + "em";
 		if (!noDOM) this.DOM.style.bottom = this.y + "em";
-		if (terrain.controlCollision(this.x, this.y) || game.checkForTankCollision(this.x, this.y)) {
+		if (terrain.controlCollision(this.x, this.y) || terrain.checkForTankCollision(this.x, this.y)) {
 			this.destroy(noDOM);
 			this.landed([this.x, this.y, this.vector]);
 			this.end = true;
