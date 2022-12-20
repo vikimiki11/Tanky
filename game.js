@@ -97,20 +97,18 @@ class Game {
 			this.players[p].money += 5000;
 			if (this.players[p].tank) this.players[p].money += 5000;
 		}
-		if (this.actualPlayer.AI) {
-			AI.autoShop(this.actualPlayer.AI);
-			this.shopNextPlayer();
-		}
 		setTimeout(() => {
+			this._actualPlayerID--;
+			this.shopNextPlayer(true);
 			document.querySelector("#gamePlane .tank")?.remove();
 			removeProjectiles();
 			terrain.generate();
-		}, switchScreen());
+		}, switchScreen() + 100);
 	}
 
-	shopNextPlayer() {
+	shopNextPlayer(donCheckStart) {
 		this.actualPlayerID++;
-		if (this.lastPlayerID == this.actualPlayerID)
+		if (!donCheckStart && this.lastPlayerID == this.actualPlayerID)
 			this.start();
 		else {
 			if (this.actualPlayer.AI) {
