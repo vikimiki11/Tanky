@@ -90,13 +90,13 @@ function shield(level) {
 	}
 }
 function shieldGradient(shieldHP) {
-	const colors = [[255, 255, 0, 0], [255, 255, 0, 200], [0, 187, 255, 200], [0, 0, 255, 200], [128, 0, 128, 200]];
+	const colors = [[255, 255, 0, 0], [255, 255, 0, 0.8], [0, 187, 255, 0.8], [0, 0, 255, 0.8], [128, 0, 128, 0.8]];
 	let level = 0;
 	while (shieldHP > shieldColorLevels[level + 1]) level++;
 	let distanceFromColor = (shieldHP - shieldColorLevels[level]) / (shieldColorLevels[level + 1] - shieldColorLevels[level]);
 	let color = [...colors[level]];
-	for (let i = 0; i < 4; i++)
-		color[i] = Math.round(color[i] + (colors[level + 1][i] - color[i]) * distanceFromColor);
+	for (let i = 0; i < 3; i++)
+		color[i] = color[i] + (colors[level + 1][i] - color[i]) * distanceFromColor;
 	return "rgba(" + color.join(", ") + ")";
 }
 
