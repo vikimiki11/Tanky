@@ -78,52 +78,7 @@ class Tank {
 	}
 	tick() {
 		this.checkOutOfMap();
-		let groundContact = this.groundContactPlane;
-		function move(tank) {
-			if (groundContact.left.under || groundContact.right.under) {
-				tank.y += cos(tank.rotate);
-				tank.x += sin(tank.rotate);
-				groundContact = tank.groundContactPlane;
-				console.debug("move");
-				return move(tank);
-			}
-
-
-
-
-			if (groundContact.left.on || groundContact.right.on) {
-				tank.onGround = true;
-				if (!tank.parachute) {
-					let speed = pythagoras(tank.inertia);
-					let damage = Math.max(0, (speed - 3) * 10);
-					tank.damage(damage);
-				}
-				tank.parachute = false;
-			} else {
-				tank.onGround = false;
-				let speed = pythagoras(tank.inertia);
-				if (speed > 3 && !tank.parachute) useParachute(tank);
-				if (tank.parachute) tank.inertia[1] = -3;
-				return;
-			}
-
-
-
-			
-			if (!(groundContact.left.on && groundContact.right.on)) {
-				let side = groundContact.left.on ? -1 : 1;
-				let i = 0;
-				while (groundContact.plane[i]?.distanceFromGround != 0)
-					i += side;
-				let angleToRotate = -side * 0.05
-				let anchorPoint = groundContact.plane[i];
-				let newPosition = rotateAroundPoint(tank.x, tank.y, angleToRotate, anchorPoint.x, anchorPoint.y);
-				tank.x = newPosition[0];
-				tank.y = newPosition[1];
-				tank.rotate += angleToRotate;
-			}
-		}
-		move(this);
+		this.groundColision();
 		if (!this.onGround) {
 			this.inertia[1] -= 0.1;
 		} else {
@@ -135,6 +90,60 @@ class Tank {
 		if (this.parachute) {
 			this.rotate *= 0.98;
 			this.inertia[0] += game.windCurrent / 6000;
+		}
+	}
+	groundColision() {
+		let groundContact = this.groundContactPlane;
+
+
+
+
+		//Move from underground
+		while (groundContact.left.under || groundContact.right.under) {
+			this.y += cos(this.rotate);
+			this.x += sin(this.rotate);
+			groundContact = this.groundContactPlane;
+		}
+
+
+
+
+		if (groundContact.left.on || groundContact.right.on) {
+			//Touches ground
+			this.onGround = true;
+			if (!this.parachute) {
+				let speed = pythagoras(this.inertia);
+				let damage = Math.max(0, (speed - 3) * 10);
+				this.damage(damage);
+			}
+			this.parachute = false;
+		} else {
+			//In air
+			this.onGround = false;
+			let speed = pythagoras(this.inertia);
+			if (speed > 3 && !this.parachute) useParachute(this);
+			if (this.parachute) this.inertia[1] = -3;
+			return;
+		}
+
+
+
+
+		//Rotate ()
+		if (!(groundContact.left.on && groundContact.right.on)) {
+			let side = groundContact.left.on ? -1 : 1;
+			let i = 0;
+			while (groundContact.plane[i]?.distanceFromGround != 0)
+				i += side;
+			
+			
+			
+			let angleToRotate = -side * 0.05
+			let anchorPoint = groundContact.plane[i];
+			let newPosition = rotateAroundPoint(this.x, this.y, angleToRotate, anchorPoint.x, anchorPoint.y);
+			this.x = newPosition[0];
+			this.y = newPosition[1];
+			this.rotate += angleToRotate;
 		}
 	}
 	checkOutOfMap() {
