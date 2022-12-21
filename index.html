@@ -35,7 +35,7 @@
 						<input type="checkbox"><label>Jeskyně</label><br> -->
 						<hr>
 						Počet Hráčů: <input type="number" id="playerCount" min="2" max="5" value="2">
-						<button onclick="selectTerrain();nextStartupScreen()">hrát</button>
+						<button onclick="selectTerrain();nextStartupScreen()">Dál</button>
 					</div>
 				</div>
 				<div id="setupPlayer" class="setupMenu" style="display: none;">
@@ -44,8 +44,8 @@
 						<label>Jméno: </label><input id="playerNameInput"><br>
 						<hr>
 						<label>AI: </label><input type="checkbox" id="AICheckbox" onchange="this.setAttribute('value' ,this.checked)">
-						Color: <input type="color" id="playerColorInput" value="#FF0000"><br><br>
-						<button onclick="addPlayer()">Next</button>
+						Barva: <input type="color" id="playerColorInput" value="#FF0000"><br><br>
+						<button onclick="addPlayer()">Dál</button>
 					</div>
 				</div>
 				<div id="AIDificulty" class="setupMenu">
@@ -78,7 +78,7 @@
 				</div>
 				<div id="rightShopColumn" class="normalizeFont">
 					<div id="gadgetShop"><!-- filled by script --></div>
-					<button style="margin-top: 0;"onclick="game.shopNextPlayer()">Next</button>
+					<button style="margin-top: 0;"onclick="game.shopNextPlayer()">Dál</button>
 				</div>
 			</div>
 		</div>
@@ -199,7 +199,7 @@
 							</svg>
 							<div class="cannon"></div>
 						</div>
-						<button id="fireButton" onclick="game.fire()">Fire</button>
+						<button id="fireButton" onclick="game.fire()">Pal</button>
 					</div>
 
 					<div id="ammo">
