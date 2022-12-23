@@ -199,7 +199,7 @@
 
 	<script>
 			// create worker
-				const myWorker = new Worker("worker.js");
+				const myWorker = new Worker("data:text/javascript;base64,Y29uc3QgbXlXb3JrZXIgPSBuZXcgV29ya2VyKCJkYXRhOnRleHQvamF2YXNjcmlwdDtiYXNlNjQsYzJWc1ppNXZibTFsYzNOaFoyVWdQU0JtZFc1amRHbHZiaUJvWVc1a2JHVk5aWE56WVdkbFJuSnZiVTFoYVc0b2JYTm5LU0I3RFFvSmNHOXpkRTFsYzNOaFoyVW9JaklnYW5WdGNDQWlJQ3NnYlhObkxtUmhkR0VwT3cwS2ZUcz0iKTsNCm15V29ya2VyLm9ubWVzc2FnZSA9IChtZXNzYWdlKSA9PiB7IHBvc3RNZXNzYWdlKG1lc3NhZ2UuZGF0YSkgfTsNCnNlbGYub25tZXNzYWdlID0gZnVuY3Rpb24gaGFuZGxlTWVzc2FnZUZyb21NYWluKG1zZykgew0KCXBvc3RNZXNzYWdlKCIxIGp1bXAgIiArIG1zZy5kYXRhKTsNCglteVdvcmtlci5wb3N0TWVzc2FnZSgiMSBqdW1wICIgKyBtc2cuZGF0YSk7DQoJbGV0IHRlc3QgPSB7DQoJCXg6IDMyDQoJfQ0KCXRlc3QudGVzdCA9ICh4KSA9PiB7IHJldHVybiB4ICogdGhpcy54IH07DQoJcG9zdE1lc3NhZ2UoSlNPTi5zdHJpbmdpZnkoW3Rlc3RdKSkNCn07");
 				myWorker.onmessage = console.log;
 				myWorker.postMessage("ahoj");
 	</script>
@@ -293,7 +293,7 @@
 		</svg>
 		<div class="cannon"></div>
 	</div> -->
-	<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" class="explosion">
+	<!-- <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" class="explosion">
 		<defs>
 			<radialGradient id="explosion" fr="50%">
 				<stop offset="0%" stop-color="#FFFFFF"></stop>
@@ -305,7 +305,7 @@
 		<circle cx="50" cy="50" r="50" fill="url(#explosion)">
 			<animate attributeType="XML" attributeName="r" from="0" to="50" dur="500ms"/>
 		</circle>
-	</svg>
+	</svg> -->
 </body>
 
 </html>

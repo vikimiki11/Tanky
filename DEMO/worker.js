@@ -7,5 +7,5 @@ self.onmessage = function handleMessageFromMain(msg) {
 		x: 32
 	}
 	test.test = (x) => { return x * this.x };
-	postMessage(JSONfn.stringify([test]))
+	postMessage(JSON.stringify([test]))
 };
