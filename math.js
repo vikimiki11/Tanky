@@ -12,22 +12,24 @@ class Vector {
 	}
 	set angle(angle) {
 		let length = this.length;
-		this.x = Math.cos(angle) * length;
-		this.y = -Math.sin(angle) * length;
+		this._setAngleAndLength(angle, length);
 	}
 	get angle() {
-		return Math.atan2(-this.y, this.x);
+		return Math.atan2(this.y, this.x);
 	}
 	set length(length) {
 		let angle = this.angle;
-		this.x = Math.cos(angle) * length;
-		this.y = -Math.sin(angle) * length;
+		this._setAngleAndLength(angle, length);
 	}
 	get length() {
 		return pythagoras([this.x, this.y]);
 	}
 	get copy() {
 		return new Vector(this.x, this.y);
+	}
+	setAngleAndLength(angle, length) {
+		this.x = Math.cos(angle) * length;
+		this.y = Math.sin(angle) * length;
 	}
 }
 
@@ -54,11 +56,11 @@ let sin = Math.sin,
 
 
 function XYToVector(xy) {
-	return [atan2(-xy[1], xy[0]), pythagoras([xy[0], xy[1]])];
+	return [atan2(xy[1], xy[0]), pythagoras([xy[0], xy[1]])];
 }
 
 function vectorToXY(vector) {
-	return [cos(vector[0]) * vector[1], -sin(vector[0]) * vector[1]];
+	return [cos(vector[0]) * vector[1], sin(vector[0]) * vector[1]];
 }
 
 
@@ -73,13 +75,13 @@ function pythagoras(xy, xy2) {
 
 
 function calculateAngle(x1, y1, x2, y2) {
-	return atan2(y2 - y1, x2 - x1);
+	return Math.atan2(y2 - y1, x2 - x1);
 }
 
 function rotateAroundPoint(x, y, angle, centerx, centery) {
 	let dx = x - centerx;
 	let dy = y - centery;
 	vector = new Vector(dx, dy);
-	vector.angle += angle;
+	vector.angle += angle;//ToDo: maybe minus???
 	return [vector.x + centerx, vector.y + centery];
 }

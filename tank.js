@@ -65,7 +65,7 @@ class Tank {
 	#tank${this.player.id} {
 		--tankColor: ${this.player.color};
 		--tankAim: ${this._aim}rad;
-		transform: translate(-50%, 0) rotate(${this.rotate}rad);
+		transform: translate(-50%, 0) rotate(${-this.rotate}rad);
 		left: ${this.x}em;
 		bottom: ${this.y}em;
 		--shieldColor: ${shieldGradient(this.shield)};
@@ -101,7 +101,7 @@ class Tank {
 		//Move from underground
 		while (groundContact.left.under || groundContact.right.under) {
 			this.y += cos(this.rotate);
-			this.x += sin(this.rotate);
+			this.x += -sin(this.rotate);
 			groundContact = this.groundContactPlane;
 		}
 
@@ -138,11 +138,11 @@ class Tank {
 			
 			
 			
-			let angleToRotate = -side * 0.05
-			let anchorPoint = groundContact.plane[i];
+			let angleToRotate = side * 0.05
+			/* let anchorPoint = groundContact.plane[i];
 			let newPosition = rotateAroundPoint(this.x, this.y, angleToRotate, anchorPoint.x, anchorPoint.y);
 			this.x = newPosition[0];
-			this.y = newPosition[1];
+			this.y = newPosition[1]; */
 			this.rotate += angleToRotate;
 		}
 	}
@@ -164,7 +164,7 @@ class Tank {
 		const Precision = 128 / 65;
 		let groundContactPlane = new Array(DriveBaseWidth);
 		let distanceDifference = cos(this.rotate);
-		let heightDifference = -sin(this.rotate);
+		let heightDifference = sin(this.rotate);
 		let left = { under:false, on:false, above:false };
 		let right = { under: false, on: false, above: false };
 		let x = 0, y = 0;
@@ -201,7 +201,7 @@ class Tank {
 			if (this.fuel > 0 || infinityGadgetsAndAmmoCheck) {
 				if (!infinityGadgetsAndAmmoCheck) this.fuel -= 0.5;
 				this.inertia[0] = x * cos(this.rotate);
-				this.inertia[1] = x * -sin(this.rotate);
+				this.inertia[1] = x * sin(this.rotate);
 				this.x += this.inertia[0];
 				this.y += this.inertia[1];
 			}
@@ -209,19 +209,19 @@ class Tank {
 	}
 	get cannonBase() {
 		return [
-			this.x + 25 / 6 * 5 * sin(this.rotate),
+			this.x + 25 / 6 * 5 * -sin(this.rotate),
 			this.y + 25 / 6 * 5 * cos(this.rotate)
 		];
 	}
 	get cannonAngle() {
-		return this.rotate + this.aim + PI;
+		return this.rotate - this.aim + PI;
 	}
 	get cannonTip() {
 		let base = this.cannonBase;
 		let width = (25 * 9 / 3.5) * 0.4;
 		return [
 			base[0] + width * cos(this.cannonAngle),
-			base[1] + width * -sin(this.cannonAngle)
+			base[1] + width * sin(this.cannonAngle)
 		];
 	}
 	controlCollision(x, y) {
@@ -231,8 +231,8 @@ class Tank {
 		if (distance > Tank.DriveBaseWidth) return false;
 
 		//vypočítání pozice vůči tanku
-		let rotatedX = dx * cos(this.rotate) + dy * -sin(this.rotate);
-		let rotatedY = dx * sin(this.rotate) + dy * cos(this.rotate);
+		let rotatedX = dx * cos(this.rotate) + dy * sin(this.rotate);
+		let rotatedY = dx * -sin(this.rotate) + dy * cos(this.rotate);
 
 		if (rotatedY > 0 && rotatedY < Tank.TankHeight) {
 			if (abs(rotatedX) < Tank.TankHeadWidth / 2) return true;
