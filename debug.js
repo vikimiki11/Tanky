@@ -33,14 +33,14 @@ gamePlane.addEventListener("mousemove", showPointerPosition);
 debugX = 0;
 debugY = 0;
 function showPointerPosition(e) {
-	if (debug) {
-		debugX = e.layerX / gamePlane.clientWidth * terrain.width;
-		debugY = terrain.height - e.layerY / gamePlane.clientHeight * terrain.height;
-		distanceFromGround = terrain.distanceFromGround(round(debugX), round(debugY));
-		tankCollision = terrain.checkForTankCollision(debugX, debugY);
+	if (!debug) return;
+	debugX = e.layerX / gamePlane.clientWidth * terrain.width;
+	debugY = terrain.height - e.layerY / gamePlane.clientHeight * terrain.height;
+	distanceFromGround = terrain.distanceFromGround(round(debugX), round(debugY));
+	tankCollision = terrain.checkForTankCollision(debugX, debugY);
 
-		document.querySelector("#pointerPosition").innerHTML = `Terrain Dis.: ${distanceFromGround} Tank Col.: ${tankCollision} X: ${debugX.toFixed(4)} Y: ${debugY.toFixed(4)}`;
-	}
+	document.querySelector("#pointerPosition").innerHTML = `Terrain Dis.: ${distanceFromGround} Tank Col.: ${tankCollision} X: ${debugX.toFixed(4)} Y: ${debugY.toFixed(4)}`;
+
 }
 
 
@@ -57,17 +57,16 @@ function enablePaint() {
 };
 gamePlane.addEventListener("mousemove", paint);
 function paint(e) {
-	if (paintEnable) {
-		e.preventDefault();
-		let x = e.layerX / gamePlane.clientWidth * terrain.width;
-		let y = terrain.height - e.layerY / gamePlane.clientHeight * terrain.height;
-		let leftButton = Boolean(e.buttons % 2);
-		let rightButton = Boolean(floor(e.buttons / 2));
-		let xy = [round(x), round(y)];
-		let radius = parseInt(brushSize.value);
-		if (leftButton) terrain.destroyTerrain(xy, radius);
-		if (rightButton) terrain.buildTerrain(xy, radius);
-	}
+	if (!paintEnable) return;
+	e.preventDefault();
+	let x = e.layerX / gamePlane.clientWidth * terrain.width;
+	let y = terrain.height - e.layerY / gamePlane.clientHeight * terrain.height;
+	let leftButton = Boolean(e.buttons % 2);
+	let rightButton = Boolean(floor(e.buttons / 2));
+	let xy = [round(x), round(y)];
+	let radius = parseInt(brushSize.value);
+	if (leftButton) terrain.destroyTerrain(xy, radius);
+	if (rightButton) terrain.buildTerrain(xy, radius);
 }
 gamePlane.addEventListener("contextmenu", (e) => { if (paintEnable)e.preventDefault() });
 

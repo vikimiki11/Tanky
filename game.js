@@ -119,35 +119,34 @@ class Game {
 	}
 
 	nextPlayer() {
-		if (this.inGame) {
-			this.lastPlayerID = this.actualPlayerID;
-			let alivePlayersCount = 0;
-			for (let p in this.players) {
-				if (this.players[p].tank) alivePlayersCount++;
-			}
-			if (alivePlayersCount <= 1) {
-				this.end();
-				return;
-			} else {
-				do {
-					this.actualPlayerID++;
-				} while (!this.actualPlayer.tank);
-			}
-			this.windStep = this.windStep + 1;
+		if (!this.inGame) return;
+		this.lastPlayerID = this.actualPlayerID;
+		let alivePlayersCount = 0;
+		for (let p in this.players) {
+			if (this.players[p].tank) alivePlayersCount++;
+		}
+		if (alivePlayersCount <= 1) {
+			this.end();
+			return;
+		} else {
+			do {
+				this.actualPlayerID++;
+			} while (!this.actualPlayer.tank);
+		}
+		this.windStep = this.windStep + 1;
 
-			this.blockControls = false;
-			this.setAim(this.actualPlayer.tank?.aim);
-			this.setFirePower(this.actualPlayer.tank?.firePower);
-			this.blockControls = true;
+		this.blockControls = false;
+		this.setAim(this.actualPlayer.tank?.aim);
+		this.setFirePower(this.actualPlayer.tank?.firePower);
+		this.blockControls = true;
 
-			document.querySelector("#gameTopBar .tank").id = "tank" + this.actualPlayer.id;
-			if (this.actualPlayer.AI) {
-				setTimeout((AILevel) => {
-					AI.autoAim(AILevel);
-				}, 3000 + max(switchScreen(), 0), this.actualPlayer.AI);
-			} else {
-				setTimeout(() => { game.blockControls = false }, switchScreen());
-			}
+		document.querySelector("#gameTopBar .tank").id = "tank" + this.actualPlayer.id;
+		if (this.actualPlayer.AI) {
+			setTimeout((AILevel) => {
+				AI.autoAim(AILevel);
+			}, 3000 + max(switchScreen(), 0), this.actualPlayer.AI);
+		} else {
+			setTimeout(() => { game.blockControls = false }, switchScreen());
 		}
 	}
 
