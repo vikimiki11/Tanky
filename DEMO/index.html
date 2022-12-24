@@ -199,9 +199,13 @@
 
 	<script>
 			// create worker
-				const myWorker = new Worker("data:text/javascript;base64,Y29uc3QgbXlXb3JrZXIgPSBuZXcgV29ya2VyKCJkYXRhOnRleHQvamF2YXNjcmlwdDtiYXNlNjQsYzJWc1ppNXZibTFsYzNOaFoyVWdQU0JtZFc1amRHbHZiaUJvWVc1a2JHVk5aWE56WVdkbFJuSnZiVTFoYVc0b2JYTm5LU0I3RFFvSmNHOXpkRTFsYzNOaFoyVW9JaklnYW5WdGNDQWlJQ3NnYlhObkxtUmhkR0VwT3cwS2ZUcz0iKTsNCm15V29ya2VyLm9ubWVzc2FnZSA9IChtZXNzYWdlKSA9PiB7IHBvc3RNZXNzYWdlKG1lc3NhZ2UuZGF0YSkgfTsNCnNlbGYub25tZXNzYWdlID0gZnVuY3Rpb24gaGFuZGxlTWVzc2FnZUZyb21NYWluKG1zZykgew0KCXBvc3RNZXNzYWdlKCIxIGp1bXAgIiArIG1zZy5kYXRhKTsNCglteVdvcmtlci5wb3N0TWVzc2FnZSgiMSBqdW1wICIgKyBtc2cuZGF0YSk7DQoJbGV0IHRlc3QgPSB7DQoJCXg6IDMyDQoJfQ0KCXRlc3QudGVzdCA9ICh4KSA9PiB7IHJldHVybiB4ICogdGhpcy54IH07DQoJcG9zdE1lc3NhZ2UoSlNPTi5zdHJpbmdpZnkoW3Rlc3RdKSkNCn07");
-				myWorker.onmessage = console.log;
-				myWorker.postMessage("ahoj");
+				const myWorker = new Worker("DEMO/worker.js");
+				myWorker.onmessage = (data)=>{console.timeEnd("all");console.log(data)};
+				console.time("all");
+				console.time("tam"); 
+				myWorker.postMessage(data);
+				console.timeEnd("tam");
+				myWorker.postMessage({k:"xdd", v: 5});
 	</script>
 
 
