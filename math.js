@@ -12,7 +12,7 @@ class Vector {
 	}
 	set angle(angle) {
 		let length = this.length;
-		this._setAngleAndLength(angle, length);
+		this.setAngleAndLength(angle, length);
 	}
 	get angle() {
 		return Math.atan2(this.y, this.x);

@@ -139,10 +139,10 @@ class Tank {
 			
 			
 			let angleToRotate = side * 0.05
-			/* let anchorPoint = groundContact.plane[i];
+			let anchorPoint = groundContact.plane[i];
 			let newPosition = rotateAroundPoint(this.x, this.y, angleToRotate, anchorPoint.x, anchorPoint.y);
 			this.x = newPosition[0];
-			this.y = newPosition[1]; */
+			this.y = newPosition[1];
 			this.rotate += angleToRotate;
 		}
 	}
