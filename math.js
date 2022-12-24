@@ -19,7 +19,7 @@ class Vector {
 	}
 	set length(length) {
 		let angle = this.angle;
-		this._setAngleAndLength(angle, length);
+		this.setAngleAndLength(angle, length);
 	}
 	get length() {
 		return pythagoras([this.x, this.y]);
