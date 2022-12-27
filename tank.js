@@ -132,14 +132,24 @@ class Tank {
 		//Rotate ()
 		if (!(groundContact.left.on && groundContact.right.on)) {
 			let side = groundContact.left.on ? -1 : 1;
-			let i = 0;
-			while (groundContact.plane[i]?.distanceFromGround != 0)
-				i += side;
-			
-			
-			
-			let angleToRotate = side * 0.05
-			let anchorPoint = groundContact.plane[i];
+			let groundContactIndex = -0.5 + side / 2;
+			while (groundContact.plane[groundContactIndex]?.distanceFromGround != 0)
+				groundContactIndex += side;
+
+
+			let maxAngleToRotate = Infinity;
+			const anchorPoint = groundContact.plane[groundContactIndex];
+			for (let i = -0.5 - side / 2; groundContact.plane[i]; i -= side) {
+				let x = groundContact.plane[i].x - anchorPoint.x;
+				let y = groundContact.plane[i].y - anchorPoint.y;
+				let distanceToGround = groundContact.plane[i].distanceFromGround;
+				let angleToRotate = atan2(y + distanceToGround, x) - this.rotate;
+				maxAngleToRotate = min(maxAngleToRotate, abs(angleToRotate));
+			}
+
+
+
+			let angleToRotate = side * min(0.05, maxAngleToRotate)
 			let newPosition = rotateAroundPoint(this.x, this.y, angleToRotate, anchorPoint.x, anchorPoint.y);
 			this.x = newPosition[0];
 			this.y = newPosition[1];
