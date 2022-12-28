@@ -263,7 +263,8 @@ class Tank {
 		let aimVector = new Vector();
 		aimVector.angle = this.cannonAngle;
 		aimVector.length = this.firePower / 100 * DefaultAmmoSpeed;
-		let projectile = new Projectile(this.cannonTip, aimVector, undefined, undefined, true);
+		let XYVector = [this.cannonTip[0], this.cannonTip[1], aimVector]
+		let projectile = new FlyingProjectile(XYVector, undefined, undefined, true);
 		while (!projectile.tick()) { }
 		return [projectile.x, projectile.y, projectile.vector];
 	}
