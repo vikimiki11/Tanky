@@ -43,7 +43,7 @@ ammoList.push(new Ammo("Small atom bomb", "smallAtomBomb", "mashroom.png", 10, 1
 ));
 
 
-ammoList.push(new Ammo("Atom bomb", "atomBomb", "mashroom.png", 10, 1000, 10,
+ammoList.push(new Ammo("Atom bomb", "atomBomb", "redMashroom.png", 10, 1000, 10,
 	() => { return simpleFlyingAmmo(undefined, undefined, 500, 300) }
 ));
 
