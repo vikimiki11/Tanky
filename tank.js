@@ -139,7 +139,7 @@ class Tank {
 
 			let maxAngleToRotate = Infinity;
 			const anchorPoint = groundContact.plane[groundContactIndex];
-			for (let i = -0.5 - side / 2; groundContact.plane[i]; i -= side) {
+			for (let i = groundContactIndex - side; groundContact.plane[i]; i -= side) {
 				let x = groundContact.plane[i].x - anchorPoint.x;
 				let y = groundContact.plane[i].y - anchorPoint.y;
 				let distanceToGround = groundContact.plane[i].distanceFromGround;
