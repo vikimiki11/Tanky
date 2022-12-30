@@ -189,6 +189,10 @@ class TerrainBlock {
 				let n = noise.simplex2(this.x * scale, this.y * scale) * 1.25;
 				this.color = TerrainBlock.desertGradient(this.distanceFromGround / 30 + n);
 			}
+			let depthColoring = 1 - this.distanceFromGround / terrain.height / 1.5;
+			this.color[0] *= depthColoring;
+			this.color[1] *= depthColoring;
+			this.color[2] *= depthColoring;
 			this.canvasData.setPixel(this.x, this.y, this.color);
 		}
 	}
