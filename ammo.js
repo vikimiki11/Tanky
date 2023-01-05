@@ -48,7 +48,7 @@ ammoList.push(new Ammo("Atom bomb", "atomBomb", "redMashroom.png", 10, 1000, 10,
 ));
 
 
-ammoList.push(new Ammo("Volcano Bomb", "volcanoBomb", "volcanoBomb.png", 10, 1000, 10,
+ammoList.push(new Ammo("Volcano bomb", "volcanoBomb", "volcanoBomb.png", 10, 1000, 10,
 	() => {
 		return new Promise((resolve) => {
 			fireFlyingProjectile().then((XYVector) => {
@@ -57,8 +57,8 @@ ammoList.push(new Ammo("Volcano Bomb", "volcanoBomb", "volcanoBomb.png", 10, 100
 				let promises = [];
 				for (let i = 0; i < 4; i++) {
 					let vector = new Vector(0, 0);
-					vector.length = 2.5;
-					vector.angle = -PI / 4 * (1 + i * 3 / 4);
+					vector.length = pythagoras([XYVector[2].x, XYVector[2].y]) / 2;
+					vector.angle = PI / 4 * (1 + i * 3 / 4);
 					promises.push(simpleFlyingAmmo(xy, vector, 30, 25));
 				}
 				Promise.allSettled(promises).then(resolve);
