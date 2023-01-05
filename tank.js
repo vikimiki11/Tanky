@@ -78,7 +78,7 @@ class Tank {
 	}
 	tick() {
 		this.checkOutOfMap();
-		this.groundColision();
+		this.groundCollision();
 		if (!this.onGround) {
 			this.inertia[1] -= 0.1;
 		} else {
@@ -92,7 +92,7 @@ class Tank {
 			this.inertia[0] += game.windCurrent / 6000;
 		}
 	}
-	groundColision() {
+	groundCollision() {
 		let groundContact = this.groundContactPlane;
 
 
