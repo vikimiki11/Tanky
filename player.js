@@ -26,7 +26,7 @@ function addPlayer(name, color, AI) {
 		document.querySelector("#AICheckbox").checked = false;
 		document.querySelector("#AICheckbox").value = "false";
 	} else {
-		game = new Game(players, selectedTerrain, generateCaves);
+		game = new Game(players, selectedTerrain);
 		console.log(game);
 		game.start()
 	}

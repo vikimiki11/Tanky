@@ -1,10 +1,9 @@
 let selectedTerrain;
-let generateCaves;
 let game;
 const windJump = 0.125;
 const windMax = 50;
 let terrain;
-function selectTerrain(terrainType/* undefined: try to fetch it, 0:random, 1:mountains, 2: forest, 3:desert */, caves/* undefined: try to fetch it, 0:no, 1:yes */, players = parseInt(document.querySelector("#playerCount").value)) {
+function selectTerrain(terrainType/* undefined: try to fetch it, 0:random, 1:mountains, 2: forest, 3:desert */, players = parseInt(document.querySelector("#playerCount").value)) {
 	if(terrainType === undefined) {
 		for(let element of document.querySelectorAll("input[name='terrain']")) {
 			if(element.checked) {
@@ -14,10 +13,6 @@ function selectTerrain(terrainType/* undefined: try to fetch it, 0:random, 1:mou
 		}
 	}
 	selectedTerrain = parseInt(terrainType);
-
-	const checkboxQS = "#setupBasic > div > input[type=checkbox]"
-	if (caves === undefined && document.querySelector(checkboxQS)) caves = document.querySelector(checkboxQS).checked;
-	generateCaves = caves;
 
 	maxPlayers = players;
 
@@ -35,10 +30,9 @@ function selectTerrain(terrainType/* undefined: try to fetch it, 0:random, 1:mou
 
 
 class Game {
-	constructor(players, terrain, caves) {
+	constructor(players, terrain) {
 		this.players = players;
 		this.terrainSettings = terrain;
-		this.cavesSettings = caves;
 		this._actualPlayerID = -1;
 		this.blockControls = true;
 		this.windSeed = random();
