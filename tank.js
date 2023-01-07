@@ -79,17 +79,19 @@ class Tank {
 	tick() {
 		this.checkOutOfMap();
 		this.groundCollision();
+		//Gravity and null inertia
+
+		if (this.parachute) {
+			this.rotate *= 0.98;
+			this.inertia[0] += game.windCurrent / 6000;
+		}
+		this.x += this.inertia[0];
+		this.y += this.inertia[1];
 		if (!this.onGround) {
 			this.inertia[1] -= 0.1;
 		} else {
 			this.inertia[0] = 0;
 			this.inertia[1] = 0;
-		}
-		this.x += this.inertia[0];
-		this.y += this.inertia[1];
-		if (this.parachute) {
-			this.rotate *= 0.98;
-			this.inertia[0] += game.windCurrent / 6000;
 		}
 	}
 	groundCollision() {
@@ -107,7 +109,7 @@ class Tank {
 
 
 
-
+		//open parachute and fall damage
 		if (groundContact.left.on || groundContact.right.on) {
 			//Touches ground
 			this.onGround = true;
@@ -129,13 +131,12 @@ class Tank {
 
 
 
-		//Rotate ()
+		//Rotate
 		if (!(groundContact.left.on && groundContact.right.on)) {
 			let side = groundContact.left.on ? -1 : 1;
 			let groundContactIndex = -0.5 + side / 2;
 			while (groundContact.plane[groundContactIndex]?.distanceFromGround != 0)
 				groundContactIndex += side;
-
 
 			let maxAngleToRotate = Infinity;
 			const anchorPoint = groundContact.plane[groundContactIndex];
@@ -147,13 +148,27 @@ class Tank {
 				maxAngleToRotate = min(maxAngleToRotate, abs(angleToRotate));
 			}
 
-
-
 			let angleToRotate = side * min(0.05, maxAngleToRotate)
 			let newPosition = rotateAroundPoint(this.x, this.y, angleToRotate, anchorPoint.x, anchorPoint.y);
 			this.x = newPosition[0];
 			this.y = newPosition[1];
 			this.rotate += angleToRotate;
+		}
+	}
+	checkSideCollision() {
+		let sideContactPlane = this.sideContactPlane;
+		const MaxDrivebleTerrain = 5;
+		const MaxAngleToDrive = 0.5;
+		for (let i of [{ side: "leftSpaceInGround", wall: "leftWall", check: (x) => { return x < 0 } }, { side: "rightSpaceInGround", wall: "rightWall", check: (x) => { return x > 0 } }]) {
+			if (sideContactPlane[i.side] > MaxDrivebleTerrain || sideContactPlane[i.wall]) {
+				let vector = new Vector(this.inertia[0], this.inertia[1]);
+				if (i.check(vector.x))
+					this.inertia = [0, 0];
+				if (sideContactPlane[i.wall])
+					console.log("wall");
+				if (sideContactPlane[i.side] > MaxDrivebleTerrain)
+					console.log("steep");
+			}
 		}
 	}
 	checkOutOfMap() {
@@ -205,6 +220,26 @@ class Tank {
 		return {plane:groundContactPlane, left, right, Precision};
 
 	}
+	get sideContactPlane() {
+		let ret = { left: new Array(Tank.TankHeight), right: new Array(Tank.TankHeight), leftSpaceInGround: 0, rightSpaceInGround: 0, leftWall: false, rightWall: false };
+		for (let height = 0; height < Tank.TankHeight; height++) {
+			for (let side = -Tank.DriveBaseWidth / 2 - 2; side < Tank.DriveBaseWidth; side += Tank.DriveBaseWidth + 4) {
+				let rotated = rotateAroundPoint(side, height, this.rotate, 0, 0);
+				let x = rotated[0] + this.x;
+				let y = rotated[1] + this.y;
+				let collision = terrain.controlCollision(x, y);
+				ret[side < 0 ? "left" : "right"][height] = {height, x, y, collision };
+				if (collision && height == ret[side < 0 ? "leftSpaceInGround" : "rightSpaceInGround"]) {
+					ret[side < 0 ? "leftSpaceInGround" : "rightSpaceInGround"]++;
+				}
+				else {
+					if (collision && height > ret[side < 0 ? "leftSpaceInGround" : "rightSpaceInGround"] + 2)
+						ret[side < 0 ? "leftWall" : "rightWall"] = height;
+				}
+			}
+		}
+		return ret;
+	}
 	drive(x) {
 		if (game.blockControls && !ignoreBlockControl) return;
 		if (this.onGround) {
@@ -212,10 +247,9 @@ class Tank {
 				if (!infinityGadgetsAndAmmoCheck) this.fuel -= 0.5;
 				this.inertia[0] = x * cos(this.rotate);
 				this.inertia[1] = x * sin(this.rotate);
-				this.x += this.inertia[0];
-				this.y += this.inertia[1];
 			}
 		}
+		this.checkSideCollision();
 	}
 	get cannonBase() {
 		return [

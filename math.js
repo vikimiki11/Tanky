@@ -3,9 +3,9 @@ class Vector {
 		if (x == undefined || y == undefined) {
 			let angle = game.actualPlayer.tank.cannonAngle;
 			let speed = game.actualPlayer.tank.firePower / 100 * DefaultAmmoSpeed;
-			let vector = vectorToXY([angle, speed]);
-			x = vector[0];
-			y = vector[1];
+			let XY = vectorToXY([angle, speed]);
+			x = XY[0];
+			y = XY[1];
 		}
 		this.x = x;
 		this.y = y;
