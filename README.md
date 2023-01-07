@@ -12,11 +12,9 @@ Rework game classy
 
 # Možná???
 
-hitbox shieldu\
 AI(doupravit úrovně)\
 Zvuky\
 Stylování pro více prohlížečů + mobil???\
-Generování stromů(do lesa by se hodily stromy)
-
+Generování stromů(do lesa by se hodily stromy)\
 
 falldamage nezabije !F

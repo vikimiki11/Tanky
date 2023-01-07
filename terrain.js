@@ -58,6 +58,20 @@ class Terrain extends Array {
 		console.timeEnd("generate TerrainBlock");
 		this.canvasData.grainification(1, 4, 15);
 		this.canvasData.update();
+
+		updateSkyBox();
+		function updateSkyBox() {
+			let y = noise.simplex2(0, -100000)*0.5+0.5;
+			let x = noise.simplex2(-100000, -100000);
+			let innerSkyColor = GetSkyBoxColor("#75B1FF", "#C896C8", y);
+			let outerSkyColor = GetSkyBoxColor("#1A7DFF", "#003F9F", y);
+			innerSky.setAttribute("stop-color", innerSkyColor);
+			outerSky.setAttribute("stop-color", outerSkyColor);
+			sun.setAttribute("cx", `${x * 2200 + 1280}`);
+			skybox.setAttribute("cx", `${x * 2200 + 1280}`);
+			sun.setAttribute("cy", `${y * 600 + 450}`);
+			skybox.setAttribute("cy", `${y * 750 + 1860}`);
+		}
 	}
 	controlCollision(x, y) {
 		if (this[floor(x)] && this[floor(x)][floor(y)])
@@ -300,4 +314,23 @@ class CanvasData {
 		}
 		console.groupEnd("grainification");
 	}
+}
+function HexToDec(rgb) {
+	rgb = parseInt(rgb.replace("#", ""), 16);
+	return {
+		r: (rgb >> 16) & 0xFF,
+		g: (rgb >> 8) & 0xFF,
+		b: rgb & 0xFF
+	};
+}
+function DecToHex(rgb) {
+	return "#" + ((1 << 24) + (rgb.r << 16) + (rgb.g << 8) + rgb.b).toString(16).slice(1);
+}
+function GetSkyBoxColor(rgb, rgb2, ration) {
+	rgb = HexToDec(rgb);
+	rgb2 = HexToDec(rgb2);
+	let r = Math.round(rgb.r + (rgb2.r - rgb.r) * ration);
+	let g = Math.round(rgb.g + (rgb2.g - rgb.g) * ration);
+	let b = Math.round(rgb.b + (rgb2.b - rgb.b) * ration);
+	return DecToHex({ r, g, b });
 }

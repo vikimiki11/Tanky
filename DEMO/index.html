@@ -317,16 +317,19 @@
 	<svg viewBox="0 0 2560 1440" xmlns="https://www.w3.or/2000/svg">
 		<defs>
 			<radialGradient id="sky">
-
-				<stop offset="40%" stop-color="#666ce1" id="innerSky"></stop>
-				<stop offset="90%" stop-color="#003f9f" id="outerSky"></stop>
+				<stop offset="40%" stop-color="#666ce1" id="innerSky"></stop><!-- 75B1FF -->
+				<stop offset="90%" stop-color="#003f9f" id="outerSky"></stop><!-- 1A7DFF -->
+			</radialGradient>
+			<radialGradient id="sunG">
+				<stop offset="0%" stop-color="yellow" id="innerSky"></stop><!-- 75B1FF -->
+				<stop offset="100%" stop-color="#dddd00" id="outerSky"></stop><!-- 1A7DFF -->
 			</radialGradient>
 		</defs>
 		<circle cx="1280" cy="2160" r="3200" fill="url(#sky)" id="skybox">
 		</circle>
-		<circle cx="1280" cy="800" r="100" fill="yellow" id="sun"></circle>
+		<circle cx="1280" cy="800" r="100" fill="url(#sunG)" id="sun"></circle>
 	</svg>
-	<input type="range" id="xdslider" style="
+	<input type="range" min="0" max="1" step="0.005" id="xdslider" style="
     position: absolute;
     z-index: 900;
 "><input type="range" id="ydslider" style="
@@ -338,31 +341,62 @@
     z-index: 900;
 	top:3em;
 ">
-	<img src="testTerrain.png"><script>
+	<input type="color" id="color1" value = "#75B1FF">
+	<input type="color" id="color2" value = "#1A7DFF">
+	<input type="color" id="color3" value = "#C896C8"><!-- C896C8 666ce1 -->
+	<input type="color" id="color4" value = "#003F9F">
+	<img src="testTerrain.png">
+	<script>
 		let innerSky = document.querySelector("#innerSky");
 		let outerSky = document.querySelector("#outerSky");
 		let xdslider = document.querySelector("#xdslider");
 		let ydslider = document.querySelector("#ydslider");
 		let zdslider = document.querySelector("#zdslider");
+		let Color1 = document.querySelector("#color1");
+		let Color2 = document.querySelector("#color2");
+		let Color3 = document.querySelector("#color3");
+		let Color4 = document.querySelector("#color4");
 		let sun = document.querySelector("#sun");
 		let skybox = document.querySelector("#skybox");
 		xdslider.addEventListener("mousemove", update);
 		ydslider.addEventListener("mousemove", update);
 		zdslider.addEventListener("mousemove", update);
+		Color1.addEventListener("change", update);
+		Color2.addEventListener("change", update);
+		Color3.addEventListener("change", update);
+		Color4.addEventListener("change", update);
 		function update() {
-			let x = parseInt(xdslider.value);
-			let y = parseInt(ydslider.value);
-			let z = parseInt(zdslider.value);
-			/*
-			innerSky.setAttribute("stop-color", `rgb(${x},${x},${x})`);
-			outerSky.setAttribute("stop-color", `rgb(${x / 2},${x / 2},${x / 2})`);
-			*/
-			sun.setAttribute("cy", `${y * 7 + 450}`);
-			skybox.setAttribute("cy", `${y * 7 + 1860}`);
-			sun.setAttribute("cx", `${(z - 50) * 10 + 1280}`);
-			skybox.setAttribute("cx", `${(z - 50) * 10 + 1280}`);
+			let y = parseFloat(xdslider.value);
+			let x = parseInt(zdslider.value);
+			innerSkyColor = GetEndColor(Color1.value, Color3.value, y);
+			outerSkyColor = GetEndColor(Color2.value, Color4.value, y);
+			innerSky.setAttribute("stop-color", innerSkyColor);
+			outerSky.setAttribute("stop-color", outerSkyColor);
+			sun.setAttribute("cx", `${(x - 50) * 10 + 1280}`);
+			skybox.setAttribute("cx", `${(x - 50) * 10 + 1280}`);
+			sun.setAttribute("cy", `${y * 600 + 450}`);
+			skybox.setAttribute("cy", `${y * 750 + 1860}`);
 
 			skybox.setAttribute("fill", `url(#sky)`);
+		}
+		function HexToDec(rgb) {
+			rgb = parseInt(rgb.replace("#", ""), 16);
+			return {
+				r: (rgb >> 16) & 0xFF,
+				g: (rgb >> 8) & 0xFF,
+				b: rgb & 0xFF
+			};
+		}
+		function DecToHex(rgb) {
+			return "#" + ((1 << 24) + (rgb.r << 16) + (rgb.g << 8) + rgb.b).toString(16).slice(1);
+		}
+		function GetEndColor(rgb, rgb2, ration){
+			rgb = HexToDec(rgb);
+			rgb2 = HexToDec(rgb2);
+			let r = Math.round(rgb.r + (rgb2.r - rgb.r) * ration);
+			let g = Math.round(rgb.g + (rgb2.g - rgb.g) * ration);
+			let b = Math.round(rgb.b + (rgb2.b - rgb.b) * ration);
+			return DecToHex({r, g, b});
 		}
 	</script>
 
