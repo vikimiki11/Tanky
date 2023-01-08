@@ -16,9 +16,7 @@ function selectTerrain(terrainType/* undefined: try to fetch it, 0:random, 1:mou
 
 	maxPlayers = players;
 
-
-	let multiplayer = 160;
-	terrain = new Terrain(16 * multiplayer, round(9 / 25 * 21 * multiplayer), selectedTerrain);
+	terrain = new Terrain(2560, 1210, selectedTerrain);
 	terrain.generate();
 }
 
@@ -40,12 +38,12 @@ class Game {
 		this.windCurrent = 0;
 		this.lastPlayerID = 0;
 		this.inGame = false;
-		setTimeout(() => { setInterval(() => { game.tick() }, 1000 / 60) },100);
+		setTimeout((game) => { setInterval((game) => { game.tick() }, 1000 / 60, game) }, 100, this);
 	}
 	set actualPlayerID(id) {
 		if (this.actualPlayer) this.actualPlayer.selected = false;
 		if (id >= this.players.length) {
-			this._actualPlayerID = 0
+			this._actualPlayerID = 0;
 		} else {
 			this._actualPlayerID = id;
 		};
@@ -68,6 +66,12 @@ class Game {
 	get windStep() {
 		return this._windStep;
 	}
+
+
+
+
+
+
 
 	start() {
 		this.inGame = true;
@@ -144,15 +148,20 @@ class Game {
 		}
 	}
 
-	globalCSS() {
-		let CSS = "";
+	spawnTanks() {
 		for (let playerID in this.players) {
 			let player = this.players[playerID];
-			CSS += player.tank ? player.tank.CSS : "";
-			CSS += player.globalCSS;
+			player.tank = new Tank(player);
+			player.tank.spawn();
 		}
-		document.querySelector("#globalStyle").innerHTML = CSS;
 	}
+
+
+
+
+
+
+
 
 	tick() {
 		for (let playerID in this.players) {
@@ -173,12 +182,14 @@ class Game {
 		this.actualPlayer.updateCSS();
 	}
 
-	spawnTanks() {
+	globalCSS() {
+		let CSS = "";
 		for (let playerID in this.players) {
 			let player = this.players[playerID];
-			player.tank = new Tank(player);
-			player.tank.spawn();
+			CSS += player.tank ? player.tank.CSS : "";
+			CSS += player.globalCSS;
 		}
+		document.querySelector("#globalStyle").innerHTML = CSS;
 	}
 
 	nextAmmo() {
