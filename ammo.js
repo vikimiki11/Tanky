@@ -58,7 +58,7 @@ ammoList.push(new Ammo("Volcano bomb", "volcanoBomb", "volcanoBomb.png", 10, 100
 				for (let i = 0; i < 4; i++) {
 					let vector = new Vector(0, 0);
 					vector.length = pythagoras([XYVector[2].x, XYVector[2].y]) / 2;
-					vector.angle = PI / 4 * (1 + i * 3 / 4);
+					vector.angle = PI / 5 * (1 + Math.random() * 3);
 					promises.push(simpleFlyingAmmo(xy, vector, 30, 25));
 				}
 				Promise.allSettled(promises).then(resolve);
