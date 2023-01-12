@@ -53,43 +53,39 @@ function nextStartupScreen() {
 
 
 
-for (let ammo of ammoList) {
-	let html = ammo.html;
-	document.querySelector("#selectedAmmo").innerHTML += html;
-	document.querySelector("#allAmmo").innerHTML += html;
-	document.querySelector("#ammoShop").innerHTML += html;
+for (let item in Inventory) {
+	let type = Inventory[item].type;
+	let html = Inventory[item].html;
+	if (type == "ammo") {
+		document.querySelector("#selectedAmmo").innerHTML += html;
+		document.querySelector("#allAmmo").innerHTML += html;
+		document.querySelector("#ammoShop").innerHTML += html;
+	} else if (type == "gadget") {
+		document.querySelector("#gadgetShop").innerHTML += html;
+	}
 }
 
 
 
 
-for (let gadget of gadgetList) {
-	let html = gadget.html;
-	document.querySelector("#gadgetShop").innerHTML += html;
-}
-
-
-
-
-for (let el of document.querySelectorAll("#allAmmo .ammoRow")) {
+for (let el of document.querySelectorAll("#allAmmo .inventoryRow")) {
 	el.addEventListener("click", function () {
 		if (!game.blockControls)
-			game.actualPlayer.selectedAmmo = el.getAttribute("ammo");
+			game.actualPlayer.selectedAmmo = el.getAttribute("item");
 	});
 }
 
 
 
 
-for (let el of document.querySelectorAll("#shopScreen :is(.ammoRow, .gadgetRow)")) {
+for (let el of document.querySelectorAll("#shopScreen .inventoryRow")) {
 	el.addEventListener("click", function () {
-		type = el.getAttribute("ammo") ? "ammo" : "gadget";
-		products = type == "ammo" ? ammoList : gadgetList;
-		inventory = type == "ammo" ? game.actualPlayer.ammo : game.actualPlayer.gadget;
-		id = parseInt(el.getAttribute(type));
-		if (game.actualPlayer.money >= products[id].cost && inventory[id] + products[id].buyAmount < 1000) {
-			game.actualPlayer.money -= products[id].cost;
-			inventory[id] += products[id].buyAmount;
+		item = el.getAttribute("shortName");
+		products = Inventory;
+		inventory = game.actualPlayer.inventory;
+		if (game.actualPlayer.money >= products[item].cost && inventory[item] + products[item].buyAmount < 1000) {
+			game.actualPlayer.money -= products[item].cost;
+			inventory[item] += products[item].buyAmount;
 		}
 	});
 }

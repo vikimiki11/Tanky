@@ -1,54 +1,65 @@
-ammoIDCounter = 0;
-class Ammo{
-	constructor(name, shortName, img, defaultAmount, cost, buyAmount, fire) {
-		this.id = ammoIDCounter++;
+ammoList = [];
+Inventory = {}
+class InventoryItem {
+	static inventoryIDCounter = 0;
+	constructor(name, shortName, img, defaultAmount, cost, buyAmount, type) {
+		this.InventoryID = InventoryItem.inventoryIDCounter++;
 		this.name = name;
 		this.shortName = shortName;
-		this.img = "img/ammo/" + img;
+		this.img = img;
 		this.defaultAmount = defaultAmount;
 		this.cost = cost;
 		this.buyAmount = buyAmount;
-		this.fire = fire;
+		this.type = type;
+		Inventory[shortName] = this;
 	}
 	get html() {
-		return `<div class="ammoRow ammo${this.id}" ammo="${this.id}">
-					<div class="ammoIcon">
+		return `<div class="inventoryRow item${this.InventoryID} item${this.shortName}" item="${this.InventoryID}" type="${this.type}" shortName="${this.shortName}">
+					<div class="itemIcon">
 						<img src="${this.img}">
 					</div>
-					<div class="ammoName">
+					<div class="itemName">
 						${this.name}
 					</div>
-					<div class="ammoCost">
+					<div class="itemCost">
 						${this.cost}
 					</div>
-					<div class="ammoBuyAmount">
+					<div class="itemBuyAmount">
 						${this.buyAmount}
 					</div>
-					<div class="ammoAmount">
+					<div class="itemAmount">
 					</div>
 				</div>`;
 	}
 }
-ammoList = [];
-ammoList.push(new Ammo("Small missile", "smallMissile", "smallMissile.png", Infinity, 0, 10,
+class Ammo extends InventoryItem {
+	static ammoIDCounter = 0;
+	constructor(name, shortName, img, defaultAmount, cost, buyAmount, fire) {
+		super(name, shortName, "img/ammo/" + img, defaultAmount, cost, buyAmount, "ammo");
+		this.ID = Ammo.ammoIDCounter++;
+		this.fire = fire;
+		ammoList.push(this);
+	}
+}
+new Ammo("Small missile", "smallMissile", "smallMissile.png", Infinity, 0, 10,
 	() => { return simpleFlyingAmmo(undefined, undefined, 30, 50) }
-));
+)
 
-ammoList.push(new Ammo("Missile", "missile", "missile.png", 10, 1000, 10,
+new Ammo("Missile", "missile", "missile.png", 10, 1000, 10,
 	() => { return simpleFlyingAmmo(undefined, undefined, 30, 100) }
-));
+);
 
-ammoList.push(new Ammo("Small atom bomb", "smallAtomBomb", "mashroom.png", 10, 1000, 10,
+new Ammo("Small atom bomb", "smallAtomBomb", "mashroom.png", 10, 1000, 10,
 	() => { return simpleFlyingAmmo(undefined, undefined, 250, 300) }
-));
+);
 
 
-ammoList.push(new Ammo("Atom bomb", "atomBomb", "redMashroom.png", 10, 1000, 10,
+new Ammo("Atom bomb", "atomBomb", "redMashroom.png", 10, 1000, 10,
 	() => { return simpleFlyingAmmo(undefined, undefined, 500, 300) }
-));
+);
 
 
-ammoList.push(new Ammo("Volcano bomb", "volcanoBomb", "volcanoBomb.png", 10, 1000, 10,
+new Ammo("Volcano bomb", "volcanoBomb", "volcanoBomb.png", 10, 1000, 10,
 	() => {
 		return new Promise((resolve) => {
 			fireFlyingProjectile().then((XYVector) => {
@@ -68,8 +79,8 @@ ammoList.push(new Ammo("Volcano bomb", "volcanoBomb", "volcanoBomb.png", 10, 100
 			});
 		});
 	}
-));
-ammoList.push(new Ammo("Shower", "shower", "shower.png", 10, 1000, 10,
+);
+new Ammo("Shower", "shower", "shower.png", 10, 1000, 10,
 	() => {
 		let vector = new Vector()
 		let promises = [];
@@ -78,8 +89,8 @@ ammoList.push(new Ammo("Shower", "shower", "shower.png", 10, 1000, 10,
 		}
 		return Promise.allSettled(promises);
 	}
-));
-ammoList.push(new Ammo("Hot Shower", "hotShower", "hotShower.png", 10, 1000, 10,
+);
+new Ammo("Hot Shower", "hotShower", "hotShower.png", 10, 1000, 10,
 	() => {
 		let vector = new Vector()
 		let promises = [];
@@ -88,30 +99,25 @@ ammoList.push(new Ammo("Hot Shower", "hotShower", "hotShower.png", 10, 1000, 10,
 		}
 		return Promise.allSettled(promises);
 	}
-));
-ammoList.push(new Ammo("Small ball", "smallBall", "smallMissile.png", 10, 1000, 10,
+);
+new Ammo("Small ball", "smallBall", "smallMissile.png", 10, 1000, 10,
 	() => { return simpleRollingAmmo(undefined, undefined, 0, 200, 30, 50) }
-));
-ammoList.push(new Ammo("Ball", "ball", "smallMissile.png", 10, 1000, 10,
+);
+new Ammo("Ball", "ball", "smallMissile.png", 10, 1000, 10,
 	() => { return simpleRollingAmmo(undefined, undefined, 0, 200, 50, 50) }
-));
-ammoList.push(new Ammo("Large ball", "largeBall", "smallMissile.png", 10, 1000, 10,
+);
+new Ammo("Large ball", "largeBall", "smallMissile.png", 10, 1000, 10,
 	() => { return simpleRollingAmmo(undefined, undefined, 0, 200, 60, 80) }
-));
-ammoList.push(new Ammo("Small ball V2", "smallBallV2", "smallMissile.png", 10, 1000, 10,
+);
+new Ammo("Small ball V2", "smallBallV2", "smallMissile.png", 10, 1000, 10,
 	() => { return simpleRollingAmmo(undefined, undefined, 1, 300, 30, 50) }
-));
-ammoList.push(new Ammo("Ball V2", "ballV2", "smallMissile.png", 10, 1000, 10,
+);
+new Ammo("Ball V2", "ballV2", "smallMissile.png", 10, 1000, 10,
 	() => { return simpleRollingAmmo(undefined, undefined, 1, 300, 50, 50) }
-));
-ammoList.push(new Ammo("Large ball V2", "largeBallV2", "smallMissile.png", 10, 1000, 10,
+);
+new Ammo("Large ball V2", "largeBallV2", "smallMissile.png", 10, 1000, 10,
 	() => { return simpleRollingAmmo(undefined, undefined, 1, 300, 60, 80) }
-));
-ammoDictionary = {};
-for (let ammo of ammoList) {
-	ammoDictionary[ammo.shortName] = ammo;
-}
-
+);
 
 const DefaultAmmoSpeed = 12.5;
 function fireFlyingProjectile(xy = game.actualPlayer.tank.cannonTip, vector = new Vector()) {
@@ -266,7 +272,7 @@ class FlyingProjectile extends Projectile{
 		this.y += this.vector.y;
 		if (!noDOM) this.DOM.style.left = this.x + "em";
 		if (!noDOM) this.DOM.style.bottom = this.y + "em";
-		if (terrain.controlCollision(this.x, this.y) || terrain.checkForTankCollision(this.x, this.y)) {
+		if (terrain.checkCollision(this.x, this.y) || terrain.checkForTankCollision(this.x, this.y)) {
 			this.destroy(noDOM);
 			this.landed([this.x, this.y, this.vector]);
 			this.end = true;

@@ -73,7 +73,7 @@ class Terrain extends Array {
 			skybox.setAttribute("cy", `${y * 750 + 1860}`);
 		}
 	}
-	controlCollision(x, y) {
+	checkCollision(x, y) {
 		if (this[floor(x)] && this[floor(x)][floor(y)])
 			return this[floor(x)][floor(y)].isSolid;
 		return false;
@@ -82,7 +82,7 @@ class Terrain extends Array {
 		let groundX = x;
 		let groundY = y;
 		let bottom;
-		while ((!(bottom = this.controlCollision(groundX, groundY)) || this.controlCollision(groundX, groundY + 1)) && !(groundY > this.height) && !(groundY < -Tank.DriveBaseWidth)) {
+		while ((!(bottom = this.checkCollision(groundX, groundY)) || this.checkCollision(groundX, groundY + 1)) && !(groundY > this.height) && !(groundY < -Tank.DriveBaseWidth)) {
 			groundY += bottom ? 1 : -1;
 		}
 		return groundY - y;
@@ -121,7 +121,7 @@ class Terrain extends Array {
 	checkForTankCollision(x, y) {
 		let tankCollision = false;
 		for (let i = 0; i < game.players.length; i++) {
-			tankCollision = game.players[i].tank?.controlCollision(x, y);
+			tankCollision = game.players[i].tank?.checkCollision(x, y);
 			if (tankCollision) break;
 		}
 		return tankCollision;

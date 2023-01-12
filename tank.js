@@ -227,7 +227,7 @@ class Tank {
 				let rotated = rotateAroundPoint(side, height, this.rotate, 0, 0);
 				let x = rotated[0] + this.x;
 				let y = rotated[1] + this.y;
-				let collision = terrain.controlCollision(x, y);
+				let collision = terrain.checkCollision(x, y);
 				ret[side < 0 ? "left" : "right"][height] = {height, x, y, collision };
 				if (collision && height == ret[side < 0 ? "leftSpaceInGround" : "rightSpaceInGround"]) {
 					ret[side < 0 ? "leftSpaceInGround" : "rightSpaceInGround"]++;
@@ -268,7 +268,7 @@ class Tank {
 			base[1] + width * sin(this.cannonAngle)
 		];
 	}
-	controlCollision(x, y) {
+	checkCollision(x, y) {
 		let dx = x - this.x;
 		let dy = y - this.y;
 		let distance = pythagoras([dx, dy]);
@@ -305,8 +305,8 @@ class Tank {
 	fire() {
 		if (game.blockControls && !ignoreBlockControl) return;
 		game.blockControls = true;
-		if (this.player.ammo[this.player.selectedAmmo] <= 0 && !infinityGadgetsAndAmmoCheck) return;
-		if (!infinityGadgetsAndAmmoCheck) this.player.ammo[this.player.selectedAmmo]--;
+		if (this.player.inventory[ammoList[this.player.selectedAmmo].shortName] <= 0 && !infinityGadgetsAndAmmoCheck) return;
+		if (!infinityGadgetsAndAmmoCheck) this.player.inventory[ammoList[this.player.selectedAmmo].shortName]--;
 		ammoList[this.player.selectedAmmo].fire()
 			.then(() => { game.nextPlayer() });
 		this.player.firstRound = false;

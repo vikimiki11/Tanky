@@ -32,7 +32,7 @@
 						<input type="radio" name="terrain" value="2"		><label>Les</label><br>
 						<input type="radio" name="terrain" value="3"        ><label>Poušť</label><br>
 						<hr>
-						Počet Hráčů: <input type="number" id="playerCount" min="2" max="5" value="2">
+						Počet Hráčů: <input type="number" id="playerCount" min="2" max="4" value="2">
 						<button onclick="selectTerrain();nextStartupScreen()">Dál</button>
 					</div>
 				</div>
@@ -283,8 +283,8 @@
 	<script src="libraries/perlin.js"></script>
 	<script src="math.js"></script>
 	<script src="terrain.js"></script>
-	<script src="gadget.js"></script>
 	<script src="ammo.js"></script>
+	<script src="gadget.js"></script>
 	<script src="gui.js"></script>
 	<script src="game.js"></script>
 	<script src="AI.js"></script>
@@ -294,13 +294,12 @@
 		/* let ter;
 	window.onload = function () {
 		setTimeout(()=>{
-			addPlayer("AI1", "#FF0000", 5);
-			addPlayer("AI2", "#00FF00", 4);
-			addPlayer("AI3", "#0000FF", 3);
-			addPlayer("AI4", "#FFFF00", 2);
-			addPlayer("AI5", "#00FFFF", 1);
+			addPlayer("AI1", "#FF0000", false);
+			addPlayer("AI2", "#00FF00", false);
+			addPlayer("AI3", "#0000FF", false);
+			addPlayer("AI4", "#FFFF00", false);
 		},200)
-		selectTerrain(undefined, undefined, 5);
+		selectTerrain(undefined, undefined, 4);
 } */
 	</script>
 </div>

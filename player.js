@@ -45,13 +45,9 @@ class Player {
 		this.tank = null;
 		this.selected = false;
 		this._selectedAmmo = 0;
-		this.ammo = [];
-		for (let ammo of ammoList) {
-			this.ammo.push(ammo.defaultAmount);
-		}
-		this.gadget = [];
-		for (let gadget of gadgetList) {
-			this.gadget.push(gadget.defaultAmount);
+		this.inventory = {};
+		for (let item in Inventory) {
+			this.inventory[item] = Inventory[item].defaultAmount;
 		}
 		this.firstRound = false;
 	}
@@ -63,11 +59,11 @@ class Player {
 		this._selectedAmmo = parseInt(value);
 	}
 	updateCSS() {
-		document.querySelector("style#playerStyle").innerHTML = `		#selectedAmmo .ammo${this.selectedAmmo} {
+		document.querySelector("style#playerStyle").innerHTML = `		#selectedAmmo .item${this.selectedAmmo} {
 			display: grid;
 		}
 		
-		#allAmmo .ammo${this.selectedAmmo} {
+		#allAmmo .item${this.selectedAmmo} {
 			display: none;
 		}
 
@@ -84,16 +80,10 @@ ${this.tank ?`			--aim: ${round(this.tank.aim * 180 / PI)};
 		}
 
 		`;
-		for (let ammo in this.ammo) {
+		for (let item in this.inventory) {
 			document.querySelector("style#playerStyle").innerHTML += `
-		.ammoRow.ammo${ammo} > .ammoAmount::after, .${ammoList[ammo].shortName}DisplayAfter::after{
-			content: "${this.ammo[ammo] == "Infinity" ? "Inf." : this.ammo[ammo]}";
-		}`;
-		}
-		for (let gadget in this.gadget) {
-			document.querySelector("style#playerStyle").innerHTML += `
-		.gadgetRow.gadget${gadget} > .gadgetAmount::after, .${gadgetList[gadget].shortName}DisplayAfter::after{
-			content: "${this.gadget[gadget] == "Infinity" ? "Inf." : this.gadget[gadget]}";
+		.inventoryRow.item${item} > .itemAmount::after, .${Inventory[item].shortName}DisplayAfter::after{
+			content: "${this.inventory[item] == "Infinity" ? "Inf." : this.inventory[item]}";
 		}`;
 		}
 	}
@@ -111,7 +101,7 @@ ${this.tank ?`			--aim: ${round(this.tank.aim * 180 / PI)};
 		do {
 			this.selectedAmmo++;
 			if (this.selectedAmmo >= ammoList.length) this.selectedAmmo = 0;
-		} while (this.ammo[this.selectedAmmo] <= 0);
+		} while (this.inventory[this.selectedAmmo] <= 0);
 	}
 
 	previousAmmo() {
@@ -119,6 +109,6 @@ ${this.tank ?`			--aim: ${round(this.tank.aim * 180 / PI)};
 		do {
 			this.selectedAmmo--;
 			if (this.selectedAmmo < 0) this.selectedAmmo = ammoList.length - 1;
-		} while (this.ammo[this.selectedAmmo] <= 0);
+		} while (this.inventory[this.selectedAmmo] <= 0);
 	}
 }

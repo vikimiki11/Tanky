@@ -1,59 +1,31 @@
-gadgetIDCounter = 0;
-class Gadget {
+class Gadget extends InventoryItem {
+	static gadgetIDCounter = 0;
 	constructor(name, shortName, defaultAmount, cost, buyAmount) {
-		this.id = gadgetIDCounter++;
-		this.name = name;
-		this.shortName = shortName;
-		this.img = "img/gadget/" + shortName + ".png";
-		this.defaultAmount = defaultAmount;
-		this.cost = cost;
-		this.buyAmount = buyAmount;
-	}
-	get html() {
-		return `<div class="gadgetRow gadget${this.id}" gadget="${this.id}">
-					<div class="gadgetIcon">
-						<img src="${this.img}">
-					</div>
-					<div class="gadgetName">
-						${this.name}
-					</div>
-					<div class="gadgetCost">
-						${this.cost}
-					</div>
-					<div class="gadgetBuyAmount">
-						${this.buyAmount}
-					</div>
-					<div class="gadgetAmount">
-					</div>
-				</div>`;
+		super(name, shortName, "img/gadget/" + shortName + ".png", defaultAmount, cost, buyAmount, "gadget");
+		this.id = Gadget.gadgetIDCounter++;
 	}
 }
 gadgetList = [];
-gadgetList.push(new Gadget("Weak shield", "weakShield", 8, 5000, 2))
-gadgetList.push(new Gadget("Shield", "shield", 8, 10000, 1))
-gadgetList.push(new Gadget("Strong shield", "strongShield", 8, 15000, 1))
-gadgetList.push(new Gadget("Super shield", "superShield", 8, 20000, 1))
-gadgetList.push(new Gadget("Repair kit", "repairKit", 8, 20000, 1))
-gadgetList.push(new Gadget("Fuel", "fuel", 200, 2000, 50))
-gadgetList.push(new Gadget("Parachute", "parachute", 8, 20000, 1))
-gadgetList.push(new Gadget("Teleport", "teleport", 8, 20000, 1))
-
-gadgetDictionary = {};
-for (let gadget of gadgetList) {
-	gadgetDictionary[gadget.shortName] = gadget;
-}
+new Gadget("Weak shield", "weakShield", 8, 5000, 2);
+new Gadget("Shield", "shield", 8, 10000, 1);
+new Gadget("Strong shield", "strongShield", 8, 15000, 1);
+new Gadget("Super shield", "superShield", 8, 20000, 1);
+new Gadget("Repair kit", "repairKit", 8, 20000, 1);
+new Gadget("Fuel", "fuel", 200, 2000, 50);
+new Gadget("Parachute", "parachute", 8, 20000, 1);
+new Gadget("Teleport", "teleport", 8, 20000, 1);
 
 function repairKit() {
 	if (game.blockControls && !ignoreBlockControl) return;
-	if ((game.actualPlayer.gadget[4] > 0 || infinityGadgetsAndAmmoCheck) && game.actualPlayer.tank.maxFirePower < 100) {
-		if (!infinityGadgetsAndAmmoCheck) game.actualPlayer.gadget[4]--;
+	if ((game.actualPlayer.inventory["repairKit"] > 0 || infinityGadgetsAndAmmoCheck) && game.actualPlayer.tank.maxFirePower < 100) {
+		if (!infinityGadgetsAndAmmoCheck) game.actualPlayer.inventory["repairKit"]--;
 		game.actualPlayer.tank.maxFirePower = game.actualPlayer.tank.maxFirePower + 20;
 	}
 }
 function fuel() {
 	if (game.blockControls && !ignoreBlockControl) return;
-	if (game.actualPlayer.gadget[5] >= 50 || infinityGadgetsAndAmmoCheck) {
-		if (!infinityGadgetsAndAmmoCheck) game.actualPlayer.gadget[5] -= 50;
+	if (game.actualPlayer.inventory["fuel"] >= 50 || infinityGadgetsAndAmmoCheck) {
+		if (!infinityGadgetsAndAmmoCheck) game.actualPlayer.inventory["fuel"] -= 50;
 		game.actualPlayer.tank.fuel += 50;
 	}
 }
@@ -63,9 +35,9 @@ const gamePlane = document.querySelector("#gamePlane");
 gamePlane.addEventListener("click", teleportClick);
 function teleport() {
 	if (game.blockControls && !ignoreBlockControl) return;
-	if (!teleportActive && (game.actualPlayer.gadget[7] > 0 || infinityGadgetsAndAmmoCheck)) {
+	if (!teleportActive && (game.actualPlayer.inventory["teleport"] > 0 || infinityGadgetsAndAmmoCheck)) {
 		game.blockControls = true;
-		if (!infinityGadgetsAndAmmoCheck) game.actualPlayer.gadget[7]--;
+		if (!infinityGadgetsAndAmmoCheck) game.actualPlayer.inventory["teleport"]--;
 		gamePlane.style.cursor = "crosshair";
 		teleportActive = true;
 	}
@@ -81,10 +53,11 @@ function teleportClick(e) {
 }
 
 const shieldColorLevels = [0, 100, 200, 400, 800];
+const shieldLevelNames = ["","weakShield", "shield", "strongShield", "superShield"]
 function shield(level) {
 	if ((game.blockControls && !ignoreBlockControl) || game.actualPlayer.tank.shield >= shieldColorLevels[shieldColorLevels.length - 1]) return;
-	if (!teleportActive && (game.actualPlayer.gadget[level - 1] > 0 || infinityGadgetsAndAmmoCheck)) {
-		if (!infinityGadgetsAndAmmoCheck) game.actualPlayer.gadget[level - 1]-= 1;
+	if (!teleportActive && (game.actualPlayer.inventory[shieldLevelNames[level]] > 0 || infinityGadgetsAndAmmoCheck)) {
+		if (!infinityGadgetsAndAmmoCheck) game.actualPlayer.inventory[shieldLevelNames[level]]-= 1;
 		game.actualPlayer.tank.shield += shieldColorLevels[level];
 		game.actualPlayer.tank.shield = Math.min(game.actualPlayer.tank.shield, shieldColorLevels[shieldColorLevels.length - 1]);
 	}
@@ -95,14 +68,14 @@ function shieldGradient(shieldHP) {
 	while (shieldHP > shieldColorLevels[level + 1]) level++;
 	let distanceFromColor = (shieldHP - shieldColorLevels[level]) / (shieldColorLevels[level + 1] - shieldColorLevels[level]);
 	let color = [...colors[level]];
-	for (let i = 0; i < 3; i++)
+	for (let i = 0; i <= 3; i++)
 		color[i] = color[i] + (colors[level + 1][i] - color[i]) * distanceFromColor;
 	return "rgba(" + color.join(", ") + ")";
 }
 
 function useParachute(tank) {
-	if (tank.player.gadget[gadgetDictionary["parachute"].id] > 0 || infinityGadgetsAndAmmoCheck) {
-		if (!infinityGadgetsAndAmmoCheck) tank.player.gadget[gadgetDictionary["parachute"].id]--;
+	if (tank.player.inventory["parachute"] > 0 || infinityGadgetsAndAmmoCheck) {
+		if (!infinityGadgetsAndAmmoCheck) tank.player.inventory["parachute"]--;
 		tank.parachute = true;
 	}
 }

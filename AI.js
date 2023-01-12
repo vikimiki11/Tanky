@@ -24,12 +24,12 @@ class AI{
 		}
 		let filteredAmmoSelection = [];
 		for (let i in ammoSelection) {
-			if(game.actualPlayer.ammo[ammoDictionary[ammoSelection[i]].id] > 0) filteredAmmoSelection.push(ammoSelection[i]);
+			if (game.actualPlayer.inventory[ammoSelection[i]] > 0) filteredAmmoSelection.push(ammoSelection[i]);
 		}
 		ammoSelection = filteredAmmoSelection.length > 0 ? filteredAmmoSelection : ["smallMissile"];
 
 		let selectedAmmo = ammoSelection[Math.floor(Math.random() * ammoSelection.length)];
-		game.actualPlayer.selectedAmmo = ammoDictionary[selectedAmmo].id;
+		game.actualPlayer.selectedAmmo = Inventory[selectedAmmo].InventoryID;
 
 
 		let bestAngle = 0;
@@ -77,23 +77,17 @@ class AI{
 	}
 	static buy(name) {
 		let player = game.actualPlayer;
-		let isAmmo = Boolean(ammoDictionary[name]);
-		let isGadget = Boolean(gadgetDictionary[name]);
-		if (!isAmmo && !isGadget) throw new Error("Invalid product name");
-		let products = isAmmo ? ammoList : gadgetList;
-		let inventory = isAmmo ? player.ammo : player.gadget;
-		let id = isAmmo ? ammoDictionary[name].id : gadgetDictionary[name].id;
-		if (player.money >= products[id].cost && inventory[id] + products[id].buyAmount < 1000) {
-			player.money -= products[id].cost;
-			inventory[id] += products[id].buyAmount;
+		let products = Inventory;
+		let inventory = player.inventory;
+		if (player.money >= products[name].cost && inventory[name] + products[name].buyAmount < 1000) {
+			player.money -= products[name].cost;
+			inventory[name] += products[name].buyAmount;
 		}
 	}
 	static holdNumberOfProducts(name, numberToHold) {
 		let player = game.actualPlayer;
-		let isAmmo = Boolean(ammoDictionary[name]);
-		let inventory = isAmmo ? player.ammo : player.gadget;
-		let id = isAmmo ? ammoDictionary[name].id : gadgetDictionary[name].id;
-		for (let i = 0; i < numberToHold && inventory[id] < numberToHold; i++) {
+		let inventory = player.inventory;
+		for (let i = 0; i < numberToHold && inventory[name] < numberToHold; i++) {
 			this.buy(name);
 		}
 	}

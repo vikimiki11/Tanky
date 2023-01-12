@@ -7,7 +7,8 @@ Vylepšení tanku
 
 Dodělat pozadí do shopu\
 Startovní pozice tanků(teď je jednoduše nahodná pozice)\
-Rework game classy
+Rework game classy\
+dodělat ball ammo
 
 # Možná???
 
@@ -16,4 +17,8 @@ Zvuky\
 Stylování pro více prohlížečů + mobil???\
 Generování stromů(do lesa by se hodily stromy)\
 
-falldamage nezabije !F
+# Aktuální "bitevní" plán
+
+rework game classy a zahrnutí všeho pod ní\
+rework gadget a ammo\
+udělat upgrady tanků\
