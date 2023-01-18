@@ -6,7 +6,7 @@ function addPlayer(name, color, AI) {
 	if (name === undefined) name = document.querySelector("#playerNameInput").value;
 	if (color === undefined) color = document.querySelector("#playerColorInput").value;
 	if (AI === undefined) {
-		for (let element of document.querySelectorAll("input[name='AIDificulty']")) {
+		for (let element of document.querySelectorAll("input[name='AIDifficulty']")) {
 			if (element.checked) {
 				AI = parseInt(element.value);
 				break;

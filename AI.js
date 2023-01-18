@@ -3,6 +3,28 @@ class AI{
 	static autoAim(AILevel = 1) {
 		game.blockControls = false;
 
+		this.selectAmmo(AILevel);
+
+
+		let bestAngle = 0;
+		let bestDistance = Infinity;
+		for (let angle = 0; angle <= PI; angle += PI / 180) {
+			game.actualPlayer.tank.aimFast = angle;
+			let landLocation = game.actualPlayer.tank.getCurrentProjectileLandLocation();
+			for (let p = 0; p < game.players.length; p++) {
+				if (game.players[p] != game.actualPlayer && game.players[p].tank) {
+					let distance = pythagoras(landLocation, [game.players[p].tank.x, game.players[p].tank.y]);
+					if (distance < bestDistance) {
+						bestDistance = distance;
+						bestAngle = angle;
+					}
+				}
+			}
+		}
+		game.setAim(bestAngle + ((Math.random() - 0.5) / 33 * this.aimPrecision[AILevel] ));
+		game.fire();
+	}
+	static selectAmmo(AILevel) {
 		let ammoSelection;
 		switch (AILevel) {
 			case 1:
@@ -30,25 +52,6 @@ class AI{
 
 		let selectedAmmo = ammoSelection[Math.floor(Math.random() * ammoSelection.length)];
 		game.actualPlayer.selectedAmmo = Inventory[selectedAmmo].InventoryID;
-
-
-		let bestAngle = 0;
-		let bestDistance = Infinity;
-		for (let angle = 0; angle <= PI; angle += PI / 180) {
-			game.actualPlayer.tank.aimFast = angle;
-			let landLocation = game.actualPlayer.tank.getCurrentProjectileLandLocation();
-			for (let p = 0; p < game.players.length; p++) {
-				if (game.players[p] != game.actualPlayer && game.players[p].tank) {
-					let distance = pythagoras(landLocation, [game.players[p].tank.x, game.players[p].tank.y]);
-					if (distance < bestDistance) {
-						bestDistance = distance;
-						bestAngle = angle;
-					}
-				}
-			}
-		}
-		game.setAim(bestAngle + ((Math.random() - 0.5) / 33 * this.aimPrecision[AILevel] ));
-		game.fire();
 	}
 	static autoShop(AILevel = 1) {
 		switch (AILevel) {
@@ -75,20 +78,8 @@ class AI{
 				break;
 		}
 	}
-	static buy(name) {
-		let player = game.actualPlayer;
-		let products = Inventory;
-		let inventory = player.inventory;
-		if (player.money >= products[name].cost && inventory[name] + products[name].buyAmount < 1000) {
-			player.money -= products[name].cost;
-			inventory[name] += products[name].buyAmount;
-		}
-	}
 	static holdNumberOfProducts(name, numberToHold) {
-		let player = game.actualPlayer;
-		let inventory = player.inventory;
-		for (let i = 0; i < numberToHold && inventory[name] < numberToHold; i++) {
-			this.buy(name);
-		}
+		let inventory = game.actualPlayer.inventory;
+		Inventory[name].buy(numberToHold - inventory[name]);
 	}
 }

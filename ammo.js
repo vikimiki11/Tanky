@@ -2,7 +2,7 @@ ammoList = [];
 Inventory = {}
 class InventoryItem {
 	static inventoryIDCounter = 0;
-	constructor(name, shortName, img, defaultAmount, cost, buyAmount, type) {
+	constructor(name, shortName, img, defaultAmount, cost, buyAmount, type, originalClass) {
 		this.InventoryID = InventoryItem.inventoryIDCounter++;
 		this.name = name;
 		this.shortName = shortName;
@@ -12,6 +12,7 @@ class InventoryItem {
 		this.buyAmount = buyAmount;
 		this.type = type;
 		Inventory[shortName] = this;
+		this.originalClass = originalClass;
 	}
 	get html() {
 		return `<div class="inventoryRow item${this.InventoryID} item${this.shortName}" item="${this.InventoryID}" type="${this.type}" shortName="${this.shortName}">
@@ -31,11 +32,29 @@ class InventoryItem {
 					</div>
 				</div>`;
 	}
+	buy(amount = 1) {
+		let player = game.actualPlayer;
+		let inventory = player.inventory;
+		let bought = 0;
+		while (player.money >= this.cost && inventory[this.shortName] + this.buyAmount < 1000 && bought < amount) {
+			player.money -= this.cost;
+			inventory[this.shortName] += this.buyAmount;
+			bought++;
+		}
+	}
+	use(amount = 1) {
+		let inventory = game.actualPlayer.inventory;
+		if (inventory[this.shortName] - amount >= 0 || infinityGadgetsAndAmmoCheck) {
+			if (!infinityGadgetsAndAmmoCheck) inventory[this.shortName] -= amount;
+			return true;
+		}
+		return false;
+	}
 }
 class Ammo extends InventoryItem {
 	static ammoIDCounter = 0;
 	constructor(name, shortName, img, defaultAmount, cost, buyAmount, fire) {
-		super(name, shortName, "img/ammo/" + img, defaultAmount, cost, buyAmount, "ammo");
+		super(name, shortName, "img/ammo/" + img, defaultAmount, cost, buyAmount, "ammo", Ammo);
 		this.ID = Ammo.ammoIDCounter++;
 		this.fire = fire;
 		ammoList.push(this);
@@ -49,12 +68,12 @@ new Ammo("Missile", "missile", "missile.png", 10, 1000, 10,
 	() => { return simpleFlyingAmmo(undefined, undefined, 30, 100) }
 );
 
-new Ammo("Small atom bomb", "smallAtomBomb", "mashroom.png", 10, 1000, 10,
+new Ammo("Small atom bomb", "smallAtomBomb", "mushroom.png", 10, 1000, 10,
 	() => { return simpleFlyingAmmo(undefined, undefined, 250, 300) }
 );
 
 
-new Ammo("Atom bomb", "atomBomb", "redMashroom.png", 10, 1000, 10,
+new Ammo("Atom bomb", "atomBomb", "redMushroom.png", 10, 1000, 10,
 	() => { return simpleFlyingAmmo(undefined, undefined, 500, 300) }
 );
 
@@ -131,7 +150,7 @@ function fireRollingProjectile(xy, vector, maxClimbing, timeToLive) {
 	return new Promise((resolve, reject) => {
 		flyingProjectile.then(
 			(XYVector) => {
-				projectiles.push(new RolingProjectile(XYVector, resolve, reject, false, maxClimbing, timeToLive))
+				projectiles.push(new RollingProjectile(XYVector, resolve, reject, false, maxClimbing, timeToLive))
 			},
 			reject
 		);
@@ -288,7 +307,7 @@ class FlyingProjectile extends Projectile{
 		return false;
 	}
 }
-class RolingProjectile extends Projectile {
+class RollingProjectile extends Projectile {
 	constructor(XYVector, landed = () => { }, outOfBounds = () => { }, noDOM, maxClimbing, timeToLive) {
 		super(XYVector, landed, outOfBounds, noDOM);
 		if (terrain.checkForTankCollision(this.x, this.y)) {

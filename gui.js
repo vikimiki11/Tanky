@@ -1,3 +1,4 @@
+// mění velikost hry podle velikosti okna
 window.addEventListener("resize", changeBaseFontSize);
 changeBaseFontSize();
 function changeBaseFontSize() {
@@ -52,7 +53,7 @@ function nextStartupScreen() {
 
 
 
-
+//Připraví rozhraní pro gadgety a ammo
 for (let item in Inventory) {
 	let type = Inventory[item].type;
 	let html = Inventory[item].html;
@@ -64,29 +65,18 @@ for (let item in Inventory) {
 		document.querySelector("#gadgetShop").innerHTML += html;
 	}
 }
-
-
-
-
+//Přepínání ammo
 for (let el of document.querySelectorAll("#allAmmo .inventoryRow")) {
 	el.addEventListener("click", function () {
 		if (!game.blockControls)
 			game.actualPlayer.selectedAmmo = el.getAttribute("item");
 	});
 }
-
-
-
-
+//Nákupy
 for (let el of document.querySelectorAll("#shopScreen .inventoryRow")) {
 	el.addEventListener("click", function () {
 		item = el.getAttribute("shortName");
-		products = Inventory;
-		inventory = game.actualPlayer.inventory;
-		if (game.actualPlayer.money >= products[item].cost && inventory[item] + products[item].buyAmount < 1000) {
-			game.actualPlayer.money -= products[item].cost;
-			inventory[item] += products[item].buyAmount;
-		}
+		Inventory[item].buy();
 	});
 }
 
@@ -140,6 +130,12 @@ function generateCloud(left) {
 	document.querySelector("#gamePlane").appendChild(cloud);
 }
 
+
+
+
+
+
+//Keyboard Controls
 const keys = new Array(256);
 document.body.addEventListener("keydown", function (e) {
 	keys[e.keyCode] = true;
@@ -162,6 +158,7 @@ document.body.addEventListener("keyup", function (e) {
 	keys[e.keyCode] = false;
 });
 
+//Mouse Engine Control
 document.querySelectorAll("#engineControl .clickable").forEach(el => {
 	el.addEventListener("mousedown", function () {
 		keys[el.getAttribute("direction") == "left" ? 65 : 68] = true;
@@ -173,6 +170,8 @@ document.body.addEventListener("mouseup", function () {
 	keys[68] = false;
 });
 
+
+//Keyboard Controls Interval
 setInterval(() => {
 	if (!keys[83] && !keys[87] && game && game?.actualPlayer.tank && (QS = document.querySelector("#firePowerControl input")) && parseInt(game.actualPlayer.tank.firePower) != parseInt(QS.value)) game.setFirePower(QS.value);
 	if (!keys[69] && !keys[81] && game && game?.actualPlayer.tank && (QS = document.querySelector("#aimControl")) && parseFloat(game.actualPlayer.tank.aim) != parseFloat(QS.value)) game.setAim(QS.value);

@@ -19,6 +19,5 @@ Generování stromů(do lesa by se hodily stromy)\
 
 # Aktuální "bitevní" plán
 
-rework game classy a zahrnutí všeho pod ní\
-rework gadget a ammo\
+rework game classy (umrtí hráče během jeho tahu)\
 udělat upgrady tanků\

@@ -202,12 +202,12 @@ main{
 	min-width: 0.3em;
 }
 
-#AIDificulty{
+#AIDifficulty{
 	left: 1.1em;
 	display: none;
 }
 
-#startupScreen:has(#AICheckbox[value=true]) #AIDificulty{
+#startupScreen:has(#AICheckbox[value=true]) #AIDifficulty{
 	display: block;
 }
 
@@ -494,7 +494,7 @@ input[type="color"]{
 }
 #selectedAmmo{
 	font-size: 0.7em;
-	margin-top: 0.35em;
+	margin-top: 0.2em;
 }
 
 .inventoryRow{

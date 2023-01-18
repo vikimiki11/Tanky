@@ -1,7 +1,7 @@
 class Gadget extends InventoryItem {
 	static gadgetIDCounter = 0;
 	constructor(name, shortName, defaultAmount, cost, buyAmount) {
-		super(name, shortName, "img/gadget/" + shortName + ".png", defaultAmount, cost, buyAmount, "gadget");
+		super(name, shortName, "img/gadget/" + shortName + ".png", defaultAmount, cost, buyAmount, "gadget", Gadget);
 		this.id = Gadget.gadgetIDCounter++;
 	}
 }
@@ -17,15 +17,13 @@ new Gadget("Teleport", "teleport", 8, 20000, 1);
 
 function repairKit() {
 	if (game.blockControls && !ignoreBlockControl) return;
-	if ((game.actualPlayer.inventory["repairKit"] > 0 || infinityGadgetsAndAmmoCheck) && game.actualPlayer.tank.maxFirePower < 100) {
-		if (!infinityGadgetsAndAmmoCheck) game.actualPlayer.inventory["repairKit"]--;
+	if (game.actualPlayer.tank.maxFirePower < 100 && Inventory["repairKit"].use()) {
 		game.actualPlayer.tank.maxFirePower = game.actualPlayer.tank.maxFirePower + 20;
 	}
 }
 function fuel() {
 	if (game.blockControls && !ignoreBlockControl) return;
-	if (game.actualPlayer.inventory["fuel"] >= 50 || infinityGadgetsAndAmmoCheck) {
-		if (!infinityGadgetsAndAmmoCheck) game.actualPlayer.inventory["fuel"] -= 50;
+	if (Inventory["fuel"].use(50)) {
 		game.actualPlayer.tank.fuel += 50;
 	}
 }
@@ -35,9 +33,8 @@ const gamePlane = document.querySelector("#gamePlane");
 gamePlane.addEventListener("click", teleportClick);
 function teleport() {
 	if (game.blockControls && !ignoreBlockControl) return;
-	if (!teleportActive && (game.actualPlayer.inventory["teleport"] > 0 || infinityGadgetsAndAmmoCheck)) {
+	if (!teleportActive && Inventory["teleport"].use()) {
 		game.blockControls = true;
-		if (!infinityGadgetsAndAmmoCheck) game.actualPlayer.inventory["teleport"]--;
 		gamePlane.style.cursor = "crosshair";
 		teleportActive = true;
 	}
@@ -56,8 +53,7 @@ const shieldColorLevels = [0, 100, 200, 400, 800];
 const shieldLevelNames = ["","weakShield", "shield", "strongShield", "superShield"]
 function shield(level) {
 	if ((game.blockControls && !ignoreBlockControl) || game.actualPlayer.tank.shield >= shieldColorLevels[shieldColorLevels.length - 1]) return;
-	if (!teleportActive && (game.actualPlayer.inventory[shieldLevelNames[level]] > 0 || infinityGadgetsAndAmmoCheck)) {
-		if (!infinityGadgetsAndAmmoCheck) game.actualPlayer.inventory[shieldLevelNames[level]]-= 1;
+	if (Inventory[shieldLevelNames[level]].use()) {
 		game.actualPlayer.tank.shield += shieldColorLevels[level];
 		game.actualPlayer.tank.shield = Math.min(game.actualPlayer.tank.shield, shieldColorLevels[shieldColorLevels.length - 1]);
 	}
@@ -74,8 +70,7 @@ function shieldGradient(shieldHP) {
 }
 
 function useParachute(tank) {
-	if (tank.player.inventory["parachute"] > 0 || infinityGadgetsAndAmmoCheck) {
-		if (!infinityGadgetsAndAmmoCheck) tank.player.inventory["parachute"]--;
+	if (Inventory["parachute"].use()) {
 		tank.parachute = true;
 	}
 }

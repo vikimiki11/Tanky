@@ -157,16 +157,16 @@ class Tank {
 	}
 	checkSideCollision() {
 		let sideContactPlane = this.sideContactPlane;
-		const MaxDrivebleTerrain = 5;
+		const MaxDrivableTerrain = 5;
 		const MaxAngleToDrive = 0.5;
 		for (let i of [{ side: "leftSpaceInGround", wall: "leftWall", check: (x) => { return x < 0 } }, { side: "rightSpaceInGround", wall: "rightWall", check: (x) => { return x > 0 } }]) {
-			if (sideContactPlane[i.side] > MaxDrivebleTerrain || sideContactPlane[i.wall]) {
+			if (sideContactPlane[i.side] > MaxDrivableTerrain || sideContactPlane[i.wall]) {
 				let vector = new Vector(this.inertia[0], this.inertia[1]);
 				if (i.check(vector.x))
 					this.inertia = [0, 0];
 				if (sideContactPlane[i.wall])
 					console.log("wall");
-				if (sideContactPlane[i.side] > MaxDrivebleTerrain)
+				if (sideContactPlane[i.side] > MaxDrivableTerrain)
 					console.log("steep");
 			}
 		}
@@ -305,11 +305,11 @@ class Tank {
 	fire() {
 		if (game.blockControls && !ignoreBlockControl) return;
 		game.blockControls = true;
-		if (this.player.inventory[ammoList[this.player.selectedAmmo].shortName] <= 0 && !infinityGadgetsAndAmmoCheck) return;
-		if (!infinityGadgetsAndAmmoCheck) this.player.inventory[ammoList[this.player.selectedAmmo].shortName]--;
-		ammoList[this.player.selectedAmmo].fire()
-			.then(() => { game.nextPlayer() });
-		this.player.firstRound = false;
+		if (Inventory[ammoList[this.player.selectedAmmo].shortName].use()) {
+			ammoList[this.player.selectedAmmo].fire()
+				.then(() => { game.nextPlayer() });
+			this.player.firstRound = false;
+		}
 	}
 	setFirePower(power) {
 		if (game.blockControls && !ignoreBlockControl) return;
