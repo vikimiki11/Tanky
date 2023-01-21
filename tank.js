@@ -38,6 +38,7 @@ class Tank {
 	damage(damage) {
 		this.shield -= damage;
 		if (this.shield < 0) {
+			this.shield *= 0.96 ** this.player.inventory["armorUpgrade"];
 			this._maxFirePower += this.shield;
 			this.shield = 0;
 		}
@@ -116,7 +117,7 @@ class Tank {
 			if (!this.parachute) {
 				let speed = pythagoras(this.inertia);
 				let damage = Math.max(0, (speed - 3) * 10);
-				this.damage(damage);
+				if( damage > 0 )this.damage(damage);
 			}
 			this.parachute = false;
 		} else {
@@ -157,18 +158,26 @@ class Tank {
 	}
 	checkSideCollision() {
 		let sideContactPlane = this.sideContactPlane;
-		const MaxDrivableTerrain = 5;
-		const MaxAngleToDrive = 0.5;
-		for (let i of [{ side: "leftSpaceInGround", wall: "leftWall", check: (x) => { return x < 0 } }, { side: "rightSpaceInGround", wall: "rightWall", check: (x) => { return x > 0 } }]) {
+		const MaxDrivableTerrain = 5 + this.player.inventory.climbUpgrade / 3;
+		for (let i of [
+			{ side: "leftSpaceInGround",  wall: "leftWall",  check: (x) => { return x < 0 } },
+			{ side: "rightSpaceInGround", wall: "rightWall", check: (x) => { return x > 0 } }
+		]) {
 			if (sideContactPlane[i.side] > MaxDrivableTerrain || sideContactPlane[i.wall]) {
-				let vector = new Vector(this.inertia[0], this.inertia[1]);
-				if (i.check(vector.x))
+				if (i.check(this.inertia[0]))
 					this.inertia = [0, 0];
 				if (sideContactPlane[i.wall])
 					console.log("wall");
 				if (sideContactPlane[i.side] > MaxDrivableTerrain)
 					console.log("steep");
 			}
+		}
+	}
+	checkClimb() {
+		const MaxAngleToDrive = 0.7 + this.player.inventory.climbUpgrade / 20;
+		if (this.rotate * Math.sign(this.inertia[0]) > MaxAngleToDrive) {
+			this.inertia = [0, 0];
+			console.log("max Angle");
 		}
 	}
 	checkOutOfMap() {
@@ -245,11 +254,12 @@ class Tank {
 		if (this.onGround) {
 			if (this.fuel > 0 || infinityGadgetsAndAmmoCheck) {
 				if (!infinityGadgetsAndAmmoCheck) this.fuel -= 0.5;
-				this.inertia[0] = x * cos(this.rotate);
-				this.inertia[1] = x * sin(this.rotate);
+				this.inertia[0] = x * cos(this.rotate) * (1.5 ** this.player.inventory["engineUpgrade"]);
+				this.inertia[1] = x * sin(this.rotate) * (1.5 ** this.player.inventory["engineUpgrade"]);
 			}
 		}
 		this.checkSideCollision();
+		this.checkClimb();
 	}
 	get cannonBase() {
 		return [
@@ -295,8 +305,6 @@ class Tank {
 	}
 	getCurrentProjectileLandLocation() {
 		let aimVector = new Vector();
-		aimVector.angle = this.cannonAngle;
-		aimVector.length = this.firePower / 100 * DefaultAmmoSpeed;
 		let XYVector = [this.cannonTip[0], this.cannonTip[1], aimVector]
 		let projectile = new FlyingProjectile(XYVector, undefined, undefined, true);
 		while (!projectile.tick()) { }

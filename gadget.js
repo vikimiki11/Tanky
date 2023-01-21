@@ -14,6 +14,10 @@ new Gadget("Repair kit", "repairKit", 8, 20000, 1);
 new Gadget("Fuel", "fuel", 200, 2000, 50);
 new Gadget("Parachute", "parachute", 8, 20000, 1);
 new Gadget("Teleport", "teleport", 8, 20000, 1);
+new Gadget("Firepower upgrade", "firePowerUpgrade", 0, 5000, 1);
+new Gadget("Armor upgrade", "armorUpgrade", 0, 5000, 1);
+new Gadget("Engine upgrade", "engineUpgrade", 0, 5000, 1);
+new Gadget("Climb upgrade", "climbUpgrade", 0, 5000, 1);
 
 function repairKit() {
 	if (game.blockControls && !ignoreBlockControl) return;
@@ -50,7 +54,7 @@ function teleportClick(e) {
 }
 
 const shieldColorLevels = [0, 100, 200, 400, 800];
-const shieldLevelNames = ["","weakShield", "shield", "strongShield", "superShield"]
+const shieldLevelNames = ["", "weakShield", "shield", "strongShield", "superShield"];
 function shield(level) {
 	if ((game.blockControls && !ignoreBlockControl) || game.actualPlayer.tank.shield >= shieldColorLevels[shieldColorLevels.length - 1]) return;
 	if (Inventory[shieldLevelNames[level]].use()) {

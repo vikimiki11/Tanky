@@ -795,7 +795,7 @@ canvas{
 
 
 :is(#leftShopColumn, #rightShopColumn) > *{
-	margin: 5.5em 6.3333333333em;
+	margin: 5.5em 6.333333em 2em 6.333333333em;
 	font-size: 0.75em;
 }
 #shopScreen .inventoryRow {

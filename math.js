@@ -2,7 +2,7 @@ class Vector {
 	constructor(x, y) {
 		if (x == undefined || y == undefined) {
 			let angle = game.actualPlayer.tank.cannonAngle;
-			let speed = game.actualPlayer.tank.firePower / 100 * DefaultAmmoSpeed;
+			let speed = game.actualPlayer.tank.firePower / 100 * DefaultAmmoSpeed * (1.05 ** game.actualPlayer.inventory["firePowerUpgrade"]);
 			let XY = vectorToXY([angle, speed]);
 			x = XY[0];
 			y = XY[1];
@@ -82,6 +82,6 @@ function rotateAroundPoint(x, y, angle, centerx, centery) {
 	let dx = x - centerx;
 	let dy = y - centery;
 	vector = new Vector(dx, dy);
-	vector.angle += angle;//ToDo: maybe minus???
+	vector.angle += angle;
 	return [vector.x + centerx, vector.y + centery];
 }

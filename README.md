@@ -1,7 +1,6 @@
 # Věci na udělání
 
-pozadí v setupu\
-Vylepšení tanku
+pozadí v setupu
 
 # Upravit / Dodělat
 
@@ -16,8 +15,8 @@ AI(doupravit úrovně)\
 Zvuky\
 Stylování pro více prohlížečů + mobil???\
 Generování stromů(do lesa by se hodily stromy)\
+underground rotate?
 
 # Aktuální "bitevní" plán
 
 rework game classy (umrtí hráče během jeho tahu)\
-udělat upgrady tanků\
