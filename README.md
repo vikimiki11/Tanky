@@ -6,7 +6,6 @@ Obrazčikí
 # Upravit / Dodělat
 
 Dodělat pozadí do shopu\
-Startovní pozice tanků(teď je jednoduše nahodná pozice)\
 dodělat ball ammo
 
 # Možná???

@@ -156,10 +156,17 @@ class Game {
 	}
 
 	spawnTanks() {
-		for (let playerID in this.players) {
+		let i = 0;
+		let playerListCopy = [...this.players];
+		while (i < this.players.length) {
+			let playerID = floor(random() * playerListCopy.length);
+			if (!playerListCopy[playerID]) continue;
+			playerListCopy[playerID] = undefined;
+
 			let player = this.players[playerID];
-			player.tank = new Tank(player);
-			player.tank.spawn();
+			let x = terrain.width / this.players.length * (i + random());
+			player.tank = new Tank(player, x );
+			i++;
 		}
 	}
 

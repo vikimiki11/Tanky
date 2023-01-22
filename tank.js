@@ -4,19 +4,20 @@ class Tank {
 	static TankHeadWidth = 25 / 175 * 250;
 	static TankHeadHeight = 25 / 175 * 75;
 
-	constructor(player) {
+	constructor(player, x) {
 		this.player = player;
 		this._aim = 20 / 180 * PI;
 		this.rotate = 0;
 		this.firePower = 100;
 		this._maxFirePower = 100;
 		this.fuel = 200;
-		this.x = random() * 2000 + 200;
+		this.x = x || random() * 2000 + 200;
 		this.y = 800;
 		this.onGround = false;
 		this.inertia = [0, 0];
 		this.shield = 0;
 		this.parachute = true;
+		this.spawn();
 	}
 	get aim() {
 		return this._aim;
