@@ -24,9 +24,6 @@ class Terrain extends Array {
 	set terrain(terrain) {
 		this._terrain = terrain;
 	}
-	get maxHeight(){
-		return ([1, 7 / 10, 2 / 5, 3 / 10])[this.currentTerrain];
-	}
 	clear() {
 		this.canvasData.clear();
 	}
@@ -138,7 +135,7 @@ class TerrainColumn extends Array {
 		this.x = x;
 		this.terrainHeight = 0;
 		this.topLevelThickness = 0;
-		this.terrainBlockHeight = this.table.height * this.table.maxHeight;
+		this.terrainBlockHeight = this.table.height;
 		for (let y = 0; y < this.terrainBlockHeight; y++) {
 			this[y] = new TerrainBlock(this, y);
 		}
