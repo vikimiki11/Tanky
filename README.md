@@ -12,6 +12,5 @@ dodělat ball ammo
 
 AI(doupravit úrovně)\
 Zvuky\
-Stylování pro více prohlížečů + mobil???\
 Generování stromů(do lesa by se hodily stromy)\
 underground rotate?
