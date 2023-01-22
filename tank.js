@@ -149,6 +149,7 @@ class Tank {
 		if (this.player == game.actualPlayer && !game.blockControls) {
 			game.nextPlayer();
 		}
+		game.checkGameOver();
 	}
 	tick() {
 		this.checkOutOfMap();
@@ -189,7 +190,11 @@ class Tank {
 			if (game.actualPlayer != this.player) startHP += 50;
 			this.destroy();
 		}
-		if (game.actualPlayer != this.player) return startHP - (this.maxFirePower + this.shield);
+		if (game.actualPlayer != this.player) {
+			return startHP - (this.maxFirePower + this.shield);
+		} else {
+			return 0;
+		}
 	}
 	drive(x) {
 		if (game.blockControls && !ignoreBlockControl) return;

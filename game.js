@@ -118,13 +118,7 @@ class Game {
 
 	nextPlayer() {
 		if (!this.inGame) return;
-		this.lastPlayerID = this.actualPlayerID;
-		let alivePlayersCount = 0;
-		for (let p in this.players) {
-			if (this.players[p].tank) alivePlayersCount++;
-		}
-		if (alivePlayersCount <= 1) {
-			this.end();
+		if (this.checkGameOver()) {
 			return;
 		} else {
 			do {
@@ -146,6 +140,19 @@ class Game {
 		} else {
 			setTimeout(() => { game.blockControls = false }, switchScreen());
 		}
+	}
+
+	checkGameOver() {
+		this.lastPlayerID = this.actualPlayerID;
+		let alivePlayersCount = 0;
+		for (let p in this.players) {
+			if (this.players[p].tank) alivePlayersCount++;
+		}
+		if (alivePlayersCount <= 1) {
+			this.end();
+			return true;
+		}
+		return false; 
 	}
 
 	spawnTanks() {

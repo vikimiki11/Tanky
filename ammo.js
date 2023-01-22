@@ -320,7 +320,7 @@ class RollingProjectile extends Projectile {
 		this.DOM.style.left = this.x + "em";
 		this.DOM.style.bottom = this.y + "em";
 		if (
-			terrain.checkForTankCollision(this.x, this.y) || 
+			terrain.checkForTankCollision(this.x, this.y + 2) || 
 			this.tickCounter >= this.timeToLive || 
 			distanceFromGround > this.maxClimbing
 		) {
