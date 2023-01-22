@@ -32,8 +32,7 @@ class InventoryItem {
 					</div>
 				</div>`;
 	}
-	buy(amount = 1) {
-		let player = game.actualPlayer;
+	buy(amount = 1, player = game.actualPlayer) {
 		let inventory = player.inventory;
 		let bought = 0;
 		while (player.money >= this.cost && inventory[this.shortName] + this.buyAmount < 1000 && bought < amount) {
@@ -42,8 +41,8 @@ class InventoryItem {
 			bought++;
 		}
 	}
-	use(amount = 1) {
-		let inventory = game.actualPlayer.inventory;
+	use(amount = 1, player = game.actualPlayer) {
+		let inventory = player.inventory;
 		if (inventory[this.shortName] - amount >= 0 || infinityGadgetsAndAmmoCheck) {
 			if (!infinityGadgetsAndAmmoCheck) inventory[this.shortName] -= amount;
 			return true;
@@ -174,12 +173,7 @@ function explosion(xy, radius, damage) {
 					let distance = pythagoras(xy, tank.cannonBase) - 20;
 					if (distance <= radius) {
 						let damageToTank = damage * (1 - distance / radius);
-						tank.damage(damageToTank);
-						if (game.actualPlayer != tank.player) score += damageToTank;
-						if (tank.maxFirePower <= 0) {
-							if (game.actualPlayer != tank.player) score += 50;
-							tank.destroy();
-						}
+						score += tank.damage(damageToTank);
 					}
 				}
 			}

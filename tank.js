@@ -179,11 +179,17 @@ class Tank {
 	}
 	damage(damage) {
 		this.shield -= damage;
+		let startHP = this.maxFirePower + this.shield;
 		if (this.shield < 0) {
 			this.shield *= 0.96 ** this.player.inventory["armorUpgrade"];
 			this._maxFirePower += this.shield;
 			this.shield = 0;
 		}
+		if (this.maxFirePower <= 0) {
+			if (game.actualPlayer != this.player) startHP += 50;
+			this.destroy();
+		}
+		if (game.actualPlayer != this.player) return startHP - (this.maxFirePower + this.shield);
 	}
 	drive(x) {
 		if (game.blockControls && !ignoreBlockControl) return;

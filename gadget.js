@@ -74,7 +74,7 @@ function shieldGradient(shieldHP) {
 }
 
 function useParachute(tank) {
-	if (Inventory["parachute"].use()) {
+	if (Inventory["parachute"].use(1, tank.player)) {
 		tank.parachute = true;
 	}
 }
