@@ -35,31 +35,22 @@ class Tank {
 		this._maxFirePower = value;
 		this.firePower = min(this.firePower, value);
 	}
-	damage(damage) {
-		this.shield -= damage;
-		if (this.shield < 0) {
-			this.shield *= 0.96 ** this.player.inventory["armorUpgrade"];
-			this._maxFirePower += this.shield;
-			this.shield = 0;
-		}
+	get cannonBase() {
+		return [
+			this.x + 25 / 6 * 5 * -sin(this.rotate),
+			this.y + 25 / 6 * 5 * cos(this.rotate)
+		];
 	}
-	spawn() {
-		const html = `
-<div class="tank" id="tank${this.player.id}">
-	<img src="img/gadget/parachute.png" class="parachute">
-	<svg viewBox="0 0 450 175">
-		<!-- bottom part -->
-		<circle cx="50" cy="125" r="50" stroke-width="0" fill="black" />
-		<rect x="50" y="75" width="350" height="100" style="fill:black;stroke-width:0" />
-		<circle cx="400" cy="125" r="50" stroke-width="0" fill="black" />
-		<!-- top part -->
-		<polygon points="75,75 375,75 325,0 125,0" />
-		Sorry, your browser does not support inline SVG.
-	</svg>
-	<div class="cannon"></div>
-	<div class="tankShield"></div>
-</div>`
-		document.querySelector("#gamePlane").innerHTML += html;
+	get cannonAngle() {
+		return this.rotate - this.aim + PI;
+	}
+	get cannonTip() {
+		let base = this.cannonBase;
+		let width = (25 * 9 / 3.5) * 0.4;
+		return [
+			base[0] + width * cos(this.cannonAngle),
+			base[1] + width * sin(this.cannonAngle)
+		];
 	}
 	get CSS() {
 		return `
@@ -72,126 +63,10 @@ class Tank {
 		--shieldColor: ${shieldGradient(this.shield)};
 	}
 	${this.parachute ?
-	`#tank${this.player.id} .parachute{
+				`#tank${this.player.id} .parachute{
 		display: block;
 	}`: ""
-	}`;
-	}
-	tick() {
-		this.checkOutOfMap();
-		this.groundCollision();
-		//Gravity and null inertia
-
-		if (this.parachute) {
-			this.rotate *= 0.98;
-			this.inertia[0] += game.windCurrent / 6000;
-		}
-		this.x += this.inertia[0];
-		this.y += this.inertia[1];
-		if (!this.onGround) {
-			this.inertia[1] -= 0.1;
-		} else {
-			this.inertia[0] = 0;
-			this.inertia[1] = 0;
-		}
-	}
-	groundCollision() {
-		let groundContact = this.groundContactPlane;
-
-
-
-
-		//Move from underground
-		while (groundContact.left.under || groundContact.right.under) {
-			this.y += cos(this.rotate);
-			this.x += -sin(this.rotate);
-			groundContact = this.groundContactPlane;
-		}
-
-
-
-		//open parachute and fall damage
-		if (groundContact.left.on || groundContact.right.on) {
-			//Touches ground
-			this.onGround = true;
-			if (!this.parachute) {
-				let speed = pythagoras(this.inertia);
-				let damage = Math.max(0, (speed - 3) * 10);
-				if( damage > 0 )this.damage(damage);
-			}
-			this.parachute = false;
-		} else {
-			//In air
-			this.onGround = false;
-			let speed = pythagoras(this.inertia);
-			if (speed > 3 && !this.parachute) useParachute(this);
-			if (this.parachute) this.inertia[1] = -3;
-			return;
-		}
-
-
-
-
-		//Rotate
-		if (!(groundContact.left.on && groundContact.right.on)) {
-			let side = groundContact.left.on ? -1 : 1;
-			let groundContactIndex = -0.5 + side / 2;
-			while (groundContact.plane[groundContactIndex]?.distanceFromGround != 0)
-				groundContactIndex += side;
-
-			let maxAngleToRotate = Infinity;
-			const anchorPoint = groundContact.plane[groundContactIndex];
-			for (let i = groundContactIndex - side; groundContact.plane[i]; i -= side) {
-				let x = groundContact.plane[i].x - anchorPoint.x;
-				let y = groundContact.plane[i].y - anchorPoint.y;
-				let distanceToGround = groundContact.plane[i].distanceFromGround;
-				let angleToRotate = atan2(y + distanceToGround, x) - this.rotate;
-				maxAngleToRotate = min(maxAngleToRotate, abs(angleToRotate));
-			}
-
-			let angleToRotate = side * min(0.05, maxAngleToRotate)
-			let newPosition = rotateAroundPoint(this.x, this.y, angleToRotate, anchorPoint.x, anchorPoint.y);
-			this.x = newPosition[0];
-			this.y = newPosition[1];
-			this.rotate += angleToRotate;
-		}
-	}
-	checkSideCollision() {
-		let sideContactPlane = this.sideContactPlane;
-		const MaxDrivableTerrain = 5 + this.player.inventory.climbUpgrade / 3;
-		for (let i of [
-			{ side: "leftSpaceInGround",  wall: "leftWall",  check: (x) => { return x < 0 } },
-			{ side: "rightSpaceInGround", wall: "rightWall", check: (x) => { return x > 0 } }
-		]) {
-			if (sideContactPlane[i.side] > MaxDrivableTerrain || sideContactPlane[i.wall]) {
-				if (i.check(this.inertia[0]))
-					this.inertia = [0, 0];
-				if (sideContactPlane[i.wall])
-					console.log("wall");
-				if (sideContactPlane[i.side] > MaxDrivableTerrain)
-					console.log("steep");
-			}
-		}
-	}
-	checkClimb() {
-		const MaxAngleToDrive = 0.7 + this.player.inventory.climbUpgrade / 20;
-		if (this.rotate * Math.sign(this.inertia[0]) > MaxAngleToDrive) {
-			this.inertia = [0, 0];
-			console.log("max Angle");
-		}
-	}
-	checkOutOfMap() {
-		if (this.x < 0 + Tank.DriveBaseWidth / 2) {
-			this.x = Tank.DriveBaseWidth / 2 + 1;
-			this.inertia[0] = 0;
-		}else if (this.x > terrain.width - Tank.DriveBaseWidth / 2) {
-			this.x = terrain.width - Tank.DriveBaseWidth / 2 - 1;
-			this.inertia[0] = 0;
-		}
-		if (this.y < 0) {
-			this._maxFirePower = 0;
-			this.destroy();
-		}
+			}`;
 	}
 	get groundContactPlane() {
 		const DriveBaseWidth = Tank.DriveBaseWidth;
@@ -249,6 +124,67 @@ class Tank {
 		}
 		return ret;
 	}
+	spawn() {
+		const html = `
+<div class="tank" id="tank${this.player.id}">
+	<img src="img/gadget/parachute.png" class="parachute">
+	<svg viewBox="0 0 450 175">
+		<!-- bottom part -->
+		<circle cx="50" cy="125" r="50" stroke-width="0" fill="black" />
+		<rect x="50" y="75" width="350" height="100" style="fill:black;stroke-width:0" />
+		<circle cx="400" cy="125" r="50" stroke-width="0" fill="black" />
+		<!-- top part -->
+		<polygon points="75,75 375,75 325,0 125,0" />
+		Sorry, your browser does not support inline SVG.
+	</svg>
+	<div class="cannon"></div>
+	<div class="tankShield"></div>
+</div>`
+		document.querySelector("#gamePlane").innerHTML += html;
+	}
+	destroy() {
+		explosionAnimation([this.cannonBase[0], this.cannonBase[1]], 100);
+		document.querySelector("#gamePlane #tank" + this.player.id)?.remove();
+		this.player.tank = null;
+		if (this.player == game.actualPlayer && !game.blockControls) {
+			game.nextPlayer();
+		}
+	}
+	tick() {
+		this.checkOutOfMap();
+		this.groundCollision();
+		//Gravity and null inertia
+
+		if (this.parachute) {
+			this.rotate *= 0.98;
+			this.inertia[0] += game.windCurrent / 6000;
+		}
+		this.x += this.inertia[0];
+		this.y += this.inertia[1];
+		if (!this.onGround) {
+			this.inertia[1] -= 0.1;
+		} else {
+			this.inertia[0] = 0;
+			this.inertia[1] = 0;
+		}
+	}
+	fire() {
+		if (game.blockControls && !ignoreBlockControl) return;
+		game.blockControls = true;
+		if (Inventory[ammoList[this.player.selectedAmmo].shortName].use()) {
+			ammoList[this.player.selectedAmmo].fire()
+				.then(() => { game.nextPlayer() });
+			this.player.firstRound = false;
+		}
+	}
+	damage(damage) {
+		this.shield -= damage;
+		if (this.shield < 0) {
+			this.shield *= 0.96 ** this.player.inventory["armorUpgrade"];
+			this._maxFirePower += this.shield;
+			this.shield = 0;
+		}
+	}
 	drive(x) {
 		if (game.blockControls && !ignoreBlockControl) return;
 		if (this.onGround) {
@@ -260,23 +196,6 @@ class Tank {
 		}
 		this.checkSideCollision();
 		this.checkClimb();
-	}
-	get cannonBase() {
-		return [
-			this.x + 25 / 6 * 5 * -sin(this.rotate),
-			this.y + 25 / 6 * 5 * cos(this.rotate)
-		];
-	}
-	get cannonAngle() {
-		return this.rotate - this.aim + PI;
-	}
-	get cannonTip() {
-		let base = this.cannonBase;
-		let width = (25 * 9 / 3.5) * 0.4;
-		return [
-			base[0] + width * cos(this.cannonAngle),
-			base[1] + width * sin(this.cannonAngle)
-		];
 	}
 	checkCollision(x, y) {
 		let dx = x - this.x;
@@ -295,29 +214,119 @@ class Tank {
 		}
 		return false;
 	}
-	destroy() {
-		explosionAnimation([this.cannonBase[0], this.cannonBase[1]], 100);
-		document.querySelector("#gamePlane #tank" + this.player.id)?.remove();
-		this.player.tank = null;
-		if (this.player == game.actualPlayer && !game.blockControls) {
-			game.nextPlayer();
+
+
+
+
+
+	checkSideCollision() {
+		let sideContactPlane = this.sideContactPlane;
+		const MaxDrivableTerrain = 5 + this.player.inventory.climbUpgrade / 3;
+		for (let i of [
+			{ side: "leftSpaceInGround", wall: "leftWall", check: (x) => { return x < 0 } },
+			{ side: "rightSpaceInGround", wall: "rightWall", check: (x) => { return x > 0 } }
+		]) {
+			if (sideContactPlane[i.side] > MaxDrivableTerrain || sideContactPlane[i.wall]) {
+				if (i.check(this.inertia[0]))
+					this.inertia = [0, 0];
+				if (sideContactPlane[i.wall])
+					console.log("wall");
+				if (sideContactPlane[i.side] > MaxDrivableTerrain)
+					console.log("steep");
+			}
 		}
 	}
+	checkClimb() {
+		const MaxAngleToDrive = 0.7 + this.player.inventory.climbUpgrade / 20;
+		if (this.rotate * Math.sign(this.inertia[0]) > MaxAngleToDrive) {
+			this.inertia = [0, 0];
+			console.log("max Angle");
+		}
+	}
+	checkOutOfMap() {
+		if (this.x < 0 + Tank.DriveBaseWidth / 2) {
+			this.x = Tank.DriveBaseWidth / 2 + 1;
+			this.inertia[0] = 0;
+		} else if (this.x > terrain.width - Tank.DriveBaseWidth / 2) {
+			this.x = terrain.width - Tank.DriveBaseWidth / 2 - 1;
+			this.inertia[0] = 0;
+		}
+		if (this.y < 0) {
+			this._maxFirePower = 0;
+			this.destroy();
+		}
+	}
+	groundCollision() {
+		let groundContact = this.groundContactPlane;
+
+
+
+
+		//Move from underground
+		while (groundContact.left.under || groundContact.right.under) {
+			this.y += cos(this.rotate);
+			this.x += -sin(this.rotate);
+			groundContact = this.groundContactPlane;
+		}
+
+
+
+		//open parachute and fall damage
+		if (groundContact.left.on || groundContact.right.on) {
+			//Touches ground
+			this.onGround = true;
+			if (!this.parachute) {
+				let speed = pythagoras(this.inertia);
+				let damage = Math.max(0, (speed - 3) * 10);
+				if (damage > 0) this.damage(damage);
+			}
+			this.parachute = false;
+		} else {
+			//In air
+			this.onGround = false;
+			let speed = pythagoras(this.inertia);
+			if (speed > 3 && !this.parachute) useParachute(this);
+			if (this.parachute) this.inertia[1] = -3;
+			return;
+		}
+
+
+
+
+		//Rotate
+		if (!(groundContact.left.on && groundContact.right.on)) {
+			let side = groundContact.left.on ? -1 : 1;
+			let groundContactIndex = -0.5 + side / 2;
+			while (groundContact.plane[groundContactIndex]?.distanceFromGround != 0)
+				groundContactIndex += side;
+
+			let maxAngleToRotate = Infinity;
+			const anchorPoint = groundContact.plane[groundContactIndex];
+			for (let i = groundContactIndex - side; groundContact.plane[i]; i -= side) {
+				let x = groundContact.plane[i].x - anchorPoint.x;
+				let y = groundContact.plane[i].y - anchorPoint.y;
+				let distanceToGround = groundContact.plane[i].distanceFromGround;
+				let angleToRotate = atan2(y + distanceToGround, x) - this.rotate;
+				maxAngleToRotate = min(maxAngleToRotate, abs(angleToRotate));
+			}
+
+			let angleToRotate = side * min(0.05, maxAngleToRotate)
+			let newPosition = rotateAroundPoint(this.x, this.y, angleToRotate, anchorPoint.x, anchorPoint.y);
+			this.x = newPosition[0];
+			this.y = newPosition[1];
+			this.rotate += angleToRotate;
+		}
+	}
+
+
+
+
 	getCurrentProjectileLandLocation() {
 		let aimVector = new Vector();
 		let XYVector = [this.cannonTip[0], this.cannonTip[1], aimVector]
 		let projectile = new FlyingProjectile(XYVector, undefined, undefined, true);
 		while (!projectile.tick()) { }
 		return [projectile.x, projectile.y, projectile.vector];
-	}
-	fire() {
-		if (game.blockControls && !ignoreBlockControl) return;
-		game.blockControls = true;
-		if (Inventory[ammoList[this.player.selectedAmmo].shortName].use()) {
-			ammoList[this.player.selectedAmmo].fire()
-				.then(() => { game.nextPlayer() });
-			this.player.firstRound = false;
-		}
 	}
 	setFirePower(power) {
 		if (game.blockControls && !ignoreBlockControl) return;
