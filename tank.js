@@ -263,9 +263,9 @@ class Tank {
 				if (i.check(this.inertia[0]))
 					this.inertia = [0, 0];
 				if (sideContactPlane[i.wall])
-					console.log("wall");//ToDo: ehm nemá tady být inertia = [0,0]?
+					console.log("wall");
 				if (sideContactPlane[i.side] > MaxDrivableTerrain)
-					console.log("steep");//ToDo: ehm nemá tady být inertia = [0,0]?
+					console.log("steep");
 			}
 		}
 	}
