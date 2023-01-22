@@ -209,6 +209,27 @@ class Tank {
 		this.checkSideCollision();
 		this.checkClimb();
 	}
+	getCurrentProjectileLandLocation() {
+		let aimVector = new Vector();
+		let XYVector = [this.cannonTip[0], this.cannonTip[1], aimVector]
+		let projectile = new FlyingProjectile(XYVector, undefined, undefined, true);
+		while (!projectile.tick()) { }
+		return [projectile.x, projectile.y, projectile.vector];
+	}
+	setFirePower(power) {
+		if (game.blockControls && !ignoreBlockControl) return;
+		power = min(parseFloat(power), this.maxFirePower);
+		power = max(power, 0);
+		this.firePower = power;
+		document.querySelector("#firePowerControl input").value = power;
+	}
+	setAim(angle) {
+		if (game.blockControls && !ignoreBlockControl) return;
+		angle = min(parseFloat(angle), PI);
+		angle = max(angle, 0);
+		this.aim = angle;
+		document.querySelector("#aimControl").value = angle;
+	}
 	checkCollision(x, y) {
 		let dx = x - this.x;
 		let dy = y - this.y;
@@ -328,30 +349,5 @@ class Tank {
 			this.y = newPosition[1];
 			this.rotate += angleToRotate;
 		}
-	}
-
-
-
-
-	getCurrentProjectileLandLocation() {
-		let aimVector = new Vector();
-		let XYVector = [this.cannonTip[0], this.cannonTip[1], aimVector]
-		let projectile = new FlyingProjectile(XYVector, undefined, undefined, true);
-		while (!projectile.tick()) { }
-		return [projectile.x, projectile.y, projectile.vector];
-	}
-	setFirePower(power) {
-		if (game.blockControls && !ignoreBlockControl) return;
-		power = min(parseFloat(power), this.maxFirePower);
-		power = max(power, 0);
-		this.firePower = power;
-		document.querySelector("#firePowerControl input").value = power;
-	}
-	setAim(angle) {
-		if (game.blockControls && !ignoreBlockControl) return;
-		angle = min(parseFloat(angle), PI);
-		angle = max(angle, 0);
-		this.aim = angle;
-		document.querySelector("#aimControl").value = angle;
 	}
 }
