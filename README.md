@@ -6,7 +6,8 @@ Obrazčikí
 # Upravit / Dodělat
 
 Dodělat pozadí do shopu\
-dodělat ball ammo
+dodělat ball ammo\
+Top bar po úmrtí
 
 # Možná???
 
