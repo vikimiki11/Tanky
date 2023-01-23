@@ -179,6 +179,15 @@ function explosion(xy, radius, damage) {
 			}
 			game.actualPlayer.score += score * 10;
 			game.actualPlayer.money += score * 50;
+			for (let i = 0; i < trees.length; i++) {
+				let tree = trees[i];
+				if (tree) {
+					let distance = pythagoras(xy, [tree.x, tree.y]);
+					if (distance <= radius) {
+						tree.destroy();
+					}
+				}
+			}
 			if (radius >= 200) console.timeEnd("explosion");
 		}, 500);
 	});

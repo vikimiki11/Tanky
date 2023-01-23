@@ -126,8 +126,10 @@ class Tank {
 		return ret;
 	}
 	spawn() {
-		const html = `
-<div class="tank" id="tank${this.player.id}">
+		let DOM = document.createElement("div");
+		DOM.className = "tank";
+		DOM.id = "tank" + this.player.id;
+		DOM.innerHTML = `
 	<img src="img/gadget/parachute.png" class="parachute">
 	<svg viewBox="0 0 450 175">
 		<!-- bottom part -->
@@ -139,9 +141,8 @@ class Tank {
 		Sorry, your browser does not support inline SVG.
 	</svg>
 	<div class="cannon"></div>
-	<div class="tankShield"></div>
-</div>`
-		document.querySelector("#gamePlane").innerHTML += html;
+	<div class="tankShield"></div>`
+		document.querySelector("#gamePlane").appendChild(DOM);
 	}
 	destroy() {
 		explosionAnimation([this.cannonBase[0], this.cannonBase[1]], 100);

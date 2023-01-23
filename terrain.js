@@ -56,20 +56,32 @@ class Terrain extends Array {
 		this.canvasData.grainification(1, 4, 15);
 		this.canvasData.update();
 
-		updateSkyBox();
-		function updateSkyBox() {
-			let y = noise.simplex2(0, -100000)*0.5+0.5;
-			let x = noise.simplex2(-100000, -100000);
-			let innerSkyColor = GetSkyBoxColor("#75B1FF", "#C896C8", y);
-			let outerSkyColor = GetSkyBoxColor("#1A7DFF", "#003F9F", y);
-			innerSky.setAttribute("stop-color", innerSkyColor);
-			outerSky.setAttribute("stop-color", outerSkyColor);
-			sun.setAttribute("cx", `${x * 2200 + 1280}`);
-			skybox.setAttribute("cx", `${x * 2200 + 1280}`);
-			sun.setAttribute("cy", `${y * 600 + 450}`);
-			skybox.setAttribute("cy", `${y * 750 + 1860}`);
+		this.updateSkyBox();
+		this.generateTrees();
+	}
+	updateSkyBox() {
+	let y = noise.simplex2(0, -100000) * 0.5 + 0.5;
+	let x = noise.simplex2(-100000, -100000);
+	let innerSkyColor = GetSkyBoxColor("#75B1FF", "#C896C8", y);
+	let outerSkyColor = GetSkyBoxColor("#1A7DFF", "#003F9F", y);
+	innerSky.setAttribute("stop-color", innerSkyColor);
+	outerSky.setAttribute("stop-color", outerSkyColor);
+	sun.setAttribute("cx", `${x * 2200 + 1280}`);
+	skybox.setAttribute("cx", `${x * 2200 + 1280}`);
+	sun.setAttribute("cy", `${y * 600 + 450}`);
+	skybox.setAttribute("cy", `${y * 750 + 1860}`);
+	}
+	generateTrees() {
+		for(let x in trees) {
+			trees[x].destroy();
+		}
+		trees = [];
+		for (let x in this) {
+			if (random() > 0.993)
+				new Tree(x, this[x].terrainHeight - 1, this.currentTerrain);
 		}
 	}
+
 	checkCollision(x, y) {
 		if (this[floor(x)] && this[floor(x)][floor(y)])
 			return this[floor(x)][floor(y)].isSolid;
@@ -330,4 +342,39 @@ function GetSkyBoxColor(rgb, rgb2, ration) {
 	let g = Math.round(rgb.g + (rgb2.g - rgb.g) * ration);
 	let b = Math.round(rgb.b + (rgb2.b - rgb.b) * ration);
 	return DecToHex({ r, g, b });
+}
+
+
+
+
+let trees = [];
+class Tree {
+	constructor(x, y, type) {
+		this.x = x;
+		this.y = y;
+		this.type = type;
+		this.draw();
+		trees.push(this);
+	}
+	draw() {
+		this.DOM = document.createElement("img");
+		this.DOM.style.left = this.x + "em";
+		this.DOM.style.bottom = this.y + "em";
+		switch (this.type) {
+			case 1:
+				this.DOM.src = "img/treeMountain.png";
+				break;
+			case 2:
+				this.DOM.src = "img/treeForest.png";
+				break;
+			case 3:
+				this.DOM.src = "img/treeDesert.png";
+				break;
+		}
+		this.DOM.className = "tree";
+		document.querySelector("#gamePlane").appendChild(this.DOM);
+	}
+	destroy() {
+		this.DOM.remove();
+	}
 }

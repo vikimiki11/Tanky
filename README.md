@@ -13,5 +13,4 @@ Top bar po úmrtí
 
 AI(doupravit úrovně)\
 Zvuky\
-Generování stromů(do lesa by se hodily stromy)\
 underground rotate?

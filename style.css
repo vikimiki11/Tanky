@@ -671,11 +671,21 @@ svg.superShield>circle {
 
 
 
+
 canvas{
 	position: absolute;
 	bottom: 0;
 	left: 0;
 	height: 0.84028em;
+}
+
+
+
+
+.tree{
+	position: absolute;
+	height: calc(50em);
+	transform: translate(-50%, 0);
 }
 
 
