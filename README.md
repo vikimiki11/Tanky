@@ -5,12 +5,11 @@ Obrazčikí
 
 # Upravit / Dodělat
 
-Dodělat pozadí do shopu\
 dodělat ball ammo\
 Top bar po úmrtí
 
 # Možná???
 
-AI(doupravit úrovně)\
 Zvuky\
+Touch input\
 underground rotate?
