@@ -9,6 +9,5 @@ dodělat ball ammo
 
 # Možná???
 
-Zvuky\
 Touch input\
 underground rotate?

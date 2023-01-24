@@ -168,6 +168,15 @@ main{
 	z-index: 30;
 }
 
+#soundButton {
+	position: absolute;
+	top: 0.07em;
+	right: 0.01em;
+	width: 0.05em;
+	height: 0.05em;
+	z-index: 30;
+}
+
 
 
 

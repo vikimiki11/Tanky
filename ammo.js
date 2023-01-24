@@ -157,6 +157,7 @@ function fireRollingProjectile(xy, vector, maxClimbing, timeToLive) {
 }
 
 function explosion(xy, radius, damage) {
+	explosionSoundController.play();
 	xy = [round(xy[0]), round(xy[1])];
 	return new Promise((resolve) => {
 		setTimeout(resolve, 1000);
