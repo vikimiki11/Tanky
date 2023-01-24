@@ -9,5 +9,4 @@ dodělat ball ammo
 
 # Možná???
 
-Touch input\
 underground rotate?

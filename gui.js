@@ -170,9 +170,16 @@ document.querySelectorAll("#engineControl .clickable").forEach(el => {
 	el.addEventListener("mousedown", function () {
 		keys[el.getAttribute("direction") == "left" ? 65 : 68] = true;
 	});
+	el.addEventListener("touchstart", function () {
+		keys[el.getAttribute("direction") == "left" ? 65 : 68] = true;
+	});
 });
 
 document.body.addEventListener("mouseup", function () {
+	keys[65] = false;
+	keys[68] = false;
+});
+document.body.addEventListener("touchend", function () {
 	keys[65] = false;
 	keys[68] = false;
 });
