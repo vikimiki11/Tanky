@@ -5,8 +5,7 @@ Obrazčikí
 
 # Upravit / Dodělat
 
-dodělat ball ammo\
-Top bar po úmrtí
+dodělat ball ammo
 
 # Možná???
 

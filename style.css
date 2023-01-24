@@ -299,7 +299,7 @@ input[type="color"]{
 }
 
 #fuelAmount::after{
-	content: var(--fuel);
+	content: var(--fuel, "0");
 }
 
 #gadgets{
@@ -697,6 +697,7 @@ canvas{
 	width: calc(25em * 9 / 3.5 * var(--scale));
 	transform-origin: 50% 100%;
 	--scale: 1;
+	transform: translate(-50%, 0);
 }
 
 .tank>svg>polygon {
