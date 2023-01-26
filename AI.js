@@ -51,7 +51,7 @@ class AI{
 		ammoSelection = filteredAmmoSelection.length > 0 ? filteredAmmoSelection : ["smallMissile"];
 
 		let selectedAmmo = ammoSelection[Math.floor(Math.random() * ammoSelection.length)];
-		game.actualPlayer.selectedAmmo = Inventory[selectedAmmo].InventoryID;
+		game.actualPlayer.selectedAmmo = GlobalInventory[selectedAmmo].InventoryID;
 	}
 	static autoShop(AILevel = 1) {
 		switch (AILevel) {
@@ -80,6 +80,6 @@ class AI{
 	}
 	static holdNumberOfProducts(name, numberToHold) {
 		let inventory = game.actualPlayer.inventory;
-		Inventory[name].buy(numberToHold - inventory[name]);
+		GlobalInventory[name].buy(numberToHold - inventory[name]);
 	}
 }

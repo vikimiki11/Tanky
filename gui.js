@@ -61,9 +61,9 @@ function nextStartupScreen() {
 
 
 //Připraví rozhraní pro gadgety a ammo
-for (let item in Inventory) {
-	let type = Inventory[item].type;
-	let html = Inventory[item].html;
+for (let item in GlobalInventory) {
+	let type = GlobalInventory[item].type;
+	let html = GlobalInventory[item].html;
 	if (type == "ammo") {
 		document.querySelector("#selectedAmmo").innerHTML += html;
 		document.querySelector("#allAmmo").innerHTML += html;
@@ -83,7 +83,7 @@ for (let el of document.querySelectorAll("#allAmmo .inventoryRow")) {
 for (let el of document.querySelectorAll("#shopScreen .inventoryRow")) {
 	el.addEventListener("click", function () {
 		item = el.getAttribute("shortName");
-		Inventory[item].buy();
+		GlobalInventory[item].buy();
 	});
 }
 

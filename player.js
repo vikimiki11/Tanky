@@ -46,8 +46,8 @@ class Player {
 		this.selected = false;
 		this._selectedAmmo = 0;
 		this.inventory = {};
-		for (let item in Inventory) {
-			this.inventory[item] = Inventory[item].defaultAmount;
+		for (let item in GlobalInventory) {
+			this.inventory[item] = GlobalInventory[item].defaultAmount;
 		}
 		this.firstRound = false;
 	}
@@ -82,7 +82,7 @@ ${this.tank ?`			--aim: ${round(this.tank.aim * 180 / PI)};
 		`;
 		for (let item in this.inventory) {
 			document.querySelector("style#playerStyle").innerHTML += `
-		.inventoryRow.item${item} > .itemAmount::after, .${Inventory[item].shortName}DisplayAfter::after{
+		.inventoryRow.item${item} > .itemAmount::after, .${GlobalInventory[item].shortName}DisplayAfter::after{
 			content: "${this.inventory[item] == "Infinity" ? "Inf." : this.inventory[item]}";
 		}`;
 		}

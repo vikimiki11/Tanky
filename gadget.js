@@ -21,13 +21,13 @@ new Gadget("Climb upgrade", "climbUpgrade", 0, 5000, 1);
 
 function repairKit() {
 	if (game.blockControls && !ignoreBlockControl) return;
-	if (game.actualPlayer.tank.maxFirePower < 100 && Inventory["repairKit"].use()) {
+	if (game.actualPlayer.tank.maxFirePower < 100 && GlobalInventory["repairKit"].use()) {
 		game.actualPlayer.tank.maxFirePower = game.actualPlayer.tank.maxFirePower + 20;
 	}
 }
 function fuel() {
 	if (game.blockControls && !ignoreBlockControl) return;
-	if (Inventory["fuel"].use(50)) {
+	if (GlobalInventory["fuel"].use(50)) {
 		game.actualPlayer.tank.fuel += 50;
 	}
 }
@@ -37,7 +37,7 @@ const gamePlane = document.querySelector("#gamePlane");
 gamePlane.addEventListener("click", teleportClick);
 function teleport() {
 	if (game.blockControls && !ignoreBlockControl) return;
-	if (!teleportActive && Inventory["teleport"].use()) {
+	if (!teleportActive && GlobalInventory["teleport"].use()) {
 		game.blockControls = true;
 		gamePlane.style.cursor = "crosshair";
 		teleportActive = true;
@@ -57,7 +57,7 @@ const shieldColorLevels = [0, 100, 200, 400, 800];
 const shieldLevelNames = ["", "weakShield", "shield", "strongShield", "superShield"];
 function shield(level) {
 	if ((game.blockControls && !ignoreBlockControl) || game.actualPlayer.tank.shield >= shieldColorLevels[shieldColorLevels.length - 1]) return;
-	if (Inventory[shieldLevelNames[level]].use()) {
+	if (GlobalInventory[shieldLevelNames[level]].use()) {
 		game.actualPlayer.tank.shield += shieldColorLevels[level];
 		game.actualPlayer.tank.shield = Math.min(game.actualPlayer.tank.shield, shieldColorLevels[shieldColorLevels.length - 1]);
 	}
@@ -74,7 +74,7 @@ function shieldGradient(shieldHP) {
 }
 
 function useParachute(tank) {
-	if (Inventory["parachute"].use(1, tank.player)) {
+	if (GlobalInventory["parachute"].use(1, tank.player)) {
 		tank.parachute = true;
 	}
 }

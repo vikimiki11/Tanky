@@ -1,5 +1,5 @@
 ammoList = [];
-Inventory = {}
+GlobalInventory = {}
 class InventoryItem {
 	static inventoryIDCounter = 0;
 	constructor(name, shortName, img, defaultAmount, cost, buyAmount, type, originalClass) {
@@ -11,7 +11,7 @@ class InventoryItem {
 		this.cost = cost;
 		this.buyAmount = buyAmount;
 		this.type = type;
-		Inventory[shortName] = this;
+		GlobalInventory[shortName] = this;
 		this.originalClass = originalClass;
 	}
 	get html() {
@@ -144,12 +144,12 @@ function fireFlyingProjectile(xy = game.actualPlayer.tank.cannonTip, vector = ne
 		projectiles.push(new FlyingProjectile(XYVector, resolve, reject));
 	});
 }
-function fireRollingProjectile(xy, vector, maxClimbing, timeToLive) {
+function fireRollingProjectile(xy, vector, maxClimb, timeToLive) {
 	let flyingProjectile = fireFlyingProjectile(xy, vector);
 	return new Promise((resolve, reject) => {
 		flyingProjectile.then(
 			(XYVector) => {
-				projectiles.push(new RollingProjectile(XYVector, resolve, reject, false, maxClimbing, timeToLive))
+				projectiles.push(new RollingProjectile(XYVector, resolve, reject, false, maxClimb, timeToLive))
 			},
 			reject
 		);
@@ -163,7 +163,6 @@ function explosion(xy, radius, damage) {
 		setTimeout(resolve, 1000);
 		explosionAnimation(xy, radius)
 		setTimeout(() => {
-
 			if (radius >= 200) console.time("explosion");
 			terrain.destroyTerrain(xy, radius);
 
@@ -180,6 +179,9 @@ function explosion(xy, radius, damage) {
 			}
 			game.actualPlayer.score += score * 10;
 			game.actualPlayer.money += score * 50;
+
+
+
 			for (let i = 0; i < trees.length; i++) {
 				let tree = trees[i];
 				if (tree) {
@@ -231,9 +233,9 @@ function simpleFlyingAmmo(xy, vector, radius, damage) {
 	});
 }
 
-function simpleRollingAmmo(xy, vector, maxClimbing, timeToLive, radius, damage) {
+function simpleRollingAmmo(xy, vector, maxClimb, timeToLive, radius, damage) {
 	return new Promise((resolve) => {
-		fireRollingProjectile(xy, vector, maxClimbing, timeToLive).then((xy) => {
+		fireRollingProjectile(xy, vector, maxClimb, timeToLive).then((xy) => {
 			explosion(xy, radius, damage).then(resolve);
 		}).catch(() => {
 			resolve();
@@ -312,7 +314,7 @@ class FlyingProjectile extends Projectile{
 	}
 }
 class RollingProjectile extends Projectile {
-	constructor(XYVector, landed = () => { }, outOfBounds = () => { }, noDOM, maxClimbing, timeToLive) {
+	constructor(XYVector, landed = () => { }, outOfBounds = () => { }, noDOM, maxClimb, timeToLive) {
 		super(XYVector, landed, outOfBounds, noDOM);
 		if (terrain.checkForTankCollision(this.x, this.y)) {
 			this.destroy();
@@ -320,7 +322,7 @@ class RollingProjectile extends Projectile {
 			this.end = true;
 		}
 		this.direction = this.vector.x > 0 ? 1 : -1;
-		this.maxClimbing = maxClimbing;
+		this.maxClimb = maxClimb;
 		this.timeToLive = timeToLive;
 		this.y += terrain.distanceFromGround(this.x, this.y);
 	}
@@ -332,7 +334,7 @@ class RollingProjectile extends Projectile {
 		if (
 			terrain.checkForTankCollision(this.x, this.y + 2) || 
 			this.tickCounter >= this.timeToLive || 
-			distanceFromGround > this.maxClimbing
+			distanceFromGround > this.maxClimb
 		) {
 			this.destroy();
 			this.landed([this.x, this.y]);
