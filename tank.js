@@ -145,6 +145,7 @@ class Tank {
 		document.querySelector("#gamePlane").appendChild(DOM);
 	}
 	destroy() {
+		tankExplosionSoundController.play();
 		explosionAnimation([this.cannonBase[0], this.cannonBase[1]], 100);
 		document.querySelector("#gamePlane #tank" + this.player.id)?.remove();
 		this.player.tank = null;

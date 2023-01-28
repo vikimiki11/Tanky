@@ -58,6 +58,19 @@ class Terrain extends Array {
 
 		this.updateSkyBox();
 		this.generateTrees();
+
+		engineSound.pause()
+		switch (this.currentTerrain) {
+			case 1:
+				engineSound = engineMountainSound;
+				break;
+			case 2:
+				engineSound = engineForrestSound;
+				break;
+			case 3:
+				engineSound = engineDesertSound;
+				break;
+		}
 	}
 	updateSkyBox() {
 	let y = noise.simplex2(0, -100000) * 0.5 + 0.5;

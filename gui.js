@@ -30,6 +30,7 @@ function switchScreen(screenID) {
 			document.body.classList.remove("switchOut");
 		}, animationLength);
 	}, animationLength);
+	doorSound.play();
 }
 
 
@@ -84,6 +85,7 @@ for (let el of document.querySelectorAll("#shopScreen .inventoryRow")) {
 	el.addEventListener("click", function () {
 		item = el.getAttribute("shortName");
 		GlobalInventory[item].buy();
+		buySoundController.play();
 	});
 }
 
@@ -198,7 +200,7 @@ setInterval(() => {
 	if (keys[68] && !keys[65]) game?.tankDrive(1);
 
 
-	if (game.actualPlayer.tank.onGround) {
+	if (game?.actualPlayer.tank?.onGround) {
 		groundContact = 10;
 	} else {
 		groundContact--;
