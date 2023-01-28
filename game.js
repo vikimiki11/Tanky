@@ -62,6 +62,13 @@ class Game {
 		this.windCurrent = noise.simplex2(this.windStep * windJump, 1000) * windMax;
 		document.querySelector("#windCurrent").innerHTML = abs(round(this.windCurrent));
 		document.querySelector("#windDirection").innerHTML = this.windCurrent > 0 ? "↪" : "↩";
+
+
+		windSound.volume(min(abs(this.windCurrent) / 45, 1));
+		if (abs(this.windCurrent) > 45)
+			strongWindSound.volume(abs(this.windCurrent) / 5 - 9);
+		else
+			strongWindSound.volume(0);
 	}
 	get windStep() {
 		return this._windStep;
@@ -85,6 +92,8 @@ class Game {
 		for (let player in this.players) {
 			this.players[player].firstRound = true;
 		}
+		windSound.play();
+		strongWindSound.play();
 	}
 
 	end() {
@@ -102,6 +111,8 @@ class Game {
 			removeProjectiles();
 			terrain.generate();
 		}, switchScreen() + 100);
+		windSound.pause();
+		strongWindSound.pause();
 	}
 
 	shopNextPlayer(donCheckStart) {
