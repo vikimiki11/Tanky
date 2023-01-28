@@ -1,8 +1,8 @@
 class Tank {
 	static DriveBaseWidth = 65;
 	static TankHeight = 25;
-	static TankHeadWidth = 25 / 175 * 250;
-	static TankHeadHeight = 25 / 175 * 75;
+	static TankHeadWidth = Tank.TankHeight / 175 * 250;
+	static TankHeadHeight = Tank.TankHeight / 175 * 75;
 
 	constructor(player, x) {
 		this.player = player;
@@ -204,9 +204,9 @@ class Tank {
 		if (game.blockControls && !ignoreBlockControl) return;
 		if (this.onGround) {
 			if (this.fuel > 0 || infinityGadgetsAndAmmoCheck) {
-				if (!infinityGadgetsAndAmmoCheck) this.fuel -= 0.5;
-				this.inertia[0] = x * cos(this.rotate) * (1.5 ** this.player.inventory["engineUpgrade"]);
-				this.inertia[1] = x * sin(this.rotate) * (1.5 ** this.player.inventory["engineUpgrade"]);
+				if (!infinityGadgetsAndAmmoCheck) this.fuel -= 0.5 * (0.9 ** this.player.inventory["engineUpgrade"]);
+				this.inertia[0] = x * cos(this.rotate);
+				this.inertia[1] = x * sin(this.rotate);
 			}
 		}
 		this.checkSideCollision();
