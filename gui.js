@@ -84,8 +84,8 @@ for (let el of document.querySelectorAll("#allAmmo .inventoryRow")) {
 for (let el of document.querySelectorAll("#shopScreen .inventoryRow")) {
 	el.addEventListener("click", function () {
 		item = el.getAttribute("shortName");
-		GlobalInventory[item].buy();
-		buySoundController.play();
+		if(GlobalInventory[item].buy())
+			buySoundController.play();
 	});
 }
 

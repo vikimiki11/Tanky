@@ -40,6 +40,7 @@ class InventoryItem {
 			inventory[this.shortName] += this.buyAmount;
 			bought++;
 		}
+		return bought;
 	}
 	use(amount = 1, player = game.actualPlayer) {
 		let inventory = player.inventory;
