@@ -38,8 +38,8 @@ class Tank {
 	}
 	get cannonBase() {
 		return [
-			this.x + 25 / 6 * 5 * -sin(this.rotate),
-			this.y + 25 / 6 * 5 * cos(this.rotate)
+			this.x + Tank.TankHeight / 6 * 5 * -sin(this.rotate),
+			this.y + Tank.TankHeight / 6 * 5 * cos(this.rotate)
 		];
 	}
 	get cannonAngle() {
@@ -47,7 +47,7 @@ class Tank {
 	}
 	get cannonTip() {
 		let base = this.cannonBase;
-		let width = (25 * 9 / 3.5) * 0.4;
+		let width = (Tank.TankHeight * 9 / 3.5) * 0.4;
 		return [
 			base[0] + width * cos(this.cannonAngle),
 			base[1] + width * sin(this.cannonAngle)
