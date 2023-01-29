@@ -323,14 +323,13 @@ class Tank {
 			let speed = pythagoras(this.inertia);
 			if (speed > 3 && !this.parachute) useParachute(this);
 			if (this.parachute) this.inertia[1] = -3;
-			return;
 		}
 
 
 
 
 		//Rotate
-		if (!(groundContact.left.on && groundContact.right.on)) {
+		if (groundContact.left.on ^ groundContact.right.on) {
 			let side = groundContact.left.on ? -1 : 1;
 			let groundContactIndex = -0.5 + side / 2;
 			while (groundContact.plane[groundContactIndex]?.distanceFromGround != 0)
