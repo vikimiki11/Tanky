@@ -159,7 +159,7 @@ class TerrainColumn extends Uint8Array {
 			this.imageData[colorStartIndex + 3] = 255;
 
 			let distanceFromGround = this.terrainHeight - y;
-			if (distanceFromGround >= 0 && distanceFromGround < this.topLevelThickness) {
+			if (distanceFromGround < this.topLevelThickness) {
 				if (this.table.currentTerrain == 1) {
 					this.imageData[colorStartIndex] = 255;
 					this.imageData[colorStartIndex + 1] = 255;
@@ -169,7 +169,7 @@ class TerrainColumn extends Uint8Array {
 					this.imageData[colorStartIndex + 1] = 199;
 					this.imageData[colorStartIndex + 2] = 17;
 				}
-			} else if (distanceFromGround >= 0) {//ToDo:remove?
+			} else {
 				if (this.table.currentTerrain == 1) {
 					const scale = 0.02;
 					let n = noise.simplex2(this.x * scale, y * scale);
