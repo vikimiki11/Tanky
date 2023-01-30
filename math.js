@@ -85,3 +85,16 @@ function rotateAroundPoint(x, y, angle, centerx, centery) {
 	vector.angle += angle;
 	return [vector.x + centerx, vector.y + centery];
 }
+
+function forCoordInRadius(x, y, radius, func, ...passArgs) {
+	func(x, y, ...passArgs);
+	for (let dy = 1; dy <= radius; dy++) {
+		let startdx = sqrt(radius ** 2 - dy ** 2);
+		for (let dx = round(startdx); dx >= 0; dx--) {
+			func(x + dy, y + dx, ...passArgs);
+			func(x - dx, y + dy, ...passArgs);
+			func(x - dy, y - dx, ...passArgs);
+			func(x + dx, y - dy, ...passArgs);
+		}
+	}
+}

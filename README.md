@@ -5,7 +5,8 @@ Obrazčikí
 
 # Upravit / Dodělat
 
-dodělat ball ammo
+dodělat ball ammo\
+předělat skore a peníze
 
 # Možná???
 
