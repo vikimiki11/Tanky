@@ -59,7 +59,8 @@ class Player {
 		this._selectedAmmo = parseInt(value);
 	}
 	updateCSS() {
-		document.querySelector("style#playerStyle").innerHTML = `		#selectedAmmo .item${this.selectedAmmo} {
+		let toPrint = "";
+		toPrint = `		#selectedAmmo .item${this.selectedAmmo} {
 			display: grid;
 		}
 		
@@ -81,11 +82,12 @@ ${this.tank ?`			--aim: ${round(this.tank.aim * 180 / PI)};
 
 		`;
 		for (let item in this.inventory) {
-			document.querySelector("style#playerStyle").innerHTML += `
+			toPrint += `
 		.inventoryRow.item${item} > .itemAmount::after, .${GlobalInventory[item].shortName}DisplayAfter::after{
 			content: "${this.inventory[item] == "Infinity" ? "Inf." : this.inventory[item]}";
 		}`;
 		}
+		document.querySelector("style#playerStyle").innerHTML = toPrint;
 	}
 	get globalCSS() {
 		return `.score#score${this.id}::after{
