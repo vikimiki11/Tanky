@@ -1,5 +1,5 @@
 class Terrain extends Array {
-	constructor(width, height, terrain, seed = random(), grainificationSettings = [1, 4, 15]) {
+	constructor(width, height, terrain, seed = random(), grainificationSettings = [[[4, 15, 0], [4, 15, 2]], true]) {
 		super();
 		console.time("new terrain");
 		this.width = width;
@@ -152,10 +152,10 @@ class TerrainColumn extends Uint8Array {
 
 
 
-		let colorStartIndex = (this.x + (this.height) * this.width) * 4;
+		let colorStartIndex = (this.x + (this.height) * this.width) << 2;
 		for (let y = 0; y <= this.terrainHeight; y++) {
 			this[y] = true;
-			colorStartIndex -= this.width * 4;
+			colorStartIndex -= (this.width << 2);
 			this.imageData[colorStartIndex + 3] = 255;
 
 			let distanceFromGround = this.terrainHeight - y;
@@ -200,7 +200,7 @@ class TerrainColumn extends Uint8Array {
 		}
 		for (let y = this.terrainHeight + 1; y < this.length; y++) {
 			this[y] = false;
-			colorStartIndex -= this.width * 4;
+			colorStartIndex -= (this.width << 2);
 			this.imageData[colorStartIndex + 3] = 0;
 		}
 	}
@@ -234,7 +234,7 @@ class CanvasData {
 		this.height = height;
 	}
 	coordinatesToIndex(x, y) {
-		return (x + (this.height - 1 - y) * this.width) * 4;
+		return (x + (this.height - 1 - y) * this.width) << 2;
 	}
 	setPixel(x, y, color) {
 		const startIndex = this.coordinatesToIndex(x, y);
@@ -259,48 +259,75 @@ class CanvasData {
 
 
 
-	grainification1x1(decreaseI) {
-		const decrease = decreaseI || 10;
+	grainification1x1(decreaseI, startHeight = 0) {
+		const Decrease = decreaseI || 10;
+		const InverseDecrease = 1 / Decrease;
+
+		let startIndex = startHeight * terrain.width << 2;
+		
 		console.time("grainification1x1");
-		for (let i = 0; i < this.data.length; i++) {
-			if (this.data[i] && i % 4 != 3) this.data[i] = this.data[i] * ((random() + decrease - 1) / decrease);
+		for (let i = startIndex; i < this.data.length; i++) {
+			if (this.data[i] && i & 3 != 3) this.data[i] = this.data[i] * ((random() + Decrease - 1) * InverseDecrease);
 		}
 		console.timeEnd("grainification1x1");
 	}
-	grainification2x2(decreaseI) {
-		const decrease = decreaseI || 10;
-		let actualDecrease = 0;
+	grainification2x2(decreaseI, startHeight = 0) {
+		const Decrease = decreaseI || 10;
+		const InverseDecrease = 1 / Decrease;
+		let actualDecrease = [];
+
+		startHeight = startHeight - startHeight % 2;
+		let startIndex = startHeight * terrain.width << 2;
+
 		console.time("grainification2x2");
-		for (let i = 0; i < this.data.length; i = (i / 4 + 2) % this.width < 2 ? i + (2 + this.width - (i / 4 + 2) % this.width) * 4 : i + 8) {
-			actualDecrease = [((random() + decrease - 1) / decrease), ((random() + decrease - 1) / decrease), ((random() + decrease - 1) / decrease)];
+		for (let i = startIndex; i < this.data.length; i = ((i << 2) + 2) % this.width < 2 ? i + ((2 + this.width - ((i >> 2) + 2) % this.width) << 2) : i + 8) {
+			actualDecrease = [((random() + Decrease - 1) * InverseDecrease), ((random() + Decrease - 1) * InverseDecrease), ((random() + Decrease - 1) * InverseDecrease)];
 			for (let j = 0; j <= 6; j = ++j + Number(j == 3)) {
-				this.data[i + j] = this.data[i + j] * actualDecrease[j % 4];
-				this.data[i + this.width * 4 + j] = this.data[i + this.width * 4 + j] * actualDecrease[j % 4];
+				this.data[i + j] = this.data[i + j] * actualDecrease[j & 3];
+				this.data[i + (this.width >> 2) + j] = this.data[i + (this.width >> 2) + j] * actualDecrease[j & 3];
 			}
 		}
 		console.timeEnd("grainification2x2");
 	}
-	grainificationNxN(n, decreaseI) {
+	grainificationNxN(n, decreaseI, startHeight = 0, offset) {
 		if (n < 0) return console.warn("GrainificationNxN: n must be positive");
-		if (n == 1) return this.grainification1x1(decreaseI);
-		if (n == 2) return this.grainification2x2(decreaseI);
-		const decrease = decreaseI || 10;
-		let actualDecrease = 0;
+		if (n == 1) return this.grainification1x1(decreaseI, startHeight);
+		if (n == 2) return this.grainification2x2(decreaseI, startHeight);
+		const Decrease = decreaseI || 10;
+		const InverseDecrease = 1 / Decrease;
+		let actualDecrease = [];
+
+		startHeight = startHeight - startHeight % n;
+		let startIndex = startHeight * terrain.width << 2;
+
 		console.time("grainificationNxN(" + n + ")");
-		for (let i = 0; i < this.data.length; i = (i / 4 + 3) % this.width < n ? i + (n + this.width * (n - 1) - (i / 4 + 3) % this.width) * 4 : i + n * 4) {
-			actualDecrease = [((random() + decrease - 1) / decrease), ((random() + decrease - 1) / decrease), ((random() + decrease - 1) / decrease)];
-			for (let j = 0; j < n * 4; j = ++j + Number(j % 4 == 3)) {
+		for (let imageDataOffset = startIndex; imageDataOffset < this.data.length; imageDataOffset = ((imageDataOffset >> 2) + 3) % this.width < n ? imageDataOffset + ((n + this.width * (n - 1) - ((imageDataOffset >> 2) + 3) % this.width) << 2) : imageDataOffset + (n << 2)) {
+			actualDecrease = [((random() + Decrease - 1) * InverseDecrease), ((random() + Decrease - 1) * InverseDecrease), ((random() + Decrease - 1) * InverseDecrease)];
+			for (let imageDataIndex = 0; imageDataIndex < n << 2; imageDataIndex = ++imageDataIndex + Number((imageDataIndex & 3) == 3)) {
 				for (let x = 0; x < n; x++) {
-					this.data[i + j + this.width * 4 * x] = this.data[i + j + this.width * 4 * x] * actualDecrease[j % 4];
+					this.data[imageDataOffset + imageDataIndex + (this.width << 2) * x + offset] = this.data[imageDataOffset + imageDataIndex + (this.width << 2) * x + offset] * actualDecrease[imageDataIndex & 3];
 				}
 			}
 		}
 		console.timeEnd("grainificationNxN(" + n + ")");
 	}
-	grainification(start, stop, decreaseI) {
+	grainification(settings, ignoreAir) {
 		console.groupCollapsed("grainification");
-		for (let i = start; i <= stop; i++) {
-			this.grainificationNxN(i, decreaseI);
+
+		let startHeight = 0;
+		if (ignoreAir) {
+			for (let i = 0; i < terrain.width; i++) {
+				startHeight = max(terrain[i].terrainHeight, startHeight);
+			}
+			startHeight = terrain.height - startHeight - 1;
+		}
+
+
+		for (let settingIndex in settings) {
+			let grainSize = settings[settingIndex][0];
+			let intensity = settings[settingIndex][1];
+			let offset = settings[settingIndex][2];
+			this.grainificationNxN(grainSize, intensity, startHeight, offset);
 		}
 		console.groupEnd("grainification");
 	}

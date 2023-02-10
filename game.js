@@ -30,7 +30,7 @@ function selectTerrain(terrainType/* undefined: try to fetch it, 0:random, 1:mou
 class Game {
 	constructor(players, terrain) {
 		this.players = players;
-		this.terrainSettings = terrain;
+		this.terrain = terrain;
 		this._actualPlayerID = -1;
 		this.blockControls = true;
 		this.windSeed = random();
