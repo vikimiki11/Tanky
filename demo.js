@@ -1,23 +1,15 @@
-
-
-
-
-
-
-
-
-class Game {
-	constructor(players, terrain) {
-		this.players = players;
+class Demo {
+	constructor(terrain, AIs) {
 		this.terrain = terrain;
+		this.players = [];
+		for (let i = 0; i < AIs.length; i++) {
+			this.players.push(new Player(i, "AI", DefaultTanksColors[i], AIs[i]));
+		}
 		this._actualPlayerID = -1;
 		this.blockControls = true;
 		this.windSeed = random();
 		this._windStep = 0;
 		this.windCurrent = 0;
-		this.lastPlayerID = 0;
-		this.inGame = false;
-		setTimeout((game) => { setInterval((game) => { game.tick() }, 1000 / 60, game) }, 100, this);
 	}
 	set actualPlayerID(id) {
 		if (this.actualPlayer) this.actualPlayer.selected = false;
@@ -60,50 +52,26 @@ class Game {
 
 
 	start() {
-		switchScreen("gameScreen", () => {
-			game.inGame = true;
-			game.windSeed = random();
-			game.spawnTanks();
-			game.nextPlayer();
-			terrain.generate();
-			for (let i = 0; i < 6; i++) {
-				generateCloud(floor(random() * terrain.width));
-			}
-			for (let player in this.players) {
-				this.players[player].firstRound = true;
-			}
-			windSound.play();
-			strongWindSound.play();
-		});
-	}
-
-	end() {
-		this.inGame = false;
-		switchScreen("shopScreen");
-		this.blockControls = true;
-		for (let p in this.players) {
-			this.players[p].money += 5000;
-			if (this.players[p].tank) this.players[p].money += 5000;
+		this.inGame = true;
+		this.windSeed = random();
+		this.spawnTanks();
+		this.nextPlayer();
+		terrain.generate();
+		for (let i = 0; i < 6; i++) {
+			generateCloud(floor(random() * terrain.width));
 		}
-		setTimeout(() => {
-			this._actualPlayerID--;
-			this.shopNextPlayer(true);
-			document.querySelector("#gamePlane .tank")?.remove();
-			removeProjectiles();
-		}, switchScreen() + 100);
-		windSound.pause();
-		strongWindSound.pause();
+		for (let player in this.players) {
+			this.players[player].firstRound = true;
+		}
+		this.tick();
+		this.intervalID = setInterval((game) => { game.tick() }, 1000 / 60, this)
 	}
 
-	shopNextPlayer(donCheckStart) {
-		this.actualPlayerID++;
-		if (!donCheckStart && this.lastPlayerID == this.actualPlayerID)
-			this.start();
-		else {
-			if (this.actualPlayer.AI) {
-				AI.autoShop(this.actualPlayer.AI);
-				this.shopNextPlayer();
-			}
+	end(removeDOM) {
+		clearInterval(this.intervalID);
+		if (removeDOM) {
+			document.querySelectorAll("#gamePlane .tank").forEach((tank)=>{tank.remove()});
+			removeProjectiles();
 		}
 	}
 
@@ -122,15 +90,9 @@ class Game {
 		this.setAim(this.actualPlayer.tank?.aim);
 		this.setFirePower(this.actualPlayer.tank?.firePower);
 		this.blockControls = true;
-
-		document.querySelector("#gameTopBar .tank").id = "tank" + this.actualPlayer.id;
-		if (this.actualPlayer.AI) {
-			setTimeout((AILevel) => {
-				AI.autoAim(AILevel);
-			}, 3000 + max(switchScreen(), 0), this.actualPlayer.AI);
-		} else {
-			setTimeout(() => { game.blockControls = false }, switchScreen());
-		}
+		setTimeout((AILevel) => {
+			AI.autoAim(AILevel);
+		}, 1000 + max(switchScreen(), 0), this.actualPlayer.AI);
 	}
 
 	checkGameOver() {
@@ -143,7 +105,7 @@ class Game {
 			this.end();
 			return true;
 		}
-		return false; 
+		return false;
 	}
 
 	spawnTanks() {
@@ -156,7 +118,7 @@ class Game {
 
 			let player = this.players[playerID];
 			let x = terrain.width / this.players.length * (i + random());
-			player.tank = new Tank(player, x );
+			player.tank = new Tank(player, x);
 			i++;
 		}
 	}
@@ -184,7 +146,6 @@ class Game {
 		}
 
 		this.globalCSS();
-		this.actualPlayer.updateCSS();
 	}
 
 	globalCSS() {
@@ -197,14 +158,6 @@ class Game {
 		document.querySelector("#globalStyle").innerHTML = CSS;
 	}
 
-	nextAmmo() {
-		this.actualPlayer.nextAmmo();
-	}
-
-	previousAmmo() {
-		this.actualPlayer.previousAmmo();
-	}
-
 	fire() {
 		this.actualPlayer.tank?.fire();
 	}
@@ -215,9 +168,5 @@ class Game {
 
 	setAim(angle) {
 		this.actualPlayer.tank?.setAim(angle);
-	} 	
-
-	tankDrive(x) {
-		this.actualPlayer.tank?.drive(x);
 	}
 }

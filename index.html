@@ -12,51 +12,8 @@
 	</style>
 </head>
 <body onresize="changeBaseFontSize()">
-<div id="body">
+<div id="body" style="display:none">
 	<main>
-
-
-
-
-
-
-
-
-		<div id="startupScreen" style="display:block">
-			<div>
-				<div id="setupBasic" class="setupMenu" style="display: block;">
-					<div class="normalizeFont">
-						<h2>Typ terénu</h2>
-						<input type="radio" name="terrain" value="0" checked><label>Náhodný</label><br>
-						<input type="radio" name="terrain" value="1"        ><label>Hory</label><br>
-						<input type="radio" name="terrain" value="2"		><label>Les</label><br>
-						<input type="radio" name="terrain" value="3"        ><label>Poušť</label><br>
-						<hr>
-						Počet Hráčů: <input type="number" id="playerCount" min="2" max="4" value="2">
-						<button onclick="selectTerrain();nextStartupScreen()">Dál</button>
-					</div>
-				</div>
-				<div id="setupPlayer" class="setupMenu" style="display: none;">
-					<div class="normalizeFont">
-						<h2 id="">1. Hráč</h2>
-						<label>Jméno: </label><input id="playerNameInput"><br>
-						<hr>
-						<label>AI: </label><input type="checkbox" id="AICheckbox" onchange="this.setAttribute('value' ,this.checked)">
-						Barva: <input type="color" id="playerColorInput" value="#FF0000"><br><br>
-						<button onclick="addPlayer()">Dál</button>
-					</div>
-				</div>
-				<div id="AIDifficulty" class="setupMenu">
-					<form class="normalizeFont">
-						<input type="radio" name="AIDifficulty" value="5"        >: Lehčí AI<br>
-						<input type="radio" name="AIDifficulty" value="4"        >: Lehké AI<br>
-						<input type="radio" name="AIDifficulty" value="3" checked>: Střední AI<br>
-						<input type="radio" name="AIDifficulty" value="2"        >: Těžké AI<br>
-						<input type="radio" name="AIDifficulty" value="1"        >: Težší AI
-					</form>
-				</div>
-			</div>
-		</div>
 
 
 
@@ -88,7 +45,7 @@
 
 
 
-		<div id="gameScreen" style="display:none">
+		<div id="gameScreen" style="display:block">
 			<svg viewBox="0 0 2560 1440" xmlns="https://www.w3.or/2000/svg" id="svgSkyBox">
 				<defs>
 					<radialGradient id="sky">
@@ -105,7 +62,7 @@
 				<circle cx="1280" cy="800" r="100" fill="url(#sunG)" id="sun"></circle>
 			</svg>
 			<div class="normalizeFont">
-				<div id="gameTopBar">
+				<div id="gameTopBar" style="display:none">
 					<div class="playerName"><!-- filled by script --></div>
 					<div id="engineControl">
 						<div id="driveLeft" direction="left" class="clickable">🢠</div>
@@ -254,6 +211,39 @@
 					</div>
 				</div>
 			</div>
+			<div id="setup">
+							<div id="setupBasic" class="setupMenu" style="display: block;">
+								<div class="normalizeFont">
+									<h2>Typ terénu</h2>
+									<input type="radio" name="terrain" value="0" checked><label>Náhodný</label><br>
+									<input type="radio" name="terrain" value="1"><label>Hory</label><br>
+									<input type="radio" name="terrain" value="2"><label>Les</label><br>
+									<input type="radio" name="terrain" value="3"><label>Poušť</label><br>
+									<hr>
+									Počet Hráčů: <input type="number" id="playerCount" min="2" max="4" value="2">
+									<button onclick="selectTerrain();nextStartupScreen()">Dál</button>
+								</div>
+							</div>
+							<div id="setupPlayer" class="setupMenu" style="display: none;">
+								<div class="normalizeFont">
+									<h2 id="">1. Hráč</h2>
+									<label>Jméno: </label><input id="playerNameInput"><br>
+									<hr>
+									<label>AI: </label><input type="checkbox" id="AICheckbox" onchange="this.setAttribute('value' ,this.checked)">
+									Barva: <input type="color" id="playerColorInput" value="#FF0000"><br><br>
+									<button onclick="addPlayer()">Dál</button>
+								</div>
+							</div>
+							<div id="AIDifficulty" class="setupMenu">
+								<form class="normalizeFont">
+									<input type="radio" name="AIDifficulty" value="5">: Lehčí AI<br>
+									<input type="radio" name="AIDifficulty" value="4">: Lehké AI<br>
+									<input type="radio" name="AIDifficulty" value="3" checked>: Střední AI<br>
+									<input type="radio" name="AIDifficulty" value="2">: Těžké AI<br>
+									<input type="radio" name="AIDifficulty" value="1">: Težší AI
+								</form>
+							</div>
+			</div>
 			<canvas></canvas>
 			<div id="gamePlane"></div>
 		</div>
@@ -290,6 +280,7 @@
 	<script src="gadget.js"></script>
 	<script src="gui.js"></script>
 	<script src="game.js"></script>
+	<script src="demo.js"></script>
 	<script src="AI.js"></script>
 	<script src="player.js"></script>
 	<script src="tank.js"></script>
@@ -304,6 +295,76 @@
 		},200)
 		selectTerrain(undefined, undefined, 4);
 } */
+
+
+		const DefaultTanksColors = ["#FF0000", "#00FF00", "#0000FF", "#FFFF00", "#FF00FF"];
+		let selectedTerrain;
+		let game;
+		const windJump = 0.125;
+		const windMax = 50;
+		let terrain;
+		function selectTerrain(terrainType/* undefined: try to fetch it, 0:random, 1:mountains, 2: forest, 3:desert */, players = parseInt(document.querySelector("#playerCount").value)) {
+			if (terrainType === undefined) {
+				for (let element of document.querySelectorAll("input[name='terrain']")) {
+					if (element.checked) {
+						terrainType = element.value;
+						break;
+					}
+				}
+			}
+			selectedTerrain = parseInt(terrainType);
+			maxPlayers = players;
+		}
+
+
+
+		
+		let players = [];
+		let maxPlayers;
+
+		function addPlayer(name, color, AI) {
+			if (name === undefined) name = document.querySelector("#playerNameInput").value;
+			if (color === undefined) color = document.querySelector("#playerColorInput").value;
+			if (AI === undefined) {
+				for (let element of document.querySelectorAll("input[name='AIDifficulty']")) {
+					if (element.checked) {
+						AI = parseInt(element.value);
+						break;
+					}
+				}
+				AI = document.querySelector("#AICheckbox").checked ? AI : false;
+			}
+
+			players.push(new Player(players.length, name, color, AI));
+			document.querySelector("#scoreDisplay").innerHTML += `
+	<div id="score${players.length - 1}">${name}</div>
+	<div class="score" id="score${players.length - 1}"></div>`;
+			if (maxPlayers > players.length) {
+				document.querySelector("#playerNameInput").value = "";
+				document.querySelector("#playerColorInput").value = DefaultTanksColors[players.length];
+				document.querySelector("#setupPlayer  h2").innerHTML = (players.length + 1) + ". Hráč";
+				document.querySelector("#AICheckbox").checked = false;
+				document.querySelector("#AICheckbox").value = "false";
+			} else {
+				game.end(true);
+				terrain.terrain = selectedTerrain;
+				game = new Game(players, selectedTerrain);
+				console.log(game);
+				game.start()
+				setTimeout(()=>{
+					document.querySelector("#setup").style.display="none";
+					document.querySelector("#gameTopBar").style.display = "block";
+				},switchScreen() / 2)
+			}
+
+			return players[players.length - 1];
+		}
+		setTimeout(()=>{
+			terrain = new Terrain(2560, 1210, 2 + round(random()));
+			game = new Demo(terrain, [5, 5, 5, 5, 5]);
+			game.start();
+			document.querySelector("#body").style.display="flex";
+		}, 0)
 	</script>
 </div>
 <div id="debugMenu" class="normalizeFont">

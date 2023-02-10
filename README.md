@@ -1,6 +1,5 @@
 # Věci na udělání
 
-pozadí v setupu\
 Obrazčikí
 
 # Upravit / Dodělat
@@ -11,4 +10,4 @@ podmínky zvuků
 
 # Možná???
 
-underground rotate?
+underground rotate?(velký možná)

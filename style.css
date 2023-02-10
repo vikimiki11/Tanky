@@ -203,6 +203,12 @@ main{
 	grid-template-columns: auto auto;
 }
 
+#setup{
+	position: absolute;
+	top: 0;
+	width: 100%;
+	z-index: 500;
+}
 
 .setupMenu{
 	position: absolute;
@@ -219,7 +225,7 @@ main{
 	display: none;
 }
 
-#startupScreen:has(#AICheckbox[value=true]) #AIDifficulty{
+body:has(#AICheckbox[value=true]) #AIDifficulty{
 	display: block;
 }
 

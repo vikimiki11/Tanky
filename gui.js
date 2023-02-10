@@ -13,7 +13,7 @@ lastScreen = document.querySelector('main > *[style="display:block"]').id;
 switchScreenInProgress = false;
 endOfSwitchScreen = null;
 
-function switchScreen(screenID) {
+function switchScreen(screenID, doorClosed, doorOpened) {
 	const animationLength = 1000;
 	if (switchScreenInProgress || !screenID) return endOfSwitchScreen - Date.now();
 	switchScreenInProgress = true;
@@ -23,11 +23,13 @@ function switchScreen(screenID) {
 		document.getElementById(lastScreen).style.display = "none";
 		document.getElementById(screenID).style.display = "block";
 		lastScreen = screenID;
-		document.body.classList.add("switchOut");
+		doorClosed?.();
 		document.body.classList.remove("switchIn");
+		document.body.classList.add("switchOut");
 		setTimeout(function () {
 			switchScreenInProgress = false;
 			document.body.classList.remove("switchOut");
+			doorOpened?.();
 		}, animationLength);
 	}, animationLength);
 	doorSound.play();
