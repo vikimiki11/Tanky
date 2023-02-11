@@ -297,7 +297,7 @@
 } */
 
 
-		const DefaultTanksColors = ["#FF0000", "#00FF00", "#0000FF", "#FFFF00", "#FF00FF"];
+		const DefaultTanksColors = ["#FF0000", "#00FF00", "#0000FF", "#FFFF00", "#FF00FF", "#00FFFF", "#FFFFFF", "#F47521"];
 		let selectedTerrain;
 		let game;
 		const windJump = 0.125;
@@ -361,7 +361,7 @@
 		}
 		setTimeout(()=>{
 			terrain = new Terrain(2560, 1210, 2 + round(random()));
-			game = new Demo(terrain, [5, 5, 5, 5, 5]);
+			game = new Demo(terrain, [5, 5, 5, 5, 5, 5, 5, 5]);
 			game.start();
 			document.querySelector("#body").style.display="flex";
 		}, 0)

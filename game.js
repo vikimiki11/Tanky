@@ -17,7 +17,7 @@ class Game {
 		this.windCurrent = 0;
 		this.lastPlayerID = 0;
 		this.inGame = false;
-		setTimeout((game) => { setInterval((game) => { game.tick() }, 1000 / 60, game) }, 100, this);
+		console.log("constructor");
 	}
 	set actualPlayerID(id) {
 		if (this.actualPlayer) this.actualPlayer.selected = false;
@@ -60,7 +60,9 @@ class Game {
 
 
 	start() {
+		console.log("start");
 		switchScreen("gameScreen", () => {
+			setTimeout((game) => { game.intervalId = setInterval((game) => { game.tick() }, 1000 / 60, game) }, 100, game);
 			game.inGame = true;
 			game.windSeed = random();
 			game.spawnTanks();
@@ -86,6 +88,7 @@ class Game {
 			if (this.players[p].tank) this.players[p].money += 5000;
 		}
 		setTimeout(() => {
+			clearInterval(this.intervalId);
 			this._actualPlayerID--;
 			this.shopNextPlayer(true);
 			document.querySelector("#gamePlane .tank")?.remove();

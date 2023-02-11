@@ -157,6 +157,9 @@ class Demo {
 		document.querySelector("#globalStyle").innerHTML = CSS;
 	}
 
+	nextAmmo() {}
+	previousAmmo() {}
+
 	fire() {
 		this.actualPlayer.tank?.fire();
 	}
@@ -168,4 +171,5 @@ class Demo {
 	setAim(angle) {
 		this.actualPlayer.tank?.setAim(angle);
 	}
+	tankDrive() {}
 }

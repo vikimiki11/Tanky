@@ -192,8 +192,8 @@ document.body.addEventListener("touchend", function () {
 //Keyboard Controls Interval
 let groundContact = 0;
 setInterval(() => {
-	if (!keys[83] && !keys[87] && game && game?.actualPlayer.tank && (QS = document.querySelector("#firePowerControl input")) && parseInt(game.actualPlayer.tank.firePower) != parseInt(QS.value)) game.setFirePower(QS.value);
-	if (!keys[69] && !keys[81] && game && game?.actualPlayer.tank && (QS = document.querySelector("#aimControl")) && parseFloat(game.actualPlayer.tank.aim) != parseFloat(QS.value)) game.setAim(QS.value);
+	if (!keys[83] && !keys[87] && game && game?.actualPlayer?.tank && (QS = document.querySelector("#firePowerControl input")) && parseInt(game.actualPlayer.tank.firePower) != parseInt(QS.value)) game.setFirePower(QS.value);
+	if (!keys[69] && !keys[81] && game && game?.actualPlayer?.tank && (QS = document.querySelector("#aimControl")) && parseFloat(game.actualPlayer.tank.aim) != parseFloat(QS.value)) game.setAim(QS.value);
 	if (keys[87]) game?.setFirePower(game.actualPlayer.tank?.firePower + 0.5);
 	if (keys[83]) game?.setFirePower(game.actualPlayer.tank?.firePower - 0.5);
 	if (keys[69]) game?.setAim(game.actualPlayer.tank?.aim + 0.01);
@@ -202,16 +202,16 @@ setInterval(() => {
 	if (keys[68] && !keys[65]) game?.tankDrive(1);
 
 
-	if (game?.actualPlayer.tank?.onGround) {
+	if (game?.actualPlayer?.tank?.onGround) {
 		groundContact = 10;
 	} else {
 		groundContact--;
 	}
 
 
-	if (engineSound.playing() && (!(keys[65] ^ keys[68]) || !game.inGame || groundContact <= 0 || game.actualPlayer.tank.fuel <= 0)) {
+	if (engineSound.playing() && (!(keys[65] ^ keys[68]) || !game.inGame || groundContact <= 0 || game.actualPlayer?.tank.fuel <= 0)) {
 		engineSound.pause();
-	} else if (!engineSound.playing() && (keys[65] ^ keys[68]) && game.inGame && groundContact > 0 && game.actualPlayer.tank.fuel > 0) {
+	} else if (!engineSound.playing() && (keys[65] ^ keys[68]) && game.inGame && groundContact > 0 && game.actualPlayer?.tank.fuel > 0) {
 		engineSound.play();
 	}
 }, 1000 / 60);

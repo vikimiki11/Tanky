@@ -98,3 +98,4 @@ strongWindSound = new Howl({
 	autoplay: false,
 	loop: true
 });
+Howler.mute(true);
