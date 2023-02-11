@@ -36,10 +36,6 @@ class Demo {
 
 
 		windSound.volume(min(abs(this.windCurrent) / 45, 1));
-		if (abs(this.windCurrent) > 45)
-			strongWindSound.volume(abs(this.windCurrent) / 5 - 9);
-		else
-			strongWindSound.volume(0);
 	}
 	get windStep() {
 		return this._windStep;
@@ -64,14 +60,17 @@ class Demo {
 			this.players[player].firstRound = true;
 		}
 		this.tick();
-		this.intervalID = setInterval((game) => { game.tick() }, 1000 / 60, this)
+		this.intervalID = setInterval((game) => { game.tick() }, 1000 / 60, this);
+		windSound.play();
 	}
 
 	end(removeDOM) {
 		clearInterval(this.intervalID);
 		if (removeDOM) {
-			document.querySelectorAll("#gamePlane .tank").forEach((tank)=>{tank.remove()});
-			removeProjectiles();
+			setTimeout(() => {
+				document.querySelectorAll("#gamePlane .tank").forEach((tank) => { tank.remove() });
+				removeProjectiles();
+			}, 1000)
 		}
 	}
 
