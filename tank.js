@@ -175,8 +175,8 @@ class Tank {
 	fire() {
 		if (game.blockControls && !ignoreBlockControl) return;
 		game.blockControls = true;
-		fireSoundController.play();
 		if (GlobalInventory[ammoList[this.player.selectedAmmo].shortName].use()) {
+			fireSoundController.play();
 			ammoList[this.player.selectedAmmo].fire()
 				.then(() => { game.nextPlayer() });
 			this.player.firstRound = false;
