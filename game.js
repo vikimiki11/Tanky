@@ -62,7 +62,7 @@ class Game {
 	start() {
 		console.log("start");
 		switchScreen("gameScreen", () => {
-			setTimeout((game) => { game.intervalId = setInterval((game) => { game.tick() }, 1000 / 60, game) }, 100, game);
+			if (!game.intervalId) setTimeout((game) => { game.intervalId = setInterval((game) => { game.tick() }, 1000 / 60, game) }, 100, game);
 			game.inGame = true;
 			game.windSeed = random();
 			game.spawnTanks();
@@ -88,7 +88,7 @@ class Game {
 			if (this.players[p].tank) this.players[p].money += 5000;
 		}
 		setTimeout(() => {
-			clearInterval(this.intervalId);
+			//clearInterval(this.intervalId);
 			this._actualPlayerID--;
 			this.shopNextPlayer(true);
 			document.querySelector("#gamePlane .tank")?.remove();
