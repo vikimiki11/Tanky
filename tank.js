@@ -33,8 +33,8 @@ class Tank {
 		return this._maxFirePower;
 	}
 	set maxFirePower(value) {
-		this._maxFirePower = value;
-		this.firePower = min(this.firePower, value);
+		this._maxFirePower = max(value, 0);
+		this.firePower = min(this.firePower, this._maxFirePower);
 	}
 	get cannonBase() {
 		return [
@@ -183,11 +183,11 @@ class Tank {
 		}
 	}
 	damage(damage) {
-		this.shield -= damage;
 		let startHP = this.maxFirePower + this.shield;
+		this.shield -= damage;
 		if (this.shield < 0) {
 			this.shield *= 0.96 ** this.player.inventory["armorUpgrade"];
-			this._maxFirePower += this.shield;
+			this.maxFirePower += this.shield;
 			this.shield = 0;
 		}
 		if (this.maxFirePower <= 0) {
