@@ -305,7 +305,7 @@ class CanvasData {
 			actualDecrease = [((random() + Decrease - 1) * InverseDecrease), ((random() + Decrease - 1) * InverseDecrease), ((random() + Decrease - 1) * InverseDecrease)];
 			for (let imageDataIndex = 0; imageDataIndex < n << 2; imageDataIndex = ++imageDataIndex + Number((imageDataIndex & 3) == 3)) {
 				for (let x = 0; x < n; x++) {
-					this.data[imageDataOffset + imageDataIndex + (this.width << 2) * x + offset] = this.data[imageDataOffset + imageDataIndex + (this.width << 2) * x + offset] * actualDecrease[imageDataIndex & 3];
+					this.data[imageDataOffset + imageDataIndex + (this.width << 2) * (x + offset) + (offset << 2)] = this.data[imageDataOffset + imageDataIndex + (this.width << 2) * (x + offset) + (offset << 2)] * actualDecrease[imageDataIndex & 3];
 				}
 			}
 		}
