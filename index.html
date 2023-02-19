@@ -220,7 +220,7 @@
 									<input type="radio" name="terrain" value="2"><label>Les</label><br>
 									<input type="radio" name="terrain" value="3"><label>Poušť</label><br>
 									<hr>
-									Počet Hráčů: <input type="number" id="playerCount" min="2" max="4" value="2">
+									Počet Hráčů: <input type="number" id="playerCount" min="2" max="4" value="2" onkeydown="event.preventDefault()" onkeypress="event.preventDefault()">
 									<button onclick="selectTerrain();nextStartupScreen()">Dál</button>
 								</div>
 							</div>
