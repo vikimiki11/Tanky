@@ -5,4 +5,5 @@ Obrazčikí
 # Upravit / Dodělat
 
 dodělat ball ammo\
-podmínky zvuků
+podmínky zvuků\
+AI

@@ -139,13 +139,13 @@ class TerrainColumn extends Uint8Array {
 		this.imageData = this.canvasData.data;
 	}
 	generate() {
-		let columnFunction, topGroundColor, terrainColorFunction;
+		const colorDepthShadingSpeed = 1 / terrain.height / 1.5;
+		let topGroundColor, terrainColorFunction;
 		switch (this.table.currentTerrain) {
-			case 1:
-				columnFunction = (column) => {
-					column.terrainHeight = round(((noise.simplex2(column.x / 800, 100000) + 1) / 4 + 0.2) * column.height);
-					column.topLevelThickness = round((noise.simplex2(100000, column.x / 30) + 2.5) * 5) + (column.terrainHeight - 350) / 15;
-				}
+			case 1:// Mountain
+				this.terrainHeight = round(((noise.simplex2(this.x / 800, 100000) + 1) / 4 + 0.2) * this.height);
+				this.topLevelThickness = round((noise.simplex2(100000, this.x / 30) + 2.5) * 5) + (this.terrainHeight - 350) / 15;
+
 				topGroundColor = [255, 255, 255];
 				terrainColorFunction = (x, y) => {
 					const scale = 0.02;
@@ -155,11 +155,10 @@ class TerrainColumn extends Uint8Array {
 					return [n, n, n];
 				}
 				break;
-			case 2:
-				columnFunction = (column) => {
-					column.terrainHeight = round(((noise.simplex2(column.x / 500, 100000) + 1) / 10 + 0.2) * column.height);
-					column.topLevelThickness = round((noise.simplex2(100000, column.x / 30) + 1.5) * 5);
-				}
+			case 2:// Forrest
+				this.terrainHeight = round(((noise.simplex2(this.x / 500, 100000) + 1) / 10 + 0.2) * this.height);
+				this.topLevelThickness = round((noise.simplex2(100000, this.x / 30) + 1.5) * 5);
+
 				topGroundColor = [95, 199, 17];
 				terrainColorFunction = (x, y) => {
 					const scale = 0.02;
@@ -168,11 +167,9 @@ class TerrainColumn extends Uint8Array {
 					return [151 - n * 23, 71 - n * 10, 28 - n * 4];
 				}
 				break;
-			case 3:
-				columnFunction = (column) => {
-					column.terrainHeight = round(((noise.simplex2(column.x / 1000, 100000) + 1) / 20 + 0.2) * column.height);
-					column.topLevelThickness = 0;
-				}
+			case 3:// Desert
+				this.terrainHeight = round(((noise.simplex2(this.x / 1000, 100000) + 1) / 20 + 0.2) * this.height);
+				this.topLevelThickness = 0;
 				topGroundColor = [242, 48, 146];
 				terrainColorFunction = (x, y, distanceFromGround) => {
 					const scale = 0.005;
@@ -183,20 +180,13 @@ class TerrainColumn extends Uint8Array {
 				break;
 		}
 
-
-
-
-		columnFunction(this);
-
 		let colorStartIndex = (this.x + (this.height) * this.width) << 2;
-		const colorDepthShadingSpeed = 1 / terrain.height / 1.5
 		this.fill(true, 0, this.terrainHeight);
 		for (let y = 0; y <= this.terrainHeight; y++) {
 			colorStartIndex -= (this.width << 2);
 			let distanceFromGround = this.terrainHeight - y;
 			this.imageData[colorStartIndex + 3] = 255;
 			if (distanceFromGround < this.topLevelThickness) {
-				let terrainColor = terrainColorFunction(this.x, y, distanceFromGround);
 				for (let i = 0; i <= 2; i++)
 					this.imageData[colorStartIndex + i] = topGroundColor[i];
 			} else {
