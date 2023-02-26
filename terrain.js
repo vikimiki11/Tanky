@@ -28,9 +28,9 @@ class Terrain extends Array {
 	clear() {
 		this.canvasData.clear();
 	}
-	generate(seed = random()) {
+	generate(seed = random(), terrain) {
 		console.time("generate TerrainBlock");
-		this.currentTerrain = this.terrain;
+		this.currentTerrain = terrain || this.terrain;
 		this.clear();
 		this.seed = seed;
 		noise.seed(seed);
@@ -139,67 +139,75 @@ class TerrainColumn extends Uint8Array {
 		this.imageData = this.canvasData.data;
 	}
 	generate() {
-		if (this.table.currentTerrain == 1) {//Mountain
-			this.terrainHeight = round(((noise.simplex2(this.x / 800, 100000) + 1) / 4 + 0.2) * this.height);
-			this.topLevelThickness = round((noise.simplex2(100000, this.x / 30) + 2.5) * 5) + (this.terrainHeight - 350) / 15;
-		} else if (this.table.currentTerrain == 2) {//Forrest
-			this.terrainHeight = round(((noise.simplex2(this.x / 500, 100000) + 1) / 10 + 0.2) * this.height);
-			this.topLevelThickness = round((noise.simplex2(100000, this.x / 30) + 1.5) * 5);
-		} else if (this.table.currentTerrain == 3) {//Desert
-			this.terrainHeight = round(((noise.simplex2(this.x / 1000, 100000) + 1) / 20 + 0.2) * this.height);
-			this.topLevelThickness = 0;
+		let columnFunction, topGroundColor, terrainColorFunction;
+		switch (this.table.currentTerrain) {
+			case 1:
+				columnFunction = (column) => {
+					column.terrainHeight = round(((noise.simplex2(column.x / 800, 100000) + 1) / 4 + 0.2) * column.height);
+					column.topLevelThickness = round((noise.simplex2(100000, column.x / 30) + 2.5) * 5) + (column.terrainHeight - 350) / 15;
+				}
+				topGroundColor = [255, 255, 255];
+				terrainColorFunction = (x, y) => {
+					const scale = 0.02;
+					let n = noise.simplex2(x * scale, y * scale);
+					n = n < 0 ? n / 4 : n;
+					n = 102 - n * 10;
+					return [n, n, n];
+				}
+				break;
+			case 2:
+				columnFunction = (column) => {
+					column.terrainHeight = round(((noise.simplex2(column.x / 500, 100000) + 1) / 10 + 0.2) * column.height);
+					column.topLevelThickness = round((noise.simplex2(100000, column.x / 30) + 1.5) * 5);
+				}
+				topGroundColor = [95, 199, 17];
+				terrainColorFunction = (x, y) => {
+					const scale = 0.02;
+					let n = noise.simplex2(x * scale, y * scale);
+					n = n < 0 ? n / 2 : n;
+					return [151 - n * 23, 71 - n * 10, 28 - n * 4];
+				}
+				break;
+			case 3:
+				columnFunction = (column) => {
+					column.terrainHeight = round(((noise.simplex2(column.x / 1000, 100000) + 1) / 20 + 0.2) * column.height);
+					column.topLevelThickness = 0;
+				}
+				topGroundColor = [242, 48, 146];
+				terrainColorFunction = (x, y, distanceFromGround) => {
+					const scale = 0.005;
+					let n = noise.simplex2(x * scale, y * scale) * 1.25;
+					let shade = cos(distanceFromGround / 30 + n) / 13 + 12 / 13;
+					return [230 * shade, 180 * shade, 70 * shade];
+				}
+				break;
 		}
 
 
+
+
+		columnFunction(this);
 
 		let colorStartIndex = (this.x + (this.height) * this.width) << 2;
+		const colorDepthShadingSpeed = 1 / terrain.height / 1.5
+		this.fill(true, 0, this.terrainHeight);
 		for (let y = 0; y <= this.terrainHeight; y++) {
-			this[y] = true;
 			colorStartIndex -= (this.width << 2);
-			this.imageData[colorStartIndex + 3] = 255;
-
 			let distanceFromGround = this.terrainHeight - y;
+			this.imageData[colorStartIndex + 3] = 255;
 			if (distanceFromGround < this.topLevelThickness) {
-				if (this.table.currentTerrain == 1) {
-					this.imageData[colorStartIndex] = 255;
-					this.imageData[colorStartIndex + 1] = 255;
-					this.imageData[colorStartIndex + 2] = 255;
-				} else if (this.table.currentTerrain == 2) {
-					this.imageData[colorStartIndex] = 95;
-					this.imageData[colorStartIndex + 1] = 199;
-					this.imageData[colorStartIndex + 2] = 17;
-				}
+				let terrainColor = terrainColorFunction(this.x, y, distanceFromGround);
+				for (let i = 0; i <= 2; i++)
+					this.imageData[colorStartIndex + i] = topGroundColor[i];
 			} else {
-				if (this.table.currentTerrain == 1) {
-					const scale = 0.02;
-					let n = noise.simplex2(this.x * scale, y * scale);
-					n = n < 0 ? n / 4 : n;
-					this.imageData[colorStartIndex] = 102 - n * 10;
-					this.imageData[colorStartIndex + 1] = 102 - n * 10;
-					this.imageData[colorStartIndex + 2] = 102 - n * 10;
-				} else if (this.table.currentTerrain == 2) {
-					const scale = 0.02;
-					let n = noise.simplex2(this.x * scale, y * scale);
-					n = n < 0 ? n / 2 : n;
-					this.imageData[colorStartIndex] = 151 - n * 23;
-					this.imageData[colorStartIndex + 1] = 71 - n * 10;
-					this.imageData[colorStartIndex + 2] = 28 - n * 4;
-				} else if (this.table.currentTerrain == 3) {
-					const scale = 0.005;
-					let n = noise.simplex2(this.x * scale, y * scale) * 1.25;
-					let shade = cos(distanceFromGround / 30 + n) / 13 + 12 / 13;
-					this.imageData[colorStartIndex] = 230 * shade;
-					this.imageData[colorStartIndex + 1] = 180 * shade;
-					this.imageData[colorStartIndex + 2] = 70 * shade;
-				}
-				let depthColoring = 1 - distanceFromGround / terrain.height / 1.5;
-				this.imageData[colorStartIndex] *= depthColoring;
-				this.imageData[colorStartIndex + 1] *= depthColoring;
-				this.imageData[colorStartIndex + 2] *= depthColoring;
+				let depthColoring = 1 - distanceFromGround * colorDepthShadingSpeed;
+				let terrainColor = terrainColorFunction(this.x, y, distanceFromGround);
+				for (let i = 0; i <= 2; i++)
+					this.imageData[colorStartIndex + i] = terrainColor[i] * depthColoring;
 			}
 		}
+		this.fill(false, this.terrainHeight + 1, this.length);
 		for (let y = this.terrainHeight + 1; y < this.length; y++) {
-			this[y] = false;
 			colorStartIndex -= (this.width << 2);
 			this.imageData[colorStartIndex + 3] = 0;
 		}
@@ -251,9 +259,7 @@ class CanvasData {
 		this.context.putImageData(this.imageData, 0, 0);
 	}
 	clear() {
-		for (let i = 0; i < this.data.length; i++) {
-			this.data[i] = 0;
-		}
+		this.data.fill(0);
 	}
 
 
