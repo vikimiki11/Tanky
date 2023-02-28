@@ -253,8 +253,8 @@ function removeProjectiles() {
 }
 let projectiles = [];
 let projectileIDCounter = 0;
-const airResistancePerSecond = 0.85;
-const airResistancePerTick = pow(airResistancePerSecond, 1 / 60);
+const AirResistancePerSecond = 0.85;
+const AirResistancePerTick = pow(AirResistancePerSecond, 1 / 60);
 const Gravity = 0.05;
 class Projectile{
 	constructor(XYVector, landed = () => { }, outOfBounds = () => { }, noDOM) {
@@ -290,8 +290,8 @@ class FlyingProjectile extends Projectile{
 	}
 	tick(noDOM) {
 		noDOM = noDOM || this.noDOM;
-		this.vector.x *= airResistancePerTick;
-		this.vector.y *= airResistancePerTick;
+		this.vector.x *= AirResistancePerTick;
+		this.vector.y *= AirResistancePerTick;
 		this.vector.y -= Gravity;
 		this.vector.x += game.windCurrent / 3000;
 		this.x += this.vector.x;

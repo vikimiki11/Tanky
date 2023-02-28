@@ -110,7 +110,7 @@ class Terrain extends Array {
 		forCoordInRadius(xy[0], xy[1], radius, (x, y, color) => {
 			if (terrain[x])
 				terrain[x].build(y, color);
-		}, [255, 255, 255, 255])
+		}, color || [255, 255, 255, 255])
 		terrain.canvasData.update();
 	}
 	checkForTankCollision(x, y) {
@@ -139,7 +139,7 @@ class TerrainColumn extends Uint8Array {
 		this.imageData = this.canvasData.data;
 	}
 	generate() {
-		const colorDepthShadingSpeed = 1 / terrain.height / 1.5;
+		const ColorDepthShadingSpeed = 1 / terrain.height / 1.5;
 		let topGroundColor, terrainColorFunction;
 		switch (this.table.currentTerrain) {
 			case 1:// Mountain
@@ -181,7 +181,9 @@ class TerrainColumn extends Uint8Array {
 		}
 
 		let colorStartIndex = (this.x + (this.height) * this.width) << 2;
-		this.fill(true, 0, this.terrainHeight);
+
+		//Generace terénu
+		this.fill(true, 0, this.terrainHeight + 1);
 		for (let y = 0; y <= this.terrainHeight; y++) {
 			colorStartIndex -= (this.width << 2);
 			let distanceFromGround = this.terrainHeight - y;
@@ -190,12 +192,14 @@ class TerrainColumn extends Uint8Array {
 				for (let i = 0; i <= 2; i++)
 					this.imageData[colorStartIndex + i] = topGroundColor[i];
 			} else {
-				let depthColoring = 1 - distanceFromGround * colorDepthShadingSpeed;
+				let depthColoring = 1 - distanceFromGround * ColorDepthShadingSpeed;
 				let terrainColor = terrainColorFunction(this.x, y, distanceFromGround);
 				for (let i = 0; i <= 2; i++)
 					this.imageData[colorStartIndex + i] = terrainColor[i] * depthColoring;
 			}
 		}
+
+		//Vzduch
 		this.fill(false, this.terrainHeight + 1, this.length);
 		for (let y = this.terrainHeight + 1; y < this.length; y++) {
 			colorStartIndex -= (this.width << 2);
