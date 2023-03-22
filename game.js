@@ -1,11 +1,3 @@
-
-
-
-
-
-
-
-
 class Game {
 	constructor(players, terrain) {
 		this.players = players;
@@ -32,17 +24,18 @@ class Game {
 		return this._actualPlayerID;
 	}
 	get actualPlayer() {
-		return this.players[this.actualPlayerID];
+		return this.players[this._actualPlayerID];
 	}
 	set windStep(step) {
 		this._windStep = step;
 
+		//Výpočet aktuální síly větru
 		noise.seed(this.windSeed);
 		this.windCurrent = noise.simplex2(this.windStep * windJump, 1000) * windMax;
 		document.querySelector("#windCurrent").innerHTML = abs(round(this.windCurrent));
 		document.querySelector("#windDirection").innerHTML = this.windCurrent > 0 ? "↪" : "↩";
 
-
+		//Audio
 		windSound.volume(min(abs(this.windCurrent) / 45, 1));
 		if (abs(this.windCurrent) > 45)
 			strongWindSound.volume(abs(this.windCurrent) / 5 - 9);
@@ -172,13 +165,13 @@ class Game {
 
 
 	tick() {
-		for (let playerID in this.players) {
+		for (let playerID in this.players) {//tick tanků
 			let player = this.players[playerID];
 			player.tank?.tick();
 		}
 
 		let projectile = 0;
-		while (projectiles[projectile]) {
+		while (projectiles[projectile]) {//tick projektilů
 			projectiles[projectile].tick();
 			if (projectiles[projectile].end)
 				projectiles.splice(projectile, 1);

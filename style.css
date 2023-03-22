@@ -783,8 +783,8 @@ canvas{
 
 .projectile {
 	position: absolute;
-	height: 5em;
-	width: 5em;
+	height: 10em;
+	width: 10em;
 	transform: translate(-50%, -50%);
 }
 

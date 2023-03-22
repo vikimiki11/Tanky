@@ -1,5 +1,5 @@
 class Terrain extends Array {
-	constructor(width, height, terrain, seed = random(), grainificationSettings = [[[4, 15, 0], [4, 15, 2]], true]) {
+	constructor(width, height, terrain, grainificationSettings = [[[4, 15, 0], [4, 15, 2]], true]) {
 		super();
 		console.time("new terrain");
 		this.width = width;
@@ -267,7 +267,8 @@ class CanvasData {
 		
 		console.time("grainification1x1");
 		for (let i = startIndex; i < this.data.length; i++) {
-			if (this.data[i] && i & 3 != 3) this.data[i] = this.data[i] * ((random() + Decrease - 1) * InverseDecrease);
+			if ((i & 3) != 3)
+				this.data[i] = this.data[i] * ((random() + Decrease - 1) * InverseDecrease);
 		}
 		console.timeEnd("grainification1x1");
 	}
@@ -290,7 +291,7 @@ class CanvasData {
 		console.timeEnd("grainification2x2");
 	}
 	grainificationNxN(n, decreaseI, startHeight = 0, offset) {
-		if (n < 0) return console.warn("GrainificationNxN: n must be positive");
+		if (n <= 0) return console.warn("GrainificationNxN: n must be positive");
 		if (n == 1) return this.grainification1x1(decreaseI, startHeight);
 		if (n == 2) return this.grainification2x2(decreaseI, startHeight);
 		const Decrease = decreaseI || 10;

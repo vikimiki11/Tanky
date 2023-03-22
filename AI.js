@@ -8,7 +8,7 @@ class AI{
 
 		let bestAngle = 0;
 		let bestDistance = Infinity;
-		for (let angle = 0; angle <= PI; angle += PI / 180) {
+		for (let angle = 0; angle <= PI; angle += PI / 180) {//Výběr nejlepšího úhlu
 			game.actualPlayer.tank.aimFast = angle;
 			let landLocation = game.actualPlayer.tank.getCurrentProjectileLandLocation();
 			for (let p = 0; p < game.players.length; p++) {
@@ -44,8 +44,9 @@ class AI{
 				ammoSelection = ["smallMissile", "missile"];
 				break;
 		}
+		
 		let filteredAmmoSelection = [];
-		for (let i in ammoSelection) {
+		for (let i in ammoSelection) {//Filtrace nábojů podle toho zda ho AI má
 			if (game.actualPlayer.inventory[ammoSelection[i]] > 0) filteredAmmoSelection.push(ammoSelection[i]);
 		}
 		ammoSelection = filteredAmmoSelection.length > 0 ? filteredAmmoSelection : ["smallMissile"];

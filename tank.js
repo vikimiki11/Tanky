@@ -213,7 +213,7 @@ class Tank {
 		this.checkClimb();
 	}
 	getCurrentProjectileLandLocation() {
-		let aimVector = new Vector();
+		let aimVector = Vector.getVectorFromAim();
 		let XYVector = [this.cannonTip[0], this.cannonTip[1], aimVector]
 		let projectile = new FlyingProjectile(XYVector, undefined, undefined, true);
 		while (!projectile.tick()) { }
@@ -293,12 +293,8 @@ class Tank {
 		}
 	}
 	groundCollision() {
-		let groundContact = this.groundContactPlane;
-
-
-
-
 		//Move from underground
+		let groundContact = this.groundContactPlane;
 		while (groundContact.left.under || groundContact.right.under) {
 			this.y += cos(this.rotate);
 			this.x += -sin(this.rotate);
@@ -332,18 +328,20 @@ class Tank {
 		if (groundContact.left.on ^ groundContact.right.on) {
 			let side = groundContact.left.on ? -1 : 1;
 			let groundContactIndex = -0.5 + side / 2;
-			while (groundContact.plane[groundContactIndex]?.distanceFromGround != 0)
+			while (groundContact.plane[groundContactIndex]?.distanceFromGround != 0)//Hledání nejbližšího bodu na zemi
 				groundContactIndex += side;
 
+			
 			let maxAngleToRotate = Infinity;
 			const anchorPoint = groundContact.plane[groundContactIndex];
-			for (let i = groundContactIndex - side; groundContact.plane[i]; i -= side) {
+			for (let i = groundContactIndex - side; groundContact.plane[i]; i -= side) {//Procházení všech bodů od anchor bodu směrem k vzdálenějšímu bodu tanku a hledání největšího úhlu, o který se tank může otočit
 				let x = groundContact.plane[i].x - anchorPoint.x;
 				let y = groundContact.plane[i].y - anchorPoint.y;
 				let distanceToGround = groundContact.plane[i].distanceFromGround;
 				let angleToRotate = atan2(y + distanceToGround, x) - this.rotate;
 				maxAngleToRotate = min(maxAngleToRotate, abs(angleToRotate));
 			}
+
 
 			let angleToRotate = side * min(0.05, maxAngleToRotate)
 			let newPosition = rotateAroundPoint(this.x, this.y, angleToRotate, anchorPoint.x, anchorPoint.y);

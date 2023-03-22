@@ -1,14 +1,13 @@
 class Vector {
-	constructor(x, y) {
-		if (x == undefined || y == undefined) {
-			let angle = game.actualPlayer.tank.cannonAngle;
-			let speed = game.actualPlayer.tank.firePower / 100 * DefaultAmmoSpeed * (1.05 ** game.actualPlayer.inventory["firePowerUpgrade"]);
-			let XY = vectorToXY([angle, speed]);
-			x = XY[0];
-			y = XY[1];
-		}
+	constructor(x = 1, y = 5e-324) {
 		this.x = x;
 		this.y = y;
+	}
+	static getVectorFromAim() {// vrací vektor míření aktuálního hráče
+		let angle = game.actualPlayer.tank.cannonAngle;
+		let speed = game.actualPlayer.tank.firePower / 100 * DefaultAmmoSpeed * (1.05 ** game.actualPlayer.inventory["firePowerUpgrade"]);
+		let XY = vectorToXY([angle, speed]);
+		return new Vector(XY[0], XY[1]);
 	}
 	set angle(angle) {
 		let length = this.length;
@@ -86,7 +85,7 @@ function rotateAroundPoint(x, y, angle, centerx, centery) {
 	return [vector.x + centerx, vector.y + centery];
 }
 
-function forCoordInRadius(x, y, radius, func, ...passArgs) {
+function forCoordInRadius(x, y, radius, func, ...passArgs) {//Zavolá func pro každou souřadnici v kruhu o poloměru
 	func(x, y, ...passArgs);
 	for (let dy = 1; dy <= radius; dy++) {
 		let startdx = sqrt(radius ** 2 - dy ** 2);

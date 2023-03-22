@@ -1,6 +1,7 @@
 // mění velikost hry podle velikosti okna
 window.addEventListener("resize", changeBaseFontSize);
-changeBaseFontSize();
+if (changeBaseFontSize) changeBaseFontSize();
+setTimeout(changeBaseFontSize, 1000)
 function changeBaseFontSize() {
 	var baseFontSize = min(window.innerWidth / 16, window.innerHeight / 9)*9;
 	document.body.style.fontSize = baseFontSize + "px";
@@ -129,7 +130,7 @@ function generateCloud(left) {
 	cloud.setAttribute("width", "400");
 	var ctx = cloud.getContext("2d");
 	ctx.fillStyle = "rgba(255, 255, 255, 0.05)";
-	for (let i = 0; i < 500; i++) {
+	for (let i = 0; i < 500; i++) {//generace vzhledu mraku
 		let x = (noise.simplex2(random() * 999, random() * 999) + 1) * (maxx - minx) / 2 + minx;
 		let y = abs(noise.simplex2(random() * 999, random() * 999)) * -1 * (maxy - miny) + maxy + 40;
 		let r = random() * 20 + 5;
@@ -146,7 +147,7 @@ function generateCloud(left) {
 
 
 
-//Keyboard Controls
+//Keyboard Controls on press
 const keys = new Array(256);
 document.body.addEventListener("keydown", function (e) {
 	keys[e.keyCode] = true;
@@ -209,9 +210,9 @@ setInterval(() => {
 	}
 
 
-	if (engineSound.playing() && (!(keys[65] ^ keys[68]) || !game.inGame || groundContact <= 0 || game.actualPlayer?.tank.fuel <= 0)) {
+	if (engineSound.playing() && (!(keys[65] ^ keys[68]) || !game.inGame || groundContact <= 0 || game.actualPlayer?.tank.fuel <= 0 || game.blockControls)) {
 		engineSound.pause();
-	} else if (!engineSound.playing() && (keys[65] ^ keys[68]) && game.inGame && groundContact > 0 && game.actualPlayer?.tank.fuel > 0) {
+	} else if (!engineSound.playing() && (keys[65] ^ keys[68]) && game.inGame && groundContact > 0 && game.actualPlayer?.tank.fuel > 0 && !game.blockControls) {
 		engineSound.play();
 	}
 }, 1000 / 60);

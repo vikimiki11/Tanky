@@ -83,9 +83,9 @@ new Ammo("Volcano bomb", "volcanoBomb", "volcanoBomb.png", 10, 1000, 10,
 		return new Promise((resolve) => {
 			fireFlyingProjectile().then((XYVector) => {
 				explosion(XYVector, 30, 50);
-				let xy = [XYVector[0] - XYVector[2].x, XYVector[1] - XYVector[2].y];
+				let xy = [XYVector[0] - XYVector[2].x, XYVector[1] - XYVector[2].y]; //Místo jeden krok před dopadem
 				let promises = [];
-				for (let i = 0; i < 4; i++) {
+				for (let i = 0; i < 4; i++) {//Vytváření nábojů po dopadu, které se po okolí
 					let vector = new Vector(0, 0);
 					vector.length = pythagoras([XYVector[2].x, XYVector[2].y]) / 2;
 					vector.angle = PI / 5 * (1 + Math.random() * 3);
@@ -101,7 +101,7 @@ new Ammo("Volcano bomb", "volcanoBomb", "volcanoBomb.png", 10, 1000, 10,
 );
 new Ammo("Shower", "shower", "shower.png", 10, 1000, 10,
 	() => {
-		let vector = new Vector()
+		let vector = Vector.getVectorFromAim()
 		let promises = [];
 		for (let i = -2; i <= 2; i++) {
 			promises.push(simpleFlyingAmmo(undefined, new Vector(vector.x + 0.15 * i, vector.y), 30, 50));
@@ -111,7 +111,7 @@ new Ammo("Shower", "shower", "shower.png", 10, 1000, 10,
 );
 new Ammo("Hot Shower", "hotShower", "hotShower.png", 10, 1000, 10,
 	() => {
-		let vector = new Vector()
+		let vector = Vector.getVectorFromAim()
 		let promises = [];
 		for (let i = -2; i <= 2; i++) {
 			promises.push(simpleFlyingAmmo(undefined, new Vector(vector.x + 0.15 * i, vector.y), 30, 100));
@@ -139,7 +139,7 @@ new Ammo("Large ball V2", "largeBallV2", "smallMissile.png", 10, 1000, 10,
 );
 
 const DefaultAmmoSpeed = 12.5;
-function fireFlyingProjectile(xy = game.actualPlayer.tank.cannonTip, vector = new Vector()) {
+function fireFlyingProjectile(xy = game.actualPlayer.tank.cannonTip, vector = Vector.getVectorFromAim()) {
 	let XYVector = [xy[0], xy[1], vector];
 	return new Promise((resolve, reject) => {
 		projectiles.push(new FlyingProjectile(XYVector, resolve, reject));
@@ -167,6 +167,7 @@ function explosion(xy, radius, damage) {
 			if (radius >= 200) console.time("explosion");
 			terrain.destroyTerrain(xy, radius);
 
+			//Přičítání skóre
 			let score = 0;
 			for (let i = 0; i < game.players.length; i++) {
 				let tank = game.players[i].tank;
@@ -182,7 +183,7 @@ function explosion(xy, radius, damage) {
 			game.actualPlayer.money += score * 50;
 
 
-
+			//ničení stromů
 			for (let i = 0; i < trees.length; i++) {
 				let tree = trees[i];
 				if (tree) {
@@ -219,7 +220,7 @@ function explosionAnimation(xy, radius) {
 		</circle>
 		Sorry, your browser does not support inline SVG.`;
 	gamePlane.appendChild(explosion);
-	setTimeout((DOM) => { DOM.remove() }, 1000, explosion);
+	setTimeout((DOM) => { DOM.remove() }, 1000, explosion);//odstranení svg
 	explosionID++;
 }
 
@@ -290,20 +291,29 @@ class FlyingProjectile extends Projectile{
 	}
 	tick(noDOM) {
 		noDOM = noDOM || this.noDOM;
+		//úprava směru
 		this.vector.x *= AirResistancePerTick;
 		this.vector.y *= AirResistancePerTick;
 		this.vector.y -= Gravity;
 		this.vector.x += game.windCurrent / 3000;
+		//přičtení směru
 		this.x += this.vector.x;
 		this.y += this.vector.y;
-		if (!noDOM) this.DOM.style.left = this.x + "em";
-		if (!noDOM) this.DOM.style.bottom = this.y + "em";
+
+		if (!noDOM) {
+			this.DOM.style.left = this.x + "em";
+			this.DOM.style.bottom = this.y + "em";
+		}
+
+		//Kontrola kolize
 		if (terrain.checkCollision(this.x, this.y) || terrain.checkForTankCollision(this.x, this.y)) {
 			this.destroy(noDOM);
 			this.landed([this.x, this.y, this.vector]);
 			this.end = true;
 			return true;
 		}
+
+		//Mimo mapu
 		if (this.y < 0) {
 			this.destroy(noDOM);
 			this.outOfBounds();
@@ -328,14 +338,19 @@ class RollingProjectile extends Projectile {
 		this.y += terrain.distanceFromGround(this.x, this.y);
 	}
 	tick() {
+		//posun po terénu
 		this.x += this.direction;
+
+		//kontrola změnu výšky
 		let distanceFromGround = terrain.distanceFromGround(this.x, this.y);
 		this.DOM.style.left = this.x + "em";
 		this.DOM.style.bottom = this.y + "em";
+
+		//Kontrola konce života projektylu
 		if (
-			terrain.checkForTankCollision(this.x, this.y + 2) || 
+			terrain.checkForTankCollision(this.x, this.y + 2) ||
 			this.tickCounter >= this.timeToLive || 
-			distanceFromGround > this.maxClimb
+			distanceFromGround > this.maxClimb  //Příliš příkrý terén
 		) {
 			this.destroy();
 			this.landed([this.x, this.y]);
@@ -343,6 +358,8 @@ class RollingProjectile extends Projectile {
 			return true;
 		}
 		this.y += distanceFromGround;
+
+		//Kontrola mimo mapu
 		if (this.y < 0) {
 			this.destroy();
 			this.outOfBounds();

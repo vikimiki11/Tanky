@@ -35,7 +35,7 @@ function fuel() {
 let teleportActive = false;
 const gamePlane = document.querySelector("#gamePlane");
 gamePlane.addEventListener("click", teleportClick);
-function teleport() {
+function teleport() {//Spuštěno kliknutím na portál v gameTopBar
 	if (game.blockControls && !ignoreBlockControl) return;
 	if (!teleportActive && GlobalInventory["teleport"].use()) {
 		game.blockControls = true;
@@ -43,7 +43,7 @@ function teleport() {
 		teleportActive = true;
 	}
 }
-function teleportClick(e) {
+function teleportClick(e) {//Spuštěno kliknutím na herní plochu, samotný teleport tanku
 	if (teleportActive) {
 		teleportSound.play();
 		game.blockControls = false;
@@ -64,7 +64,7 @@ function shield(level) {
 		game.actualPlayer.tank.shield = Math.min(game.actualPlayer.tank.shield, shieldColorLevels[shieldColorLevels.length - 1]);
 	}
 }
-function shieldGradient(shieldHP) {
+function shieldGradient(shieldHP) {//vrací správnou barvu pro danou sílu štítu
 	const colors = [[255, 255, 0, 0], [255, 255, 0, 0.8], [0, 187, 255, 0.8], [0, 0, 255, 0.8], [128, 0, 128, 0.8]];
 	let level = 0;
 	while (shieldHP > shieldColorLevels[level + 1]) level++;
