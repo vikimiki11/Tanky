@@ -31,7 +31,6 @@ body{
 	display: flex;
 	align-items: center;
 	overflow: hidden;
-	font-family: fantasy;
 	-webkit-user-drag: none;
 	user-drag: none;
 	-moz-user-select: none;
@@ -263,7 +262,7 @@ input[type="color"]{
 	width: 1.5em;
 	text-align: center;
 	display: inline-block;
-	padding-bottom: 0.15em;
+	padding-top: 0.2em;
 }
 
 .clickable:active {
@@ -531,14 +530,14 @@ input[type="color"]{
 	padding: 0;
 }
 #gameScreen .inventoryRow{
-	grid-template-columns: 1.75em 10em 1.75em;
+	grid-template-columns: 1.75em 10em 2em;
 	height: 1.75em;
 }
 
 .inventoryRow > *{
 	display: inline-block;
 	border: 0.1em solid black;
-	padding: 0.2em 0.1em 0.2em 0.1em;
+	padding: 0.6em 0.1em 0.2em 0.1em;
 	font-size: 0.8em;
 	image-rendering: pixelated;
 }
@@ -830,7 +829,7 @@ canvas{
 	font-size: 0.75em;
 }
 #shopScreen .inventoryRow {
-	grid-template-columns: 1.75em 9em 2.75em 1.75em 1.75em;
+	grid-template-columns: 1.75em 9em 2.75em 1.75em 2em;
 	height: 1.75em;
 }
 #shopTopBar{

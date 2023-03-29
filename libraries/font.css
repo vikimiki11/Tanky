@@ -1,0 +1,7 @@
+@font-face {
+  font-family: 'Diary of an 8-bit mage';
+  src: url('font.ttf');
+}
+body, input, button{
+  font-family: 'Diary of an 8-bit mage';
+}

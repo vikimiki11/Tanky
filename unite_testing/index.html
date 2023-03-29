@@ -27,8 +27,8 @@
 		let v1 = new Vector(0, 1);
 		vectorTests.push(testNumber("Vector constructor x", 0, 0.01, v1.x));
 		vectorTests.push(testNumber("Vector constructor y", 1, 0.01, v1.y));
-		v1 = new Vector(1, 1);
-		vectorTests.push(testNumber("Vector length", sqrt(2), 0.01, v1.length));
+		v1 = new Vector(10, 10);
+		vectorTests.push(testNumber("Vector length", sqrt(200), 0.01, v1.length));
 		vectorTests.push(testNumber("Vector angle", PI / 4, 0.0001, v1.angle));
 		v1.length = 2;
 		let angleBeforeChange = v1.angle;

@@ -6,6 +6,7 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>Tanky</title>
 	<link rel="stylesheet" type="text/css" href="style.css">
+	<link href="libraries/font.css" rel="stylesheet">
 	<style id="playerStyle">
 	</style>
 	<style id="globalStyle">
@@ -65,9 +66,9 @@
 				<div id="gameTopBar" style="display:none">
 					<div class="playerName"><!-- filled by script --></div>
 					<div id="engineControl">
-						<div id="driveLeft" direction="left" class="clickable">🢠</div>
+						<div id="driveLeft" direction="left" class="clickable"><=</div>
 						<span id="fuelAmount"><!-- filled by script --></span>
-						<div id="driveRight" direction="right" class="clickable">🢡</div>
+						<div id="driveRight" direction="right" class="clickable">=></div>
 					</div>
 					<div id="gadgets">
 
@@ -173,12 +174,12 @@
 					</div>
 
 					<div id="ammo">
-						<div id="previousAmmo" class="clickable" onclick="game.previousAmmo()">🢠</div>
+						<div id="previousAmmo" class="clickable" onclick="game.previousAmmo()"><=</div>
 						<div id="ammoSelect">
 							<div id="selectedAmmo"><!-- filled by script --></div>
 							<div id="allAmmo"><!-- filled by script --></div>
 						</div>
-						<div id="nextAmmo" class="clickable" onclick="game.nextAmmo()">🢡</div>
+						<div id="nextAmmo" class="clickable" onclick="game.nextAmmo()">=></div>
 					</div>
 
 					<div class="playerMoney">
