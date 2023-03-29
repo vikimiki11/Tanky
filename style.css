@@ -262,7 +262,7 @@ input[type="color"]{
 	width: 1.5em;
 	text-align: center;
 	display: inline-block;
-	padding-top: 0.2em;
+	padding: 0.2em 0.1em;
 }
 
 .clickable:active {
@@ -829,7 +829,7 @@ canvas{
 	font-size: 0.75em;
 }
 #shopScreen .inventoryRow {
-	grid-template-columns: 1.75em 9em 2.75em 1.75em 2em;
+	grid-template-columns: 1.75em 9em 3em 1.75em 2em;
 	height: 1.75em;
 }
 #shopTopBar{

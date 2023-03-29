@@ -119,22 +119,22 @@ new Ammo("Hot Shower", "hotShower", "hotShower.png", 10, 1000, 10,
 		return Promise.allSettled(promises);
 	}
 );
-new Ammo("Small ball", "smallBall", "smallMissile.png", 10, 1000, 10,
+new Ammo("Small ball", "smallBall", "smallBall.png", 10, 1000, 10,
 	() => { return simpleRollingAmmo(undefined, undefined, 0, 200, 30, 50) }
 );
-new Ammo("Ball", "ball", "smallMissile.png", 10, 1000, 10,
+new Ammo("Ball", "ball", "ball.png", 10, 1000, 10,
 	() => { return simpleRollingAmmo(undefined, undefined, 0, 200, 50, 50) }
 );
-new Ammo("Large ball", "largeBall", "smallMissile.png", 10, 1000, 10,
+new Ammo("Large ball", "largeBall", "largeBall.png", 10, 1000, 10,
 	() => { return simpleRollingAmmo(undefined, undefined, 0, 200, 60, 80) }
 );
-new Ammo("Small ball V2", "smallBallV2", "smallMissile.png", 10, 1000, 10,
+new Ammo("Small ball V2", "smallBallV2", "smallBall.png", 10, 1000, 10,
 	() => { return simpleRollingAmmo(undefined, undefined, 1, 300, 30, 50) }
 );
-new Ammo("Ball V2", "ballV2", "smallMissile.png", 10, 1000, 10,
+new Ammo("Ball V2", "ballV2", "ball.png", 10, 1000, 10,
 	() => { return simpleRollingAmmo(undefined, undefined, 1, 300, 50, 50) }
 );
-new Ammo("Large ball V2", "largeBallV2", "smallMissile.png", 10, 1000, 10,
+new Ammo("Large ball V2", "largeBallV2", "largeBall.png", 10, 1000, 10,
 	() => { return simpleRollingAmmo(undefined, undefined, 1, 300, 60, 80) }
 );
 
