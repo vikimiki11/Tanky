@@ -89,7 +89,7 @@ new Ammo("Volcano bomb", "volcanoBomb", "volcanoBomb.png", 10, 1000, 10,
 					let vector = new Vector(0, 0);
 					vector.length = pythagoras([XYVector[2].x, XYVector[2].y]) / 2;
 					vector.angle = PI / 5 * (1 + Math.random() * 3);
-					promises.push(simpleFlyingAmmo(xy, vector, 30, 25));
+					promises.push(simpleFlyingAmmo(xy, vector, 30, 35));
 				}
 				Promise.allSettled(promises).then(resolve);
 			}).catch(() => {
@@ -126,7 +126,7 @@ new Ammo("Ball", "ball", "ball.png", 10, 1000, 10,
 	() => { return simpleRollingAmmo(undefined, undefined, 0, 200, 50, 50) }
 );
 new Ammo("Large ball", "largeBall", "largeBall.png", 10, 1000, 10,
-	() => { return simpleRollingAmmo(undefined, undefined, 0, 200, 60, 80) }
+	() => { return simpleRollingAmmo(undefined, undefined, 0, 200, 70, 110) }
 );
 new Ammo("Small ball V2", "smallBallV2", "smallBall.png", 10, 1000, 10,
 	() => { return simpleRollingAmmo(undefined, undefined, 1, 300, 30, 50) }
@@ -135,7 +135,7 @@ new Ammo("Ball V2", "ballV2", "ball.png", 10, 1000, 10,
 	() => { return simpleRollingAmmo(undefined, undefined, 1, 300, 50, 50) }
 );
 new Ammo("Large ball V2", "largeBallV2", "largeBall.png", 10, 1000, 10,
-	() => { return simpleRollingAmmo(undefined, undefined, 1, 300, 60, 80) }
+	() => { return simpleRollingAmmo(undefined, undefined, 1, 300, 60, 110) }
 );
 
 const DefaultAmmoSpeed = 12.5;

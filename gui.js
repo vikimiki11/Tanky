@@ -169,6 +169,9 @@ document.body.addEventListener("keydown", function (e) {
 document.body.addEventListener("keyup", function (e) {
 	keys[e.keyCode] = false;
 });
+document.querySelector("#playerNameInput").addEventListener("keydown",
+	(e) => { console.log(e); e.stopPropagation() }
+)
 
 //Mouse Engine Control
 document.querySelectorAll("#engineControl .clickable").forEach(el => {

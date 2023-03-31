@@ -2,7 +2,7 @@ class Game {
 	constructor(players, terrain) {
 		this.players = players;
 		this.terrain = terrain;
-		this._actualPlayerID = -1;
+		this._actualPlayerID = -2;
 		this.blockControls = true;
 		this.windSeed = random();
 		this._windStep = 0;
@@ -13,10 +13,10 @@ class Game {
 	}
 	set actualPlayerID(id) {
 		if (this.actualPlayer) this.actualPlayer.selected = false;
-		if (id >= this.players.length) {
-			this._actualPlayerID = 0;
+		if (id < 0) {
+			this._actualPlayerID = this.players.length + id % this.players.length;
 		} else {
-			this._actualPlayerID = id;
+			this._actualPlayerID = id % this.players.length;
 		};
 		this.actualPlayer.selected = true;
 	}
@@ -55,6 +55,7 @@ class Game {
 	start() {
 		console.log("start");
 		switchScreen("gameScreen", () => {
+			game.actualPlayerID++;
 			if (!game.intervalId) setTimeout((game) => { game.intervalId = setInterval((game) => { game.tick() }, 1000 / 60, game) }, 100, game);
 			game.inGame = true;
 			game.windSeed = random();
@@ -82,7 +83,7 @@ class Game {
 		}
 		setTimeout(() => {
 			//clearInterval(this.intervalId);
-			this._actualPlayerID--;
+			this.actualPlayerID--;
 			this.shopNextPlayer(true);
 			document.querySelector("#gamePlane .tank")?.remove();
 			removeProjectiles();
@@ -91,10 +92,13 @@ class Game {
 		strongWindSound.pause();
 	}
 
-	shopNextPlayer(donCheckStart) {
+	shopNextPlayer(dontCheckStart) {
 		this.actualPlayerID++;
-		if (!donCheckStart && this.lastPlayerID == this.actualPlayerID)
+		if (!dontCheckStart && this.lastPlayerID == this.actualPlayerID) {
+
+			this.actualPlayerID--;
 			this.start();
+		}
 		else {
 			if (this.actualPlayer.AI) {
 				AI.autoShop(this.actualPlayer.AI);
