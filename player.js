@@ -67,7 +67,7 @@ ${this.tank ?`			--aim: ${round(this.tank.aim * 180 / PI)};
 		do {
 			this.selectedAmmo++;
 			if (this.selectedAmmo >= ammoList.length) this.selectedAmmo = 0;
-		} while (this.inventory[this.selectedAmmo] <= 0);
+		} while (this.inventory[ammoList[this.selectedAmmo].shortName] <= 0);
 	}
 
 	previousAmmo() {
@@ -75,6 +75,6 @@ ${this.tank ?`			--aim: ${round(this.tank.aim * 180 / PI)};
 		do {
 			this.selectedAmmo--;
 			if (this.selectedAmmo < 0) this.selectedAmmo = ammoList.length - 1;
-		} while (this.inventory[this.selectedAmmo] <= 0);
+		} while (this.inventory[ammoList[this.selectedAmmo].shortName] <= 0);
 	}
 }
