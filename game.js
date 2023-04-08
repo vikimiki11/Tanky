@@ -78,8 +78,8 @@ class Game {
 		switchScreen("shopScreen");
 		this.blockControls = true;
 		for (let p in this.players) {
-			this.players[p].money += 5000;
-			if (this.players[p].tank) this.players[p].money += 5000;
+			this.players[p].money += 2000;
+			if (this.players[p].tank) this.players[p].money += 2000;
 		}
 		setTimeout(() => {
 			//clearInterval(this.intervalId);

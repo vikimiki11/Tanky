@@ -10,13 +10,13 @@ new Gadget("Weak shield", "weakShield", 8, 5000, 2);
 new Gadget("Shield", "shield", 8, 10000, 1);
 new Gadget("Strong shield", "strongShield", 8, 15000, 1);
 new Gadget("Super shield", "superShield", 8, 20000, 1);
-new Gadget("Repair kit", "repairKit", 10, 20000, 1);
-new Gadget("Fuel", "fuel", 200, 2000, 50);
-new Gadget("Parachute", "parachute", 8, 20000, 1);
-new Gadget("Teleport", "teleport", 8, 20000, 1);
+new Gadget("Repair kit", "repairKit", 8, 4000, 5);
+new Gadget("Fuel", "fuel", 250, 3000, 50);
+new Gadget("Parachute", "parachute", 8, 5000, 5);
+new Gadget("Teleport", "teleport", 8, 15000, 1);
 new Gadget("Firepower upgrade", "firePowerUpgrade", 0, 5000, 1);
-new Gadget("Armor upgrade", "armorUpgrade", 0, 5000, 1);
-new Gadget("Engine upgrade", "engineUpgrade", 0, 5000, 1);
+new Gadget("Armor upgrade", "armorUpgrade", 0, 10000, 1);
+new Gadget("Engine upgrade", "engineUpgrade", 0, 7000, 1);
 new Gadget("Climb upgrade", "climbUpgrade", 0, 5000, 1);
 
 function repairKit() {

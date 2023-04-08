@@ -784,7 +784,7 @@ canvas{
 	position: absolute;
 	height: 10em;
 	width: 10em;
-	transform: translate(-50%, -50%);
+	transform: translate(-50%, 0%);
 }
 
 

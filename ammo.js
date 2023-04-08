@@ -61,35 +61,35 @@ class Ammo extends InventoryItem {
 	}
 }
 new Ammo("Small missile", "smallMissile", "smallMissile.png", Infinity, 0, 10,
-	() => { return simpleFlyingAmmo(undefined, undefined, 30, 50) }
+	() => { return simpleFlyingAmmo(undefined, undefined, 35, 50) }
 )
 
-new Ammo("Missile", "missile", "missile.png", 10, 1000, 10,
-	() => { return simpleFlyingAmmo(undefined, undefined, 30, 100) }
+new Ammo("Missile", "missile", "missile.png", 0, 2000, 10,
+	() => { return simpleFlyingAmmo(undefined, undefined, 35, 100) }
 );
 
-new Ammo("Small atom bomb", "smallAtomBomb", "mushroom.png", 0, 1000, 10,
+new Ammo("Small atom bomb", "smallAtomBomb", "mushroom.png", 0, 5000, 2,
 	() => { return simpleFlyingAmmo(undefined, undefined, 250, 300) }
 );
 
 
-new Ammo("Atom bomb", "atomBomb", "redMushroom.png", 0, 1000, 10,
+new Ammo("Atom bomb", "atomBomb", "redMushroom.png", 0, 13000, 1,
 	() => { return simpleFlyingAmmo(undefined, undefined, 500, 300) }
 );
 
 
-new Ammo("Volcano bomb", "volcanoBomb", "volcanoBomb.png", 10, 1000, 10,
+new Ammo("Volcano bomb", "volcanoBomb", "volcanoBomb.png", 10, 8000, 10,
 	() => {
 		return new Promise((resolve) => {
 			fireFlyingProjectile().then((XYVector) => {
-				explosion(XYVector, 30, 50);
+				explosion(XYVector, 35, 50);
 				let xy = [XYVector[0] - XYVector[2].x, XYVector[1] - XYVector[2].y]; //Místo jeden krok před dopadem
 				let promises = [];
-				for (let i = 0; i < 4; i++) {//Vytváření nábojů po dopadu, které se po okolí
+				for (let i = 0; i < 4; i++) {//Vytváření nábojů po dopadu, které se rozletí po okolí
 					let vector = new Vector(0, 0);
 					vector.length = pythagoras([XYVector[2].x, XYVector[2].y]) / 2;
 					vector.angle = PI / 5 * (1 + Math.random() * 3);
-					promises.push(simpleFlyingAmmo(xy, vector, 30, 35));
+					promises.push(simpleFlyingAmmo(xy, vector, 35, 40));
 				}
 				Promise.allSettled(promises).then(resolve);
 			}).catch(() => {
@@ -99,43 +99,43 @@ new Ammo("Volcano bomb", "volcanoBomb", "volcanoBomb.png", 10, 1000, 10,
 		});
 	}
 );
-new Ammo("Shower", "shower", "shower.png", 0, 1000, 10,
+new Ammo("Shower", "shower", "shower.png", 0, 9000, 2,
 	() => {
 		let vector = Vector.getVectorFromAim()
 		let promises = [];
 		for (let i = -2; i <= 2; i++) {
-			promises.push(simpleFlyingAmmo(undefined, new Vector(vector.x + 0.15 * i, vector.y), 30, 50));
+			promises.push(simpleFlyingAmmo(undefined, new Vector(vector.x + 0.15 * i, vector.y), 35, 50));
 		}
 		return Promise.allSettled(promises);
 	}
 );
-new Ammo("Hot Shower", "hotShower", "hotShower.png", 0, 1000, 10,
+new Ammo("Hot Shower", "hotShower", "hotShower.png", 0, 30000, 1,
 	() => {
 		let vector = Vector.getVectorFromAim()
 		let promises = [];
 		for (let i = -2; i <= 2; i++) {
-			promises.push(simpleFlyingAmmo(undefined, new Vector(vector.x + 0.15 * i, vector.y), 30, 100));
+			promises.push(simpleFlyingAmmo(undefined, new Vector(vector.x + 0.15 * i, vector.y), 35, 100));
 		}
 		return Promise.allSettled(promises);
 	}
 );
-new Ammo("Small ball", "smallBall", "smallBall.png", 0, 1000, 10,
-	() => { return simpleRollingAmmo(undefined, undefined, 0, 200, 30, 50) }
+new Ammo("Small ball", "smallBall", "smallBall.png", 0, 5000, 5,
+	() => { return simpleRollingAmmo(undefined, undefined, 0, 200, 35, 75) }
 );
-new Ammo("Ball", "ball", "ball.png", 0, 1000, 10,
-	() => { return simpleRollingAmmo(undefined, undefined, 0, 200, 50, 50) }
+new Ammo("Ball", "ball", "ball.png", 0, 6000, 2,
+	() => { return simpleRollingAmmo(undefined, undefined, 0, 200, 50, 100) }
 );
-new Ammo("Large ball", "largeBall", "largeBall.png", 0, 1000, 10,
-	() => { return simpleRollingAmmo(undefined, undefined, 0, 200, 70, 110) }
+new Ammo("Large ball", "largeBall", "largeBall.png", 0, 15000, 1,
+	() => { return simpleRollingAmmo(undefined, undefined, 0, 200, 75, 125) }
 );
-new Ammo("Small ball V2", "smallBallV2", "smallBall.png", 0, 1000, 10,
-	() => { return simpleRollingAmmo(undefined, undefined, 1, 300, 30, 50) }
+new Ammo("Small ball V2", "smallBallV2", "smallBall.png", 0, 6500, 5,
+	() => { return simpleRollingAmmo(undefined, undefined, 1, 300, 35, 75) }
 );
-new Ammo("Ball V2", "ballV2", "ball.png", 0, 1000, 10,
-	() => { return simpleRollingAmmo(undefined, undefined, 1, 300, 50, 50) }
+new Ammo("Ball V2", "ballV2", "ball.png", 0, 7500, 2,
+	() => { return simpleRollingAmmo(undefined, undefined, 1, 300, 50, 100) }
 );
-new Ammo("Large ball V2", "largeBallV2", "largeBall.png", 0, 1000, 10,
-	() => { return simpleRollingAmmo(undefined, undefined, 1, 300, 60, 110) }
+new Ammo("Large ball V2", "largeBallV2", "largeBall.png", 0, 18000, 1 ,
+	() => { return simpleRollingAmmo(undefined, undefined, 1, 300, 75, 125) }
 );
 
 const DefaultAmmoSpeed = 12.5;
