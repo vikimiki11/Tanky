@@ -94,8 +94,8 @@ main{
 	position: absolute;
 	top: 100vh;
 	opacity: 0.01;
-	width: 0px;
-	height: 0px;
+	width: 0;
+	height: 0;
 }
 
 .normalizeFont{
@@ -305,8 +305,8 @@ input[type="color"]{
 	text-overflow: ellipsis;
 	white-space: nowrap;
 	overflow: hidden;
-	border-right: 0.11em rgb(160 160 160) solid;
-	border-bottom: 0.11em rgb(160 160 160) solid;
+	border-right: 0.1em rgb(32 32 32) solid;
+	border-bottom: 0.1em rgb(32 32 32) solid;
 }
 
 #engineControl{
@@ -335,8 +335,8 @@ input[type="color"]{
 	left: 16em;
 	height: 100%;
 	width: 10em;
-	border-left: 0.1em rgb(160 160 160) solid;
-	border-right: 0.1em rgb(160 160 160) solid;
+	border-left: 0.1em rgb(32 32 32) solid;
+	border-right: 0.1em rgb(32 32 32) solid;
 }
 
 .rangeHorizontal,
