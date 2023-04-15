@@ -316,7 +316,7 @@
 		let maxPlayers;
 
 		function addPlayer(name, color, AI) {
-			if (name === undefined) name = document.querySelector("#playerNameInput").value;
+			if (name === undefined) name = document.querySelector("#playerNameInput").value || ("Hráč " + (players.length + 1));
 			if (color === undefined) color = document.querySelector("#playerColorInput").value;
 			if (AI === undefined) {
 				for (let element of document.querySelectorAll("input[name='AIDifficulty']")) {
