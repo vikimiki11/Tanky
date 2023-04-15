@@ -154,15 +154,6 @@ document.body.addEventListener("keydown", function (e) {
 	if (e.keyCode == 16) { game?.nextAmmo(); }
 	else if (e.keyCode == 17) game?.previousAmmo();
 	else if (e.keyCode == 70) fullscreen();
-	else if (e.keyCode == 49) console.log("1 ToDo");
-	else if (e.keyCode == 50) console.log("2 ToDo");
-	else if (e.keyCode == 51) console.log("3 ToDo");
-	else if (e.keyCode == 52) console.log("4 ToDo");
-	else if (e.keyCode == 82) console.log("Repair Kit ToDo");
-	else if (e.keyCode == 88) console.log("X ToDo");
-	else if (e.keyCode == 89) console.log("Y ToDo");
-	else if (e.keyCode == 67) console.log("C ToDo");
-	else if (e.keyCode == 86) console.log("V ToDo");
 	else if (e.keyCode == 32) game?.fire();
 
 });
@@ -170,7 +161,7 @@ document.body.addEventListener("keyup", function (e) {
 	keys[e.keyCode] = false;
 });
 document.querySelector("#playerNameInput").addEventListener("keydown",
-	(e) => { console.log(e); e.stopPropagation() }
+	(e) => { e.stopPropagation() }
 )
 
 //Mouse Engine Control

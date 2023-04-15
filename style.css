@@ -87,7 +87,6 @@ main{
 	background-color: #1bb6d0;
 	height: 1em;
 	position: relative;
-	/* z-index: -2; */
 }
 
 #cachedImages{
@@ -671,7 +670,6 @@ svg.superShield>circle {
 	position: relative;
 	top: -0.25em;
 	border-radius: 0.25em;
-	/* height: 1.25em; */
 }
 #shield:hover{
 	background-color: rgba(255, 240, 240, 0.64);
