@@ -75,7 +75,7 @@ class TerrainBlock {
 		const scale = 1 / 50
 		if (this.distanceFromGround>=0) {
 			let n = (noise.simplex2(this.x * scale, this.y * scale) + 1) / 2;
-			if (n > 0.75) {
+			if (n > 0.75 && false) {
 				this.color[0] = 204 - 89 * (n - 0.75) * 4;
 				this.color[1] = 88 - 38 * (n - 0.75) * 4;
 			} else {
