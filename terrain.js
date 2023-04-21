@@ -25,7 +25,7 @@ class Terrain extends Array {
 		noise.seed(seed);
 		for (let x = 0; x < this.width; x++) {
 			this[x].terrainHeight = Math.round(((noise.simplex2(x / 500, 100000) + 1) / 10 + 0.2) * this.height);
-			this[x].grassThickness = Math.round((noise.simplex2(100000, x / 20) + 1.5) * 5);
+			this[x].grassThickness = 0; //Math.round((noise.simplex2(100000, x / 20) + 1.5) * 5);
 			for (let y = 0; y < this[x].length; y++) {
 				this[x][y].generateNew();
 			}
