@@ -30,7 +30,7 @@ class Terrain extends Array {
 				this[x][y].generateNew();
 			}
 		}
-		//this.canvasData.grainification();
+		this.canvasData.grainification();
 		this.canvasData.update();
 		console.timeEnd("generate");
 	}
